@@ -1,0 +1,59 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+	<head>
+		<title>HQL console</title>
+		<style>
+		    ul {
+		        list-style-type: none;
+		        padding: 0px;
+		    }
+		    li {
+		        float:left;
+		        padding: 3px;
+		        padding-right: 5px;
+		        clear: both;
+		    }
+		    ul li ul li {
+		        clear: none;
+		    }
+		    .error {
+		        color: Red;
+		    }
+		</style>
+	</head>
+	<body>
+	    <form method="get" action="$model.Url">
+	        <textarea name="hql" cols="80" rows="10">$model.Hql</textarea><br />
+	        Max results: <input type="text" name="MaxResults" value="#if ($model.MaxResults)$model.MaxResults#end" size="2" /><br />
+	        First result: <input type="text" name="FirstResult" value="#if ($model.FirstResult)$model.FirstResult#end" size="2" /><br />
+	        <input type="submit" value="Run HQL" />
+	    </form>
+	    
+	    #if ($model.Error)
+	    <pre class="error">$model.Error</pre>
+	    #end
+	    
+	    #if ($model.Results)
+	    $model.Results.Count results<br />
+	    <ul>
+	        #foreach ($r in $model.Results)
+	            <li><ul>
+	            #foreach ($v in $r)
+	                <li><b>$v.Key</b>: $v.Value</li>
+	            #end
+	            </ul></li>
+	        #end
+	    </ul>
+	    #end
+	    
+	    <br style="clear:both" />
+	    
+	    #if ($model.PrevPageUrl)
+	    <a href="$model.PrevPageUrl">Prev page</a>
+	    #end
+	    
+	    #if ($model.NextPageUrl)
+	    <a href="$model.NextPageUrl">Next page</a>
+	    #end
+	</body>
+</html>
