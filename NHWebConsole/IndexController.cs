@@ -156,7 +156,10 @@ namespace NHWebConsole {
             if (p.Type.IsEntityType) {
                 var assocType = (EntityType) p.Type;
                 var mapping = cfg.GetClassMapping(assocType.GetAssociatedEntityName());
-                var pk = GetPkValue(mapping.MappedClass, p.GetGetter(entityType).Get(o));
+                var o1 = p.GetGetter(entityType).Get(o);
+                if (o1 == null)
+                    return KV(p.Name, null as string);
+                var pk = GetPkValue(mapping.MappedClass, o1);
                 return KV(p.Name, BuildEntityLink(getter.ReturnType, pk));
             }
             return KV(p.Name, Convert.ToString(value));
