@@ -22,7 +22,7 @@ using System.Web;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Mapping;
-using NHibernate.Properties;
+using NHibernate.Property;
 using NHibernate.Proxy;
 using NHibernate.Type;
 
@@ -101,7 +101,7 @@ namespace NHWebConsole {
 
         public ICollection<KeyValuePair<string, string>> ConvertResult(object o) {
             var r = new List<KeyValuePair<string, string>>();
-            var trueType = NHibernateProxyHelper.GetClassWithoutInitializingProxy(o);
+            var trueType = NHibernateProxyHelper.GetClass(o);
             var mapping = cfg.GetClassMapping(trueType);
             r.Add(KV("Type", trueType.Name));
             if (mapping == null) {
@@ -112,7 +112,7 @@ namespace NHWebConsole {
                 }
             } else {
                 r.Add(KV(mapping.IdentifierProperty.Name, Convert.ToString(mapping.IdentifierProperty.GetGetter(trueType).Get(o))));
-                r.AddRange(mapping.PropertyIterator
+                r.AddRange(mapping.PropertyCollection.Cast<Property>()
                                .Select(p => ConvertProperty(o, trueType, p)));
             }
             return r;
@@ -124,7 +124,7 @@ namespace NHWebConsole {
         }
 
         public string BuildCollectionLink(Type ct, Type fk, object fkValue) {
-            var fkp = cfg.GetClassMapping(ct).PropertyIterator
+            var fkp = cfg.GetClassMapping(ct).PropertyCollection.Cast<Property>()
                 .FirstOrDefault(p => p.Type.IsAssociationType && p.GetGetter(ct).ReturnType == fk);
             if (fkp == null)
                 return null;
@@ -155,8 +155,11 @@ namespace NHWebConsole {
             }
             if (p.Type.IsEntityType) {
                 var assocType = (EntityType) p.Type;
-                var mapping = cfg.GetClassMapping(assocType.GetAssociatedEntityName());
-                var pk = GetPkValue(mapping.MappedClass, p.GetGetter(entityType).Get(o));
+                var mapping = cfg.GetClassMapping(assocType.AssociatedClass);
+                var o1 = p.GetGetter(entityType).Get(o);
+                if (o1 == null)
+                    return KV(p.Name, null as string);
+                var pk = GetPkValue(mapping.MappedClass, o1);
                 return KV(p.Name, BuildEntityLink(getter.ReturnType, pk));
             }
             return KV(p.Name, Convert.ToString(value));
