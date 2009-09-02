@@ -1,6 +1,9 @@
-*/bin/*
+*/[bB]in/*
 */obj/*
 *.suo
 *.user
 _ReSharper*
 *.bak
+*.cache
+Build/*
+test.db

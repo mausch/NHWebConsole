@@ -23,7 +23,7 @@
 	</head>
 	<body>
 	    <form method="get" action="$model.Url">
-	        <textarea name="hql" cols="80" rows="10">$model.Hql</textarea><br />
+	        <textarea name="hql" cols="80" rows="10">#if ($model.Hql)$model.Hql#end</textarea><br />
 	        Max results: <input type="text" name="MaxResults" value="#if ($model.MaxResults)$model.MaxResults#end" size="2" /><br />
 	        First result: <input type="text" name="FirstResult" value="#if ($model.FirstResult)$model.FirstResult#end" size="2" /><br />
 	        <input type="submit" value="Run HQL" />
@@ -39,7 +39,14 @@
 	        #foreach ($r in $model.Results)
 	            <li><ul>
 	            #foreach ($v in $r)
-	                <li><b>$v.Key</b>: $v.Value</li>
+	                <li>
+	                    <b>$v.Key</b>: 
+	                    #if ($v.Value) 
+	                        $v.Value 
+                        #else  
+                            <i>NULL</i>
+                        #end
+                    </li>
 	            #end
 	            </ul></li>
 	        #end

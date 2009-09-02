@@ -1,4 +1,20 @@
-﻿using System;
+﻿#region license
+// Copyright (c) 2009 Mauricio Scheffer
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//      http://www.apache.org/licenses/LICENSE-2.0
+//  
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+#endregion
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +29,7 @@ using NHibernate.Type;
 namespace NHWebConsole {
     public class IndexController : NHController {
         private string rawUrl;
-        private Configuration cfg = NHibernateFunctions.Configuration();
+        private Configuration cfg = NHWebConsoleSetup.Configuration();
 
         public Configuration Cfg {
             get { return cfg; }
@@ -25,7 +41,7 @@ namespace NHWebConsole {
             set { rawUrl = value; }
         }
 
-        public override object Execute(HttpContextBase context) {
+        public override object Execute(HttpContext context) {
             rawUrl = context.Request.RawUrl;
             var model = new ViewModel {
                 Url = rawUrl,
@@ -103,7 +119,8 @@ namespace NHWebConsole {
         }
 
         public IEnumerable<KeyValuePair<string, string>> ConvertObjectArray(object[] o) {
-            return o.Select((x,i) => KV(string.Format("[{0}]", i), Convert.ToString(x)));
+            return o.SelectMany((x, i) => ConvertResult(x)
+                .Select(k => KV(string.Format("{0}[{1}]", k.Key, i), k.Value)));
         }
 
         public string BuildCollectionLink(Type ct, Type fk, object fkValue) {

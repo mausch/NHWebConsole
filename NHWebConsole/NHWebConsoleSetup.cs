@@ -15,18 +15,27 @@
 #endregion
 
 using System;
-using System.Web;
 using NHibernate;
+using NHibernate.Cfg;
 
 namespace NHWebConsole {
-    public abstract class NHController : Controller {
-        public ISession Session { get; set;}
+    public static class NHWebConsoleSetup {
+        public static Func<ISession> OpenSession { get; set; }
 
-        public override void ProcessRequest(HttpContext context) {
-            using (Session = NHWebConsoleSetup.OpenSession()) {
-                Session.FlushMode = FlushMode.Never;
-                base.ProcessRequest(context);
-            }
+        public static Func<ISessionFactory> SessionFactory { get; set; }
+
+        public static Func<Configuration> Configuration { get; set; }
+
+        static NHWebConsoleSetup() {
+            OpenSession = () => SessionFactory().OpenSession();
+
+            SessionFactory = () => {
+                throw new Exception("Define NHWebConsole.NHWebConsoleSetup.SessionFactory");
+            };
+
+            Configuration = () => {
+                throw new Exception("Define NHWebConsole.NHWebConsoleSetup.Configuration");
+            };
         }
     }
 }

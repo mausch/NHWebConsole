@@ -1,7 +1,24 @@
-﻿using System;
+﻿#region license
+// Copyright (c) 2009 Mauricio Scheffer
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//      http://www.apache.org/licenses/LICENSE-2.0
+//  
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+#endregion
+
+using System;
 using FluentNHibernate.Automapping;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
+using Iesi.Collections.Generic;
 using NHibernate.Tool.hbm2ddl;
 using NUnit.Framework;
 using SampleModel;
@@ -17,14 +34,14 @@ namespace NHWebConsole.Tests {
                 .Mappings(m => m.AutoMappings.Add(AutoMap.AssemblyOf<Customer>()))
                 .BuildConfiguration();
             var sessionFactory = cfg.BuildSessionFactory();
-            NHibernateFunctions.OpenSession = () => sessionFactory.OpenSession();
-            NHibernateFunctions.Configuration = () => cfg;
+            NHWebConsoleSetup.OpenSession = () => sessionFactory.OpenSession();
+            NHWebConsoleSetup.Configuration = () => cfg;
             new SchemaExport(cfg).Execute(false, true, false);
             CreateSampleData();
         }
 
         private void CreateSampleData() {
-            using (var session = NHibernateFunctions.OpenSession()) {
+            using (var session = NHWebConsoleSetup.OpenSession()) {
                 var customer = new Customer {
                     Name = "John Doe",
                     Title = "CEO",
@@ -35,6 +52,10 @@ namespace NHWebConsole.Tests {
                     LastName = "of the Month",
                 };
                 session.Save(employee);
+                var territory = new Territory {
+                    Name = "North east",
+                };
+                session.Save(territory);
                 session.Save(new Order {
                     Customer = customer,
                     Employee = employee,
@@ -50,16 +71,19 @@ namespace NHWebConsole.Tests {
                     Employee = employee,
                     OrderDate = DateTime.Now.AddDays(1),
                 });
+                territory.Employees = new HashedSet<Employee> { employee };
+                employee.Territories = new HashedSet<Territory> {territory};
+                session.Flush();
             }
         }
 
 
         [Test]
         public void ExecQuery() {
-            using (var session = NHibernateFunctions.OpenSession()) {
+            using (var session = NHWebConsoleSetup.OpenSession()) {
                 var c = new IndexController {
                     Session = session,
-                    Cfg = NHibernateFunctions.Configuration(),
+                    Cfg = NHWebConsoleSetup.Configuration(),
                     RawUrl = "/pepe.aspx",
                 };
                 var results = c.ExecQuery(new ViewModel {
