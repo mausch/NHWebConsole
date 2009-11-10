@@ -26,6 +26,8 @@ namespace NHWebConsole {
 
         public static Func<Configuration> Configuration { get; set; }
 
+        public static bool DisposeSession = true;
+
         static NHWebConsoleSetup() {
             OpenSession = () => SessionFactory().OpenSession();
 

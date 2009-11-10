@@ -23,9 +23,13 @@ namespace NHWebConsole {
         public ISession Session { get; set;}
 
         public override void ProcessRequest(HttpContext context) {
-            using (Session = NHWebConsoleSetup.OpenSession()) {
+            Session = NHWebConsoleSetup.OpenSession();
+            try {
                 Session.FlushMode = FlushMode.Never;
-                base.ProcessRequest(context);
+                base.ProcessRequest(context);                
+            } finally {
+                if (NHWebConsoleSetup.DisposeSession)
+                    Session.Dispose();
             }
         }
     }
