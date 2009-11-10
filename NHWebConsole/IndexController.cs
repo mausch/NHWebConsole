@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using NHibernate;
@@ -84,6 +85,8 @@ namespace NHWebConsole {
         }
 
         public ICollection<ICollection<KeyValuePair<string, string>>> ExecQuery(ViewModel model) {
+            if (cfg == null)
+                throw new ApplicationException("NHibernate configuration not supplied");
             if (string.IsNullOrEmpty(model.Hql))
                 return null;
             var q = Session.CreateQuery(model.Hql);
