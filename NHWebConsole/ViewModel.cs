@@ -21,7 +21,6 @@ namespace NHWebConsole {
         public string Url { get; set; }
         public string Query { get; set; }
         public QueryType QueryType { get; set; }
-        public OperationType OperationType { get; set; }
         public int? MaxResults { get; set; }
         public int? FirstResult { get; set; }
         public ICollection<ICollection<KeyValuePair<string, string>>> Results { get; set; }

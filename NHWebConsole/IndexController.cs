@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using NHibernate;
 using NHibernate.Cfg;
@@ -51,7 +52,6 @@ namespace NHWebConsole {
                 model.FirstResult = TryParse(context.Request["FirstResult"]);
                 model.Query = context.Request["q"];
                 model.QueryType = GetQueryType(context.Request["type"]);
-                model.OperationType = GetOperationType(context.Request["op"]);
                 model.Results = ExecQuery(model);
                 model.NextPageUrl = BuildNextPageUrl(model);
                 model.PrevPageUrl = BuildPrevPageUrl(model);
@@ -59,12 +59,6 @@ namespace NHWebConsole {
                 model.Error = e.ToString();
             }
             return model;
-        }
-
-        public OperationType GetOperationType(string s) {
-            if (string.IsNullOrEmpty(s))
-                return OperationType.List;
-            return (OperationType) Enum.Parse(typeof (OperationType), s, true);
         }
 
         public QueryType GetQueryType(string s) {
@@ -118,8 +112,10 @@ namespace NHWebConsole {
             return ExecQueryByType(q, model);
         }
 
+        private static readonly Regex updateRx = new Regex(@"\s*(insert|update|delete)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
         public ICollection<ICollection<KeyValuePair<string, string>>> ExecQueryByType(IQuery q, ViewModel model) {
-            if (model.OperationType == OperationType.List)
+            if (!updateRx.IsMatch(model.Query))
                 return ConvertResults(q.List());
             var count = q.ExecuteUpdate();
             return new List<ICollection<KeyValuePair<string, string>>> {
