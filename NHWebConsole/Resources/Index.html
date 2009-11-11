@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<title>NHibernate console</title>
-		<style>
+		<style type="text/css">
 		    ul {
 		        list-style-type: none;
 		        padding: 0px;
@@ -24,14 +24,21 @@
 	<body>
 	    <form method="get" action="$model.Url">
 	        <textarea name="q" cols="80" rows="10">#if ($model.Query)$model.Query#end</textarea><br />
-	        Max results: <input type="text" name="MaxResults" value="#if ($model.MaxResults)$model.MaxResults#end" size="2" /><br />
-	        First result: <input type="text" name="FirstResult" value="#if ($model.FirstResult)$model.FirstResult#end" size="2" /><br />
+	        Max results: <input type="text" name="MaxResults" value="#if ($model.MaxResults) $model.MaxResults #else 10 #end" size="2" /><br />
+	        First result: <input type="text" name="FirstResult" value="#if ($model.FirstResult) $model.FirstResult #end" size="2" /><br />
 	        <select name="type">
 	            <option value="HQL" #if ($model.QueryType.ToString() == "HQL") selected="selected" #end>HQL</option>
 	            <option value="SQL" #if ($model.QueryType.ToString() == "SQL") selected="selected" #end>SQL</option>
 	        </select>
-	        <input type="submit" value="Run HQL" />
+	        <input type="submit" name="op" value="List" id="list" />
+	        <input type="submit" name="op" value="Update" id="update" />
 	    </form>
+	    <script type="text/javascript">
+	        document.getElementById('update').onclick = function() {
+	            this.form.method = "post";
+	            return true;
+	        }
+	    </script>
 	    
 	    #if ($model.Error)
 	    <pre class="error">$model.Error</pre>

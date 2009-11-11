@@ -17,7 +17,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Web;
 using NHibernate;
@@ -45,13 +44,14 @@ namespace NHWebConsole {
         public override object Execute(HttpContext context) {
             rawUrl = context.Request.RawUrl;
             var model = new ViewModel {
-                Url = rawUrl,
+                Url = rawUrl.Split('?')[0],
             };
             try {
                 model.MaxResults = TryParse(context.Request["MaxResults"]);
                 model.FirstResult = TryParse(context.Request["FirstResult"]);
                 model.Query = context.Request["q"];
                 model.QueryType = GetQueryType(context.Request["type"]);
+                model.OperationType = GetOperationType(context.Request["op"]);
                 model.Results = ExecQuery(model);
                 model.NextPageUrl = BuildNextPageUrl(model);
                 model.PrevPageUrl = BuildPrevPageUrl(model);
@@ -59,6 +59,12 @@ namespace NHWebConsole {
                 model.Error = e.ToString();
             }
             return model;
+        }
+
+        public OperationType GetOperationType(string s) {
+            if (string.IsNullOrEmpty(s))
+                return OperationType.List;
+            return (OperationType) Enum.Parse(typeof (OperationType), s, true);
         }
 
         public QueryType GetQueryType(string s) {
@@ -85,8 +91,10 @@ namespace NHWebConsole {
         }
 
         public int? TryParse(string s) {
+            if (string.IsNullOrEmpty(s))
+                return null;
             int r;
-            if (int.TryParse(s, out r))
+            if (int.TryParse(s.Trim(), out r))
                 return r;
             return null;
         }
@@ -107,16 +115,18 @@ namespace NHWebConsole {
                 q.SetMaxResults(model.MaxResults.Value);
             if (model.FirstResult.HasValue)
                 q.SetFirstResult(model.FirstResult.Value);
-            if (q is ISQLQuery) {
-                var count = q.ExecuteUpdate();
-                return new List<ICollection<KeyValuePair<string, string>>> {
-                    new Dictionary<string, string> {
-                        {"count", count.ToString()},
-                    },
-                };
-            }
-            var results = q.List();
-            return ConvertResults(results);
+            return ExecQueryByType(q, model);
+        }
+
+        public ICollection<ICollection<KeyValuePair<string, string>>> ExecQueryByType(IQuery q, ViewModel model) {
+            if (model.OperationType == OperationType.List)
+                return ConvertResults(q.List());
+            var count = q.ExecuteUpdate();
+            return new List<ICollection<KeyValuePair<string, string>>> {
+                new Dictionary<string, string> {
+                    {"count", count.ToString()},
+                },
+            };
         }
 
         public KeyValuePair<K, V> KV<K, V>(K key, V value) {
@@ -153,12 +163,12 @@ namespace NHWebConsole {
             if (fkp == null)
                 return null;
             var hql = string.Format("from {0} x where x.{1} = {2}", ct.Name, fkp.Name, fkValue);
-            return string.Format("<a href='{0}?hql={1}'>collection</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql));
+            return string.Format("<a href='{0}?q={1}'>collection</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql));
         }
 
         public string BuildEntityLink(Type entityType, object pkValue) {
             var hql = string.Format("from {0} x where x.{1} = {2}", entityType.Name, GetPkGetter(entityType).PropertyName, pkValue);
-            return string.Format("<a href='{0}?hql={1}'>{2}#{3}</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql), entityType.Name, pkValue);
+            return string.Format("<a href='{0}?q={1}'>{2}#{3}</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql), entityType.Name, pkValue);
         }
 
         public IGetter GetPkGetter(Type entityType) {
