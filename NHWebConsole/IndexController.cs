@@ -50,7 +50,8 @@ namespace NHWebConsole {
             try {
                 model.MaxResults = TryParse(context.Request["MaxResults"]);
                 model.FirstResult = TryParse(context.Request["FirstResult"]);
-                model.Hql = context.Request["hql"];
+                model.Query = context.Request["q"];
+                model.QueryType = GetQueryType(context.Request["type"]);
                 model.Results = ExecQuery(model);
                 model.NextPageUrl = BuildNextPageUrl(model);
                 model.PrevPageUrl = BuildPrevPageUrl(model);
@@ -58,6 +59,12 @@ namespace NHWebConsole {
                 model.Error = e.ToString();
             }
             return model;
+        }
+
+        public QueryType GetQueryType(string s) {
+            if (string.IsNullOrEmpty(s))
+                return QueryType.HQL;
+            return (QueryType) Enum.Parse(typeof (QueryType), s, true);
         }
 
         public string BuildPrevPageUrl(ViewModel model) {
@@ -84,16 +91,30 @@ namespace NHWebConsole {
             return null;
         }
 
+        public IQuery CreateQuery(ViewModel model) {
+            if (model.QueryType == QueryType.HQL)
+                return Session.CreateQuery(model.Query);
+            return Session.CreateSQLQuery(model.Query);
+        }
+
         public ICollection<ICollection<KeyValuePair<string, string>>> ExecQuery(ViewModel model) {
             if (cfg == null)
                 throw new ApplicationException("NHibernate configuration not supplied");
-            if (string.IsNullOrEmpty(model.Hql))
+            if (string.IsNullOrEmpty(model.Query))
                 return null;
-            var q = Session.CreateQuery(model.Hql);
+            var q = CreateQuery(model);
             if (model.MaxResults.HasValue)
                 q.SetMaxResults(model.MaxResults.Value);
             if (model.FirstResult.HasValue)
                 q.SetFirstResult(model.FirstResult.Value);
+            if (q is ISQLQuery) {
+                var count = q.ExecuteUpdate();
+                return new List<ICollection<KeyValuePair<string, string>>> {
+                    new Dictionary<string, string> {
+                        {"count", count.ToString()},
+                    },
+                };
+            }
             var results = q.List();
             return ConvertResults(results);
         }

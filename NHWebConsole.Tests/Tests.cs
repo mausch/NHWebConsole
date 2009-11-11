@@ -87,7 +87,7 @@ namespace NHWebConsole.Tests {
                     RawUrl = "/pepe.aspx",
                 };
                 var results = c.ExecQuery(new ViewModel {
-                    Hql = "from System.Object",
+                    Query = "from System.Object",
                 });
                 Assert.IsNotNull(results);
                 Assert.Greater(results.Count, 0);
