@@ -192,7 +192,7 @@ namespace NHWebConsole {
                 var pk = GetPkValue(mapping.MappedClass, o1);
                 return KV(p.Name, BuildEntityLink(getter.ReturnType, pk));
             }
-            return KV(p.Name, Convert.ToString(value));
+            return KV(p.Name, HttpUtility.HtmlEncode(Convert.ToString(value)));
         }
 
         public ICollection<ICollection<KeyValuePair<string, string>>> ConvertResults(IList results) {
