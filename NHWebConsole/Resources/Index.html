@@ -19,13 +19,21 @@
 		    .error {
 		        color: Red;
 		    }
+			
+			li.odd {
+				background-color: #eeeeee;
+			}
+			
+			li.even {
+				background-color: #ffffff;
+			}
 		</style>
 	</head>
 	<body>
 	    <form method="get" action="$model.Url">
 	        <textarea name="q" cols="80" rows="10">#if ($model.Query)$model.Query#end</textarea><br />
-	        Max results: <input type="text" name="MaxResults" value="#if ($model.MaxResults) $model.MaxResults #else 10 #end" size="2" /><br />
-	        First result: <input type="text" name="FirstResult" value="#if ($model.FirstResult) $model.FirstResult #end" size="2" /><br />
+	        Max results: <input type="text" name="MaxResults" value="#if ($model.MaxResults)$model.MaxResults#end" size="2" /><br />
+	        First result: <input type="text" name="FirstResult" value="#if ($model.FirstResult)$model.FirstResult#end" size="2" /><br />
 	        <select name="type">
 	            <option value="HQL" #if ($model.QueryType.ToString() == "HQL") selected="selected" #end>HQL</option>
 	            <option value="SQL" #if ($model.QueryType.ToString() == "SQL") selected="selected" #end>SQL</option>
@@ -34,10 +42,10 @@
 	    </form>
 	    <script type="text/javascript">
 	        document.forms[0].onsubmit = function() {
-	            var q = document.getElementsByName('q').value;
-	            if (/ *(insert|update|delete)/i.test(q))
+	            var q = document.getElementsByName('q')[0].value;
+	            if (/ *(insert|update|delete)/i.test(q) && this.method == 'get') {
 	                this.method = 'post';
-	            return true;
+				}
 	        }
 	    </script>
 	    
@@ -49,7 +57,14 @@
 	    $model.Results.Count results<br />
 	    <ul>
 	        #foreach ($r in $model.Results)
-	            <li><ul>
+			#before
+	            <li 
+			#odd
+					class="odd"
+			#even
+					class="even"
+			#each
+				><ul>
 	            #foreach ($v in $r)
 	                <li>
 	                    <b>$v.Key</b>: 
