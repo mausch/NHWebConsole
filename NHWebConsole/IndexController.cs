@@ -30,6 +30,7 @@ using NHibernate.Type;
 
 namespace NHWebConsole {
     public class IndexController : NHController {
+        private const int maxLen = 100;
         private string rawUrl;
         private Configuration cfg = NHWebConsoleSetup.Configuration();
 
@@ -47,14 +48,14 @@ namespace NHWebConsole {
             rawUrl = context.Request.RawUrl;
             var model = new ViewModel {
                 Url = rawUrl.Split('?')[0],
+                LimitLength = string.IsNullOrEmpty(context.Request.QueryString["limitLength"]),
             };
-            var limitLength = string.IsNullOrEmpty(context.Request.QueryString["limitLength"]);
             try {
                 model.MaxResults = TryParse(context.Request["MaxResults"]);
                 model.FirstResult = TryParse(context.Request["FirstResult"]);
                 model.Query = context.Request["q"];
                 model.QueryType = GetQueryType(context.Request["type"]);
-                model.Results = ExecQuery(model, limitLength);
+                model.Results = ExecQuery(model);
                 model.NextPageUrl = BuildNextPageUrl(model);
                 model.PrevPageUrl = BuildPrevPageUrl(model);
             } catch (HibernateException e) {
@@ -101,7 +102,7 @@ namespace NHWebConsole {
             return Session.CreateSQLQuery(model.Query);
         }
 
-        public ICollection<ICollection<KeyValuePair<string, string>>> ExecQuery(ViewModel model, bool limitLength) {
+        public ICollection<ICollection<KeyValuePair<string, string>>> ExecQuery(ViewModel model) {
             if (cfg == null)
                 throw new ApplicationException("NHibernate configuration not supplied");
             if (string.IsNullOrEmpty(model.Query))
@@ -111,14 +112,14 @@ namespace NHWebConsole {
                 q.SetMaxResults(model.MaxResults.Value);
             if (model.FirstResult.HasValue)
                 q.SetFirstResult(model.FirstResult.Value);
-            return ExecQueryByType(q, model, limitLength);
+            return ExecQueryByType(q, model);
         }
 
         private static readonly Regex updateRx = new Regex(@"\s*(insert|update|delete)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-        public ICollection<ICollection<KeyValuePair<string, string>>> ExecQueryByType(IQuery q, ViewModel model, bool limitLength) {
+        public ICollection<ICollection<KeyValuePair<string, string>>> ExecQueryByType(IQuery q, ViewModel model) {
             if (!updateRx.IsMatch(model.Query))
-                return ConvertResults(q.List(), limitLength);
+                return ConvertResults(q.List(), model.LimitLength);
             var count = q.ExecuteUpdate();
             return new List<ICollection<KeyValuePair<string, string>>> {
                 new Dictionary<string, string> {
@@ -160,12 +161,12 @@ namespace NHWebConsole {
                 .FirstOrDefault(p => p.Type.IsAssociationType && p.GetGetter(ct).ReturnType == fk);
             if (fkp == null)
                 return null;
-            var hql = string.Format("from {0} x where x.{1} = {2}", ct.Name, fkp.Name, fkValue);
+            var hql = string.Format("from {0} x where x.{1} = '{2}'", ct.Name, fkp.Name, fkValue);
             return string.Format("<a href='{0}?q={1}&MaxResults=10'>collection</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql));
         }
 
         public string BuildEntityLink(Type entityType, object pkValue) {
-            var hql = string.Format("from {0} x where x.{1} = {2}", entityType.Name, GetPkGetter(entityType).PropertyName, pkValue);
+            var hql = string.Format("from {0} x where x.{1} = '{2}'", entityType.Name, GetPkGetter(entityType).PropertyName, pkValue);
             return string.Format("<a href='{0}?q={1}'>{2}#{3}</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql), entityType.Name, pkValue);
         }
 
@@ -199,12 +200,11 @@ namespace NHWebConsole {
                 var pk = GetPkValue(mapping.MappedClass, o1);
                 return KV(p.Name, BuildEntityLink(getter.ReturnType, pk));
             }
-            const int maxLen = 100;
             var valueAsString = Convert.ToString(value);
             if (limitLength && valueAsString.Length > maxLen) {
                 var sb = new StringBuilder();
                 sb.Append(HttpUtility.HtmlEncode(valueAsString.Substring(0, maxLen)));
-                var query = string.Format("select {0} from {1} x where x.{2} = {3}", p.Name, entityType.Name, GetPkGetter(entityType).PropertyName, GetPkValue(entityType, o));
+                var query = string.Format("select {0} from {1} x where x.{2} = '{3}'", p.Name, entityType.Name, GetPkGetter(entityType).PropertyName, GetPkValue(entityType, o));
                 sb.AppendFormat("<a href='{0}?q={1}&limitLength=0'>...</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(query));
                 valueAsString = sb.ToString();
             } else {
