@@ -59,6 +59,8 @@ namespace NHWebConsole {
                 Url = rawUrl.Split('?')[0],
                 LimitLength = string.IsNullOrEmpty(context.Request.QueryString["limitLength"]),
                 Raw = !string.IsNullOrEmpty(context.Request.QueryString["raw"]),
+                ImageFields = (context.Request.QueryString["image"] ?? "").Split(','),
+                ContentType = context.Request.QueryString["contentType"],
             };
             try {
                 model.MaxResults = TryParse(context.Request["MaxResults"]);
@@ -72,7 +74,7 @@ namespace NHWebConsole {
                 model.Error = e.ToString();
             }
             if (model.Raw)
-                return new RawResult(model.RawResult);
+                return new RawResult(model.RawResult) {ContentType = model.ContentType};
             return new ViewResult(model, ViewName);
         }
 
@@ -218,7 +220,11 @@ namespace NHWebConsole {
                 return KV(p.Name, BuildEntityLink(getter.ReturnType, pk));
             }
             var valueAsString = Convert.ToString(value);
-            if (model.LimitLength && valueAsString.Length > maxLen) {
+            if (model.ImageFields.Contains(p.Name)) {
+                var query = QueryScalar(p, entityType, o);
+                var imgUrl = string.Format("{0}?raw=1&q={1}", rawUrl.Split('?')[0], HttpUtility.UrlEncode(query));
+                valueAsString = string.Format("<img src=\"{0}\"/>", imgUrl);
+            } else if (model.LimitLength && valueAsString.Length > maxLen) {
                 var sb = new StringBuilder();
                 sb.Append(HttpUtility.HtmlEncode(valueAsString.Substring(0, maxLen)));
                 var query = QueryScalar(p, entityType, o);
@@ -226,6 +232,19 @@ namespace NHWebConsole {
                 valueAsString = sb.ToString();
             } else {
                 valueAsString = HttpUtility.HtmlEncode(valueAsString);
+            }
+            if (p.Type == NHibernateUtil.BinaryBlob || p.Type == NHibernateUtil.Binary) {
+                var urlParts = rawUrl.Split('?');
+                IDictionary<string, string> qs = new Dictionary<string, string>();
+                if (urlParts.Length > 1)
+                    qs = UrlHelper.ParseQueryString(urlParts[1]);
+                if (!qs.ContainsKey("image") || !qs["image"].Contains(p.Name)) {
+                    if (qs.ContainsKey("image"))
+                        qs["image"] += "," + p.Name;
+                    else
+                        qs["image"] = p.Name;
+                    valueAsString += string.Format("<a href=\"{0}?{1}\">(as image)</a>", urlParts[0], UrlHelper.DictToQuerystring(qs));
+                }
             }
             return KV(p.Name, valueAsString);
         }

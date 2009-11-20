@@ -30,6 +30,8 @@ namespace NHWebConsole {
         public bool LimitLength { get; set; }
         public object RawResult { get; set; }
         public bool Raw { get; set; }
+        public string[] ImageFields { get; set; }
+        public string ContentType { get; set; }
     }
 
     public enum OperationType {

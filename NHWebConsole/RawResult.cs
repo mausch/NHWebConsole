@@ -20,6 +20,7 @@ using System.Web;
 namespace NHWebConsole {
     public class RawResult : IResult {
         private readonly object obj;
+        public string ContentType { get; set; }
 
         public RawResult(object obj) {
             this.obj = obj;
@@ -28,6 +29,8 @@ namespace NHWebConsole {
         public void Execute(HttpContext context) {
             if (obj == null)
                 return;
+            if (ContentType != null)
+                context.Response.ContentType = ContentType;
             if (obj is byte[]) {
                 var bytes = obj as byte[];
                 context.Response.OutputStream.Write(bytes, 0, bytes.Length);
