@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using NHibernate;
@@ -47,12 +48,13 @@ namespace NHWebConsole {
             var model = new ViewModel {
                 Url = rawUrl.Split('?')[0],
             };
+            var limitLength = string.IsNullOrEmpty(context.Request.QueryString["limitLength"]);
             try {
                 model.MaxResults = TryParse(context.Request["MaxResults"]);
                 model.FirstResult = TryParse(context.Request["FirstResult"]);
                 model.Query = context.Request["q"];
                 model.QueryType = GetQueryType(context.Request["type"]);
-                model.Results = ExecQuery(model);
+                model.Results = ExecQuery(model, limitLength);
                 model.NextPageUrl = BuildNextPageUrl(model);
                 model.PrevPageUrl = BuildPrevPageUrl(model);
             } catch (HibernateException e) {
@@ -99,7 +101,7 @@ namespace NHWebConsole {
             return Session.CreateSQLQuery(model.Query);
         }
 
-        public ICollection<ICollection<KeyValuePair<string, string>>> ExecQuery(ViewModel model) {
+        public ICollection<ICollection<KeyValuePair<string, string>>> ExecQuery(ViewModel model, bool limitLength) {
             if (cfg == null)
                 throw new ApplicationException("NHibernate configuration not supplied");
             if (string.IsNullOrEmpty(model.Query))
@@ -109,14 +111,14 @@ namespace NHWebConsole {
                 q.SetMaxResults(model.MaxResults.Value);
             if (model.FirstResult.HasValue)
                 q.SetFirstResult(model.FirstResult.Value);
-            return ExecQueryByType(q, model);
+            return ExecQueryByType(q, model, limitLength);
         }
 
         private static readonly Regex updateRx = new Regex(@"\s*(insert|update|delete)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-        public ICollection<ICollection<KeyValuePair<string, string>>> ExecQueryByType(IQuery q, ViewModel model) {
+        public ICollection<ICollection<KeyValuePair<string, string>>> ExecQueryByType(IQuery q, ViewModel model, bool limitLength) {
             if (!updateRx.IsMatch(model.Query))
-                return ConvertResults(q.List());
+                return ConvertResults(q.List(), limitLength);
             var count = q.ExecuteUpdate();
             return new List<ICollection<KeyValuePair<string, string>>> {
                 new Dictionary<string, string> {
@@ -129,27 +131,27 @@ namespace NHWebConsole {
             return new KeyValuePair<K, V>(key, value);
         }
 
-        public ICollection<KeyValuePair<string, string>> ConvertResult(object o) {
+        public ICollection<KeyValuePair<string, string>> ConvertResult(object o, bool limitLength) {
             var r = new List<KeyValuePair<string, string>>();
             var trueType = NHibernateProxyHelper.GetClassWithoutInitializingProxy(o);
             var mapping = cfg.GetClassMapping(trueType);
             r.Add(KV("Type", BuildTypeLink(trueType)));
             if (mapping == null) {
                 if (o is object[]) {
-                    r.AddRange(ConvertObjectArray((object[])o));
+                    r.AddRange(ConvertObjectArray((object[])o, limitLength));
                 } else {
                     r.Add(KV("Value", Convert.ToString(o)));
                 }
             } else {
                 r.Add(KV(mapping.IdentifierProperty.Name, Convert.ToString(mapping.IdentifierProperty.GetGetter(trueType).Get(o))));
                 r.AddRange(mapping.PropertyIterator
-                               .Select(p => ConvertProperty(o, trueType, p)));
+                               .Select(p => ConvertProperty(o, trueType, p, limitLength)));
             }
             return r;
         }
 
-        public IEnumerable<KeyValuePair<string, string>> ConvertObjectArray(object[] o) {
-            return o.SelectMany((x, i) => ConvertResult(x)
+        public IEnumerable<KeyValuePair<string, string>> ConvertObjectArray(object[] o, bool limitLength) {
+            return o.SelectMany((x, i) => ConvertResult(x, limitLength)
                 .Select(k => KV(string.Format("{0}[{1}]", k.Key, i), k.Value)));
         }
 
@@ -180,7 +182,7 @@ namespace NHWebConsole {
             return GetPkGetter(entityType).Get(o);
         }
 
-        public KeyValuePair<string, string> ConvertProperty(object o, Type entityType, Property p) {
+        public KeyValuePair<string, string> ConvertProperty(object o, Type entityType, Property p, bool limitLength) {
             var getter = p.GetGetter(entityType);
             var value = getter.Get(o);
             if (p.Type.IsCollectionType) {
@@ -197,11 +199,22 @@ namespace NHWebConsole {
                 var pk = GetPkValue(mapping.MappedClass, o1);
                 return KV(p.Name, BuildEntityLink(getter.ReturnType, pk));
             }
-            return KV(p.Name, HttpUtility.HtmlEncode(Convert.ToString(value)));
+            const int maxLen = 100;
+            var valueAsString = Convert.ToString(value);
+            if (limitLength && valueAsString.Length > maxLen) {
+                var sb = new StringBuilder();
+                sb.Append(HttpUtility.HtmlEncode(valueAsString.Substring(0, maxLen)));
+                var query = string.Format("select {0} from {1} x where x.{2} = {3}", p.Name, entityType.Name, GetPkGetter(entityType).PropertyName, GetPkValue(entityType, o));
+                sb.AppendFormat("<a href='{0}?q={1}&limitLength=0'>...</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(query));
+                valueAsString = sb.ToString();
+            } else {
+                valueAsString = HttpUtility.HtmlEncode(valueAsString);
+            }
+            return KV(p.Name, valueAsString);
         }
 
-        public ICollection<ICollection<KeyValuePair<string, string>>> ConvertResults(IList results) {
-            return results.Cast<object>().Select(x => ConvertResult(x)).ToList();
+        public ICollection<ICollection<KeyValuePair<string, string>>> ConvertResults(IList results, bool limitLength) {
+            return results.Cast<object>().Select(x => ConvertResult(x, limitLength)).ToList();
         }
     }
 }

@@ -88,7 +88,7 @@ namespace NHWebConsole.Tests {
                 };
                 var results = c.ExecQuery(new ViewModel {
                     Query = "from System.Object",
-                });
+                }, true);
                 Assert.IsNotNull(results);
                 Assert.Greater(results.Count, 0);
                 foreach (var r in results)
