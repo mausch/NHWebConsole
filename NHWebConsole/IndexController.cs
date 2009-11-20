@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -57,18 +58,21 @@ namespace NHWebConsole {
             var model = new ViewModel {
                 Url = rawUrl.Split('?')[0],
                 LimitLength = string.IsNullOrEmpty(context.Request.QueryString["limitLength"]),
+                Raw = !string.IsNullOrEmpty(context.Request.QueryString["raw"]),
             };
             try {
                 model.MaxResults = TryParse(context.Request["MaxResults"]);
                 model.FirstResult = TryParse(context.Request["FirstResult"]);
                 model.Query = context.Request["q"];
                 model.QueryType = GetQueryType(context.Request["type"]);
-                model.Results = ExecQuery(model);
+                ExecQuery(model);
                 model.NextPageUrl = BuildNextPageUrl(model);
                 model.PrevPageUrl = BuildPrevPageUrl(model);
             } catch (HibernateException e) {
                 model.Error = e.ToString();
             }
+            if (model.Raw)
+                return new RawResult(model.RawResult);
             return new ViewResult(model, ViewName);
         }
 
@@ -110,30 +114,35 @@ namespace NHWebConsole {
             return Session.CreateSQLQuery(model.Query);
         }
 
-        public ICollection<ICollection<KeyValuePair<string, string>>> ExecQuery(ViewModel model) {
+        public void ExecQuery(ViewModel model) {
             if (cfg == null)
                 throw new ApplicationException("NHibernate configuration not supplied");
             if (string.IsNullOrEmpty(model.Query))
-                return null;
+                return;
             var q = CreateQuery(model);
             if (model.MaxResults.HasValue)
                 q.SetMaxResults(model.MaxResults.Value);
             if (model.FirstResult.HasValue)
                 q.SetFirstResult(model.FirstResult.Value);
-            return ExecQueryByType(q, model);
+            ExecQueryByType(q, model);
         }
 
         private static readonly Regex updateRx = new Regex(@"\s*(insert|update|delete)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-        public ICollection<ICollection<KeyValuePair<string, string>>> ExecQueryByType(IQuery q, ViewModel model) {
-            if (!updateRx.IsMatch(model.Query))
-                return ConvertResults(q.List(), model.LimitLength);
-            var count = q.ExecuteUpdate();
-            return new List<ICollection<KeyValuePair<string, string>>> {
-                new Dictionary<string, string> {
-                    {"count", count.ToString()},
-                },
-            };
+        public void ExecQueryByType(IQuery q, ViewModel model) {
+            if (!updateRx.IsMatch(model.Query)) {
+                if (model.Raw)
+                    model.RawResult = q.UniqueResult();
+                else
+                    model.Results = ConvertResults(q.List(), model.LimitLength);
+            } else {
+                var count = q.ExecuteUpdate();
+                model.Results = new List<ICollection<KeyValuePair<string, string>>> {
+                    new Dictionary<string, string> {
+                        {"count", count.ToString()},
+                    },
+                };                
+            }
         }
 
         public KeyValuePair<K, V> KV<K, V>(K key, V value) {
