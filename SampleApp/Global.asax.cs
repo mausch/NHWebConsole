@@ -15,6 +15,8 @@
 #endregion
 
 using System;
+using System.Drawing;
+using System.IO;
 using System.Web;
 using FluentNHibernate.Automapping;
 using FluentNHibernate.Cfg;
@@ -43,6 +45,9 @@ namespace SampleApp {
                 var customer = new Customer {
                     Name = "John Doe",
                     Title = "CEO",
+                    History = NLipsum.Core.LipsumGenerator.Generate(10),
+                    SomeHtml = NLipsum.Core.LipsumGenerator.GenerateHtml(10),
+                    Picture = File.ReadAllBytes(Server.MapPath("/maxi_yacht_sail9062928.jpg")),
                 };
                 session.Save(customer);
                 var employee = new Employee {
