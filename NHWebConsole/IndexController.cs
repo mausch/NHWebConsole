@@ -133,7 +133,7 @@ namespace NHWebConsole {
             var r = new List<KeyValuePair<string, string>>();
             var trueType = NHibernateProxyHelper.GetClassWithoutInitializingProxy(o);
             var mapping = cfg.GetClassMapping(trueType);
-            r.Add(KV("Type", trueType.Name));
+            r.Add(KV("Type", BuildTypeLink(trueType)));
             if (mapping == null) {
                 if (o is object[]) {
                     r.AddRange(ConvertObjectArray((object[])o));
@@ -159,12 +159,17 @@ namespace NHWebConsole {
             if (fkp == null)
                 return null;
             var hql = string.Format("from {0} x where x.{1} = {2}", ct.Name, fkp.Name, fkValue);
-            return string.Format("<a href='{0}?q={1}'>collection</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql));
+            return string.Format("<a href='{0}?q={1}&MaxResults=10'>collection</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql));
         }
 
         public string BuildEntityLink(Type entityType, object pkValue) {
             var hql = string.Format("from {0} x where x.{1} = {2}", entityType.Name, GetPkGetter(entityType).PropertyName, pkValue);
             return string.Format("<a href='{0}?q={1}'>{2}#{3}</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql), entityType.Name, pkValue);
+        }
+
+        public string BuildTypeLink(Type entityType) {
+            var hql = string.Format("from {0}", entityType.Name);
+            return string.Format("<a href='{0}?q={1}&MaxResults=10'>{2}</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql), entityType.Name);
         }
 
         public IGetter GetPkGetter(Type entityType) {
