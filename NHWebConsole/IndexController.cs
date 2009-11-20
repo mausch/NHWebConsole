@@ -78,7 +78,7 @@ namespace NHWebConsole {
         }
 
         public string BuildNextPageUrl(ViewModel model) {
-            if (!model.MaxResults.HasValue)
+            if (!model.MaxResults.HasValue || model.Results.Count < model.MaxResults)
                 return null;
             var first = model.FirstResult ?? 0;
             return UrlHelper.SetParameters(rawUrl, new Dictionary<string, object> {
