@@ -134,7 +134,7 @@ namespace NHWebConsole {
                 if (model.Raw)
                     model.RawResult = q.UniqueResult();
                 else
-                    model.Results = ConvertResults(q.List(), model.LimitLength);
+                    model.Results = ConvertResults(q.List(), model);
             } else {
                 var count = q.ExecuteUpdate();
                 model.Results = new List<ICollection<KeyValuePair<string, string>>> {
@@ -149,27 +149,27 @@ namespace NHWebConsole {
             return new KeyValuePair<K, V>(key, value);
         }
 
-        public ICollection<KeyValuePair<string, string>> ConvertResult(object o, bool limitLength) {
+        public ICollection<KeyValuePair<string, string>> ConvertResult(object o, ViewModel model) {
             var r = new List<KeyValuePair<string, string>>();
             var trueType = NHibernateProxyHelper.GetClassWithoutInitializingProxy(o);
             var mapping = cfg.GetClassMapping(trueType);
             r.Add(KV("Type", BuildTypeLink(trueType)));
             if (mapping == null) {
                 if (o is object[]) {
-                    r.AddRange(ConvertObjectArray((object[])o, limitLength));
+                    r.AddRange(ConvertObjectArray((object[])o, model));
                 } else {
                     r.Add(KV("Value", Convert.ToString(o)));
                 }
             } else {
                 r.Add(KV(mapping.IdentifierProperty.Name, Convert.ToString(mapping.IdentifierProperty.GetGetter(trueType).Get(o))));
                 r.AddRange(mapping.PropertyIterator
-                               .Select(p => ConvertProperty(o, trueType, p, limitLength)));
+                               .Select(p => ConvertProperty(o, trueType, p, model)));
             }
             return r;
         }
 
-        public IEnumerable<KeyValuePair<string, string>> ConvertObjectArray(object[] o, bool limitLength) {
-            return o.SelectMany((x, i) => ConvertResult(x, limitLength)
+        public IEnumerable<KeyValuePair<string, string>> ConvertObjectArray(object[] o, ViewModel model) {
+            return o.SelectMany((x, i) => ConvertResult(x, model)
                 .Select(k => KV(string.Format("{0}[{1}]", k.Key, i), k.Value)));
         }
 
@@ -200,7 +200,7 @@ namespace NHWebConsole {
             return GetPkGetter(entityType).Get(o);
         }
 
-        public KeyValuePair<string, string> ConvertProperty(object o, Type entityType, Property p, bool limitLength) {
+        public KeyValuePair<string, string> ConvertProperty(object o, Type entityType, Property p, ViewModel model) {
             var getter = p.GetGetter(entityType);
             var value = getter.Get(o);
             if (p.Type.IsCollectionType) {
@@ -218,10 +218,10 @@ namespace NHWebConsole {
                 return KV(p.Name, BuildEntityLink(getter.ReturnType, pk));
             }
             var valueAsString = Convert.ToString(value);
-            if (limitLength && valueAsString.Length > maxLen) {
+            if (model.LimitLength && valueAsString.Length > maxLen) {
                 var sb = new StringBuilder();
                 sb.Append(HttpUtility.HtmlEncode(valueAsString.Substring(0, maxLen)));
-                var query = string.Format("select {0} from {1} x where x.{2} = '{3}'", p.Name, entityType.Name, GetPkGetter(entityType).PropertyName, GetPkValue(entityType, o));
+                var query = QueryScalar(p, entityType, o);
                 sb.AppendFormat("<a href=\"{0}?q={1}&limitLength=0\">...</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(query));
                 valueAsString = sb.ToString();
             } else {
@@ -230,8 +230,12 @@ namespace NHWebConsole {
             return KV(p.Name, valueAsString);
         }
 
-        public ICollection<ICollection<KeyValuePair<string, string>>> ConvertResults(IList results, bool limitLength) {
-            return results.Cast<object>().Select(x => ConvertResult(x, limitLength)).ToList();
+        public string QueryScalar(Property p, Type entityType, object o) {
+            return string.Format("select {0} from {1} x where x.{2} = '{3}'", p.Name, entityType.Name, GetPkGetter(entityType).PropertyName, GetPkValue(entityType, o));
+        }
+
+        public ICollection<ICollection<KeyValuePair<string, string>>> ConvertResults(IList results, ViewModel model) {
+            return results.Cast<object>().Select(x => ConvertResult(x, model)).ToList();
         }
     }
 }
