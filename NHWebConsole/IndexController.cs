@@ -170,12 +170,12 @@ namespace NHWebConsole {
             if (fkp == null)
                 return null;
             var hql = string.Format("from {0} x where x.{1} = '{2}'", ct.Name, fkp.Name, fkValue);
-            return string.Format("<a href='{0}?q={1}&MaxResults=10'>collection</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql));
+            return string.Format("<a href=\"{0}?q={1}&MaxResults=10\">collection</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql));
         }
 
         public string BuildEntityLink(Type entityType, object pkValue) {
             var hql = string.Format("from {0} x where x.{1} = '{2}'", entityType.Name, GetPkGetter(entityType).PropertyName, pkValue);
-            return string.Format("<a href='{0}?q={1}'>{2}#{3}</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql), entityType.Name, pkValue);
+            return string.Format("<a href=\"{0}?q={1}\">{2}#{3}</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql), entityType.Name, pkValue);
         }
 
         public string BuildTypeLink(Type entityType) {
@@ -213,7 +213,7 @@ namespace NHWebConsole {
                 var sb = new StringBuilder();
                 sb.Append(HttpUtility.HtmlEncode(valueAsString.Substring(0, maxLen)));
                 var query = string.Format("select {0} from {1} x where x.{2} = '{3}'", p.Name, entityType.Name, GetPkGetter(entityType).PropertyName, GetPkValue(entityType, o));
-                sb.AppendFormat("<a href='{0}?q={1}&limitLength=0'>...</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(query));
+                sb.AppendFormat("<a href=\"{0}?q={1}&limitLength=0\">...</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(query));
                 valueAsString = sb.ToString();
             } else {
                 valueAsString = HttpUtility.HtmlEncode(valueAsString);
