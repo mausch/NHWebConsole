@@ -19,6 +19,9 @@ using System.Web;
 using NHibernate;
 
 namespace NHWebConsole {
+    /// <summary>
+    /// Handles NHibernate session
+    /// </summary>
     public abstract class NHController : Controller {
         public ISession Session { get; set;}
 

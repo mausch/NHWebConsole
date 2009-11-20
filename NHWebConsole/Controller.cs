@@ -30,6 +30,9 @@ using NVelocity.Runtime.Resource;
 using NVelocity.Runtime.Resource.Loader;
 
 namespace NHWebConsole {
+    /// <summary>
+    /// Handles template plumbing
+    /// </summary>
     public abstract class Controller : IController, IHttpHandler {
         public abstract object Execute(HttpContext context);
 

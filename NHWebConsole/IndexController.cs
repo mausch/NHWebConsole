@@ -29,6 +29,9 @@ using NHibernate.Proxy;
 using NHibernate.Type;
 
 namespace NHWebConsole {
+    /// <summary>
+    /// Entry-point
+    /// </summary>
     public class IndexController : NHController {
         private const int maxLen = 100;
         private string rawUrl;
@@ -44,6 +47,11 @@ namespace NHWebConsole {
             set { rawUrl = value; }
         }
 
+        /// <summary>
+        /// Request entry-point
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public override object Execute(HttpContext context) {
             rawUrl = context.Request.RawUrl;
             var model = new ViewModel {
