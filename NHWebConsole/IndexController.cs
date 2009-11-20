@@ -52,7 +52,7 @@ namespace NHWebConsole {
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public override object Execute(HttpContext context) {
+        public override IResult Execute(HttpContext context) {
             rawUrl = context.Request.RawUrl;
             var model = new ViewModel {
                 Url = rawUrl.Split('?')[0],
@@ -69,7 +69,7 @@ namespace NHWebConsole {
             } catch (HibernateException e) {
                 model.Error = e.ToString();
             }
-            return model;
+            return new ViewResult(model, ViewName);
         }
 
         public QueryType GetQueryType(string s) {
