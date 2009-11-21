@@ -16,23 +16,26 @@
 
 using System;
 using System.Web;
-using NHibernate;
 
 namespace NHWebConsole {
-    /// <summary>
-    /// Handles NHibernate session
-    /// </summary>
-    public abstract class NHController : Controller {
-        public ISession Session { get; set;}
+    public class RawResult : IResult {
+        private readonly object obj;
+        public string ContentType { get; set; }
 
-        public override void ProcessRequest(HttpContext context) {
-            Session = NHWebConsoleSetup.OpenSession();
-            try {
-                Session.FlushMode = FlushMode.Never;
-                base.ProcessRequest(context);                
-            } finally {
-                if (NHWebConsoleSetup.DisposeSession)
-                    Session.Dispose();
+        public RawResult(object obj) {
+            this.obj = obj;
+        }
+
+        public void Execute(HttpContext context) {
+            if (obj == null)
+                return;
+            if (ContentType != null)
+                context.Response.ContentType = ContentType;
+            if (obj is byte[]) {
+                var bytes = obj as byte[];
+                context.Response.OutputStream.Write(bytes, 0, bytes.Length);
+            } else {
+                context.Response.Write(obj);
             }
         }
     }

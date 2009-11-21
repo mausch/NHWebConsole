@@ -21,6 +21,9 @@ namespace SampleModel {
         public virtual int Id { get; set; }
         public virtual string Name { get; set; }
         public virtual string Title { get; set; }
+        public virtual string History { get; set; }
+        public virtual string SomeHtml { get; set; }
+        public virtual byte[] Picture { get; set; }
 
         public virtual IList<Order> Orders { get; set; }
     }

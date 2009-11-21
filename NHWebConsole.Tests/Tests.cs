@@ -86,12 +86,13 @@ namespace NHWebConsole.Tests {
                     Cfg = NHWebConsoleSetup.Configuration(),
                     RawUrl = "/pepe.aspx",
                 };
-                var results = c.ExecQuery(new ViewModel {
-                    Hql = "from System.Object",
-                });
-                Assert.IsNotNull(results);
-                Assert.Greater(results.Count, 0);
-                foreach (var r in results)
+                var model = new ViewModel {
+                    Query = "from System.Object",
+                };
+                c.ExecQuery(model);
+                Assert.IsNotNull(model.Results);
+                Assert.Greater(model.Results.Count, 0);
+                foreach (var r in model.Results)
                     foreach (var m in r)
                         Console.WriteLine("{0}: {1}", m.Key, m.Value);
             }

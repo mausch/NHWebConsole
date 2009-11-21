@@ -18,6 +18,6 @@ using System.Web;
 
 namespace NHWebConsole {
     public interface IController {
-        object Execute(HttpContext context);
+        IResult Execute(HttpContext context);
     }
 }
