@@ -71,6 +71,7 @@ namespace NHWebConsole {
                 model.NextPageUrl = BuildNextPageUrl(model);
                 model.PrevPageUrl = BuildPrevPageUrl(model);
                 model.AllEntities = GetAllEntities()
+                    .OrderBy(e => e)
                     .Select(e => KV(e, BuildEntityUrl(e)))
                     .ToList();
             } catch (HibernateException e) {
