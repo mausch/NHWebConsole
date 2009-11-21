@@ -172,7 +172,7 @@ namespace NHWebConsole {
                 }
             } else {
                 r.Add(KV(mapping.IdentifierProperty.Name, Convert.ToString(mapping.IdentifierProperty.GetGetter(trueType).Get(o))));
-                r.AddRange(mapping.PropertyIterator
+                r.AddRange(mapping.PropertyClosureIterator
                                .Select(p => ConvertProperty(o, trueType, p, model)));
             }
             return r;
@@ -184,7 +184,7 @@ namespace NHWebConsole {
         }
 
         public string BuildCollectionLink(Type ct, Type fk, object fkValue) {
-            var fkp = cfg.GetClassMapping(ct).PropertyIterator
+            var fkp = cfg.GetClassMapping(ct).PropertyClosureIterator
                 .FirstOrDefault(p => p.Type.IsAssociationType && p.GetGetter(ct).ReturnType == fk);
             if (fkp == null)
                 return null;
