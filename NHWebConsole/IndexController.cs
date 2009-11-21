@@ -138,12 +138,7 @@ namespace NHWebConsole {
                 else
                     model.Results = ConvertResults(q.List(), model);
             } else {
-                var count = q.ExecuteUpdate();
-                model.Results = new List<ICollection<KeyValuePair<string, string>>> {
-                    new Dictionary<string, string> {
-                        {"count", count.ToString()},
-                    },
-                };                
+                model.Error = "NHibernate 1.2 does not support DML";
             }
         }
 
