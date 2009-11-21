@@ -243,12 +243,14 @@ namespace NHWebConsole {
             }
             var getter = p.GetGetter(entityType);
             var value = getter.Get(o);
-            var valueAsString = Convert.ToString(value);
+            string valueAsString = null;
+            if (value != null)
+                valueAsString = Convert.ToString(value);
             if (model.ImageFields.Contains(p.Name)) {
                 var query = QueryScalar(p, entityType, o);
                 var imgUrl = string.Format("{0}?raw=1&q={1}", rawUrl.Split('?')[0], HttpUtility.UrlEncode(query));
                 valueAsString = string.Format("<img src=\"{0}\"/>", imgUrl);
-            } else if (model.LimitLength && valueAsString.Length > maxLen) {
+            } else if (model.LimitLength && value != null && valueAsString.Length > maxLen) {
                 var sb = new StringBuilder();
                 sb.Append(HttpUtility.HtmlEncode(valueAsString.Substring(0, maxLen)));
                 var query = QueryScalar(p, entityType, o);
