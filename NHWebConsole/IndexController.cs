@@ -167,7 +167,7 @@ namespace NHWebConsole {
                 }
             } else {
                 r.Add(KV(mapping.IdentifierProperty.Name, Convert.ToString(mapping.IdentifierProperty.GetGetter(trueType).Get(o))));
-                r.AddRange(mapping.PropertyCollection.Cast<Property>()
+                r.AddRange(mapping.PropertyClosureCollection.Cast<Property>()
                                .Select(p => ConvertProperty(o, trueType, p, model)));
             }
             return r;
@@ -179,7 +179,7 @@ namespace NHWebConsole {
         }
 
         public string BuildCollectionLink(Type ct, Type fk, object fkValue) {
-            var fkp = cfg.GetClassMapping(ct).PropertyCollection.Cast<Property>()
+            var fkp = cfg.GetClassMapping(ct).PropertyClosureCollection.Cast<Property>()
                 .FirstOrDefault(p => p.Type.IsAssociationType && p.GetGetter(ct).ReturnType == fk);
             if (fkp == null)
                 return null;
@@ -269,7 +269,7 @@ namespace NHWebConsole {
         }
 
         public string QueryScalar(Property p, Type entityType, object o) {
-            return string.Format("select {0} from {1} x where x.{2} = '{3}'", p.Name, entityType.Name, GetPkGetter(entityType).PropertyName, GetPkValue(entityType, o));
+            return string.Format("select x.{0} from {1} x where x.{2} = '{3}'", p.Name, entityType.Name, GetPkGetter(entityType).PropertyName, GetPkValue(entityType, o));
         }
 
         public ICollection<ICollection<KeyValuePair<string, string>>> ConvertResults(IList results, Context model) {

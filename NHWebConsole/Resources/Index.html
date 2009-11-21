@@ -1,4 +1,4 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 	<head>
 		<title>NHibernate console</title>
@@ -40,7 +40,7 @@
 	</head>
 	<body>
 	    <form method="get" action="$model.Url">
-	        <textarea name="q" cols="80" rows="10">#if ($model.Query)$model.Query#end</textarea>
+	        <textarea name="q" cols="80" rows="10" accesskey="q">#if ($model.Query)$model.Query#end</textarea>
 	        <div class="entitylist">
 	            #foreach ($e in $model.AllEntities)
 	                <a href="$e.Value">$e.Key</a><br />
@@ -53,7 +53,7 @@
 	            <option value="HQL" #if ($model.QueryType.ToString() == "HQL") selected="selected" #end>HQL</option>
 	            <option value="SQL" #if ($model.QueryType.ToString() == "SQL") selected="selected" #end>SQL</option>
 	        </select>
-	        <input type="submit" value="Run" />
+	        <input type="submit" value="Run" accesskey="x" />
 	    </form>
 	    <script type="text/javascript">
 	        document.forms[0].onsubmit = function() {
@@ -98,11 +98,11 @@
 	    <br style="clear:both" />
 	    
 	    #if ($model.PrevPageUrl)
-	    <a href="$model.PrevPageUrl">Prev page</a>
+	    <a href="$model.PrevPageUrl" accesskey=",">Prev page</a>
 	    #end
 	    
 	    #if ($model.NextPageUrl)
-	    <a href="$model.NextPageUrl">Next page</a>
+	    <a href="$model.NextPageUrl" accesskey=".">Next page</a>
 	    #end
 	</body>
 </html>
