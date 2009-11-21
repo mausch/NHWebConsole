@@ -48,7 +48,11 @@ namespace NHWebConsole {
         public static bool DisposeSession = true;
 
         static NHWebConsoleSetup() {
-            OpenSession = () => SessionFactory().OpenSession();
+            OpenSession = () => {
+                var session = SessionFactory().OpenSession();
+                session.FlushMode = FlushMode.Never;
+                return session;
+            };
 
             SessionFactory = () => {
                 throw new Exception("Define NHWebConsole.NHWebConsoleSetup.SessionFactory");
