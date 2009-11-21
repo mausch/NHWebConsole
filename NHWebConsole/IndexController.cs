@@ -70,12 +70,19 @@ namespace NHWebConsole {
                 ExecQuery(model);
                 model.NextPageUrl = BuildNextPageUrl(model);
                 model.PrevPageUrl = BuildPrevPageUrl(model);
+                model.AllEntities = GetAllEntities()
+                    .Select(e => KV(e, BuildEntityUrl(e)))
+                    .ToList();
             } catch (HibernateException e) {
                 model.Error = e.ToString();
             }
             if (model.Raw)
                 return new RawResult(model.RawResult) {ContentType = model.ContentType};
             return new ViewResult(model, ViewName);
+        }
+
+        public IEnumerable<string> GetAllEntities() {
+            return cfg.ClassMappings.Select(c => c.EntityName);
         }
 
         public QueryType GetQueryType(string s) {
@@ -172,7 +179,7 @@ namespace NHWebConsole {
 
         public IEnumerable<KeyValuePair<string, string>> ConvertObjectArray(object[] o, Context model) {
             return o.SelectMany((x, i) => ConvertResult(x, model)
-                .Select(k => KV(string.Format("{0}[{1}]", k.Key, i), k.Value)));
+                .Select(k => KV(HttpUtility.UrlEncode(string.Format("{0}[{1}]", k.Key, i)), k.Value)));
         }
 
         public string BuildCollectionLink(Type ct, Type fk, object fkValue) {
@@ -182,6 +189,10 @@ namespace NHWebConsole {
                 return null;
             var hql = string.Format("from {0} x where x.{1} = '{2}'", ct.Name, fkp.Name, fkValue);
             return string.Format("<a href=\"{0}?q={1}&MaxResults=10\">collection</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql));
+        }
+
+        public string BuildEntityUrl(string entityName) {
+            return string.Format("{0}?q=from+{1}&MaxResults=10", rawUrl.Split('?')[0], HttpUtility.UrlEncode(entityName));
         }
 
         public string BuildEntityLink(Type entityType, object pkValue) {

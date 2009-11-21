@@ -32,6 +32,7 @@ namespace NHWebConsole {
         public bool Raw { get; set; }
         public string[] ImageFields { get; set; }
         public string ContentType { get; set; }
+        public ICollection<KeyValuePair<string, string>> AllEntities { get; set; }
     }
 
     public enum OperationType {
