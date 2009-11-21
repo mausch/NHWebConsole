@@ -190,6 +190,8 @@ namespace NHWebConsole {
         }
 
         public string BuildTypeLink(Type entityType) {
+            if (cfg.GetClassMapping(entityType) == null)
+                return entityType.Name;
             var hql = string.Format("from {0}", entityType.Name);
             return string.Format("<a href='{0}?q={1}&MaxResults=10'>{2}</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql), entityType.Name);
         }
