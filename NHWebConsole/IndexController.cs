@@ -199,23 +199,33 @@ namespace NHWebConsole {
             return GetPkGetter(entityType).Get(o);
         }
 
-        public KeyValuePair<string, string> ConvertProperty(object o, Type entityType, Property p, ViewModel model) {
+        public KeyValuePair<string, string> ConvertCollection(object o, Type entityType, Property p) {
             var getter = p.GetGetter(entityType);
-            var value = getter.Get(o);
+            var fkType = getter.ReturnType.GetGenericArguments()[0];
+            var fk = GetPkValue(entityType, o);
+            return KV(p.Name, BuildCollectionLink(fkType, entityType, fk));
+        }
+
+        public KeyValuePair<string, string> ConvertEntity(object o, Type entityType, Property p) {
+            var assocType = (EntityType)p.Type;
+            var mapping = cfg.GetClassMapping(assocType.AssociatedClass);
+            var o1 = p.GetGetter(entityType).Get(o);
+            if (o1 == null)
+                return KV(p.Name, null as string);
+            var pk = GetPkValue(mapping.MappedClass, o1);
+            var getter = p.GetGetter(entityType);
+            return KV(p.Name, BuildEntityLink(getter.ReturnType, pk));
+        }
+
+        public KeyValuePair<string, string> ConvertProperty(object o, Type entityType, Property p, ViewModel model) {
             if (p.Type.IsCollectionType) {
-                var fkType = getter.ReturnType.GetGenericArguments()[0];
-                var fk = GetPkValue(entityType, o);
-                return KV(p.Name, BuildCollectionLink(fkType, entityType, fk));
+                return ConvertCollection(o, entityType, p);
             }
             if (p.Type.IsEntityType) {
-                var assocType = (EntityType) p.Type;
-                var mapping = cfg.GetClassMapping(assocType.AssociatedClass);
-                var o1 = p.GetGetter(entityType).Get(o);
-                if (o1 == null)
-                    return KV(p.Name, null as string);
-                var pk = GetPkValue(mapping.MappedClass, o1);
-                return KV(p.Name, BuildEntityLink(getter.ReturnType, pk));
+                return ConvertEntity(o, entityType, p);
             }
+            var getter = p.GetGetter(entityType);
+            var value = getter.Get(o);
             var valueAsString = Convert.ToString(value);
             if (model.ImageFields.Contains(p.Name)) {
                 var query = QueryScalar(p, entityType, o);
