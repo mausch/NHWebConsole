@@ -188,7 +188,7 @@ namespace NHWebConsole {
                 .FirstOrDefault(p => p.Type.IsAssociationType && p.GetGetter(ct).ReturnType == fk);
             if (fkp == null)
                 return null;
-            var hql = string.Format("from {0} x where x.{1} = '{2}'", ct.Name, fkp.Name, fkValue);
+            var hql = string.Format("from {0} x where x.{1} = '{2}'", cfg.GetClassMapping(ct).EntityName, fkp.Name, fkValue);
             return string.Format("<a href=\"{0}?q={1}&MaxResults=10\">collection</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql));
         }
 
@@ -197,14 +197,14 @@ namespace NHWebConsole {
         }
 
         public string BuildEntityLink(Type entityType, object pkValue) {
-            var hql = string.Format("from {0} x where x.{1} = '{2}'", entityType.Name, GetPkGetter(entityType).PropertyName, pkValue);
+            var hql = string.Format("from {0} x where x.{1} = '{2}'", cfg.GetClassMapping(entityType).EntityName, GetPkGetter(entityType).PropertyName, pkValue);
             return string.Format("<a href=\"{0}?q={1}\">{2}#{3}</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql), entityType.Name, pkValue);
         }
 
         public string BuildTypeLink(Type entityType) {
             if (cfg.GetClassMapping(entityType) == null)
                 return entityType.Name;
-            var hql = string.Format("from {0}", entityType.Name);
+            var hql = string.Format("from {0}", cfg.GetClassMapping(entityType).EntityName);
             return string.Format("<a href='{0}?q={1}&MaxResults=10'>{2}</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql), entityType.Name);
         }
 
