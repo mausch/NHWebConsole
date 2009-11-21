@@ -27,11 +27,25 @@
 			li.even {
 				background-color: #ffffff;
 			}
+			
+			textarea  {
+			    float: left;
+			}
+			
+			.entitylist {
+			    overflow-y: auto;
+			}
 		</style>
 	</head>
 	<body>
 	    <form method="get" action="$model.Url">
-	        <textarea name="q" cols="80" rows="10">#if ($model.Query)$model.Query#end</textarea><br />
+	        <textarea name="q" cols="80" rows="10">#if ($model.Query)$model.Query#end</textarea>
+	        <div class="entitylist">
+	            #foreach ($e in $model.AllEntities)
+	                <a href="$e.Value">$e.Key</a><br />
+	            #end
+	        </div>
+	        <br style="clear:both" />
 	        Max results: <input type="text" name="MaxResults" value="#if ($model.MaxResults)$model.MaxResults#end" size="2" /><br />
 	        First result: <input type="text" name="FirstResult" value="#if ($model.FirstResult)$model.FirstResult#end" size="2" /><br />
 	        <select name="type">
