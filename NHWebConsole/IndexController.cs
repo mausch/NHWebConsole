@@ -160,7 +160,7 @@ namespace NHWebConsole {
                 if (o is object[]) {
                     r.AddRange(ConvertObjectArray((object[])o, model));
                 } else {
-                    r.Add(KV("Value", Convert.ToString(o)));
+                    r.Add(KV("Value", HttpUtility.HtmlEncode(Convert.ToString(o))));
                 }
             } else {
                 r.Add(KV(mapping.IdentifierProperty.Name, Convert.ToString(mapping.IdentifierProperty.GetGetter(trueType).Get(o))));
