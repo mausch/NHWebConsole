@@ -86,7 +86,7 @@ namespace NHWebConsole.Tests {
                     Cfg = NHWebConsoleSetup.Configuration(),
                     RawUrl = "/pepe.aspx",
                 };
-                var model = new ViewModel {
+                var model = new Context {
                     Query = "from System.Object",
                 };
                 c.ExecQuery(model);
@@ -103,7 +103,7 @@ namespace NHWebConsole.Tests {
             var c = new IndexController {
                 RawUrl = "/pepe.aspx?hql=from+System.Object&",
             };
-            Console.WriteLine(c.BuildNextPageUrl(new ViewModel {
+            Console.WriteLine(c.BuildNextPageUrl(new Context {
                 MaxResults = 10,
             }));
         }

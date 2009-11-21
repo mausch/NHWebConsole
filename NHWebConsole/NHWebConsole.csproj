@@ -58,7 +58,7 @@
     <Compile Include="NHWebConsoleSetup.cs" />
     <Compile Include="RawResult.cs" />
     <Compile Include="UrlHelper.cs" />
-    <Compile Include="ViewModel.cs" />
+    <Compile Include="Context.cs" />
     <Compile Include="ViewResult.cs" />
   </ItemGroup>
   <ItemGroup>

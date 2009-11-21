@@ -55,7 +55,7 @@ namespace NHWebConsole {
         /// <returns></returns>
         public override IResult Execute(HttpContext context) {
             rawUrl = context.Request.RawUrl;
-            var model = new ViewModel {
+            var model = new Context {
                 Url = rawUrl.Split('?')[0],
                 LimitLength = string.IsNullOrEmpty(context.Request.QueryString["limitLength"]),
                 Raw = !string.IsNullOrEmpty(context.Request.QueryString["raw"]),
@@ -84,7 +84,7 @@ namespace NHWebConsole {
             return (QueryType) Enum.Parse(typeof (QueryType), s, true);
         }
 
-        public string BuildPrevPageUrl(ViewModel model) {
+        public string BuildPrevPageUrl(Context model) {
             if (!model.MaxResults.HasValue || !model.FirstResult.HasValue || model.FirstResult.Value <= 0)
                 return null;
             return UrlHelper.SetParameters(rawUrl, new Dictionary<string, object> {
@@ -92,7 +92,7 @@ namespace NHWebConsole {
             });
         }
 
-        public string BuildNextPageUrl(ViewModel model) {
+        public string BuildNextPageUrl(Context model) {
             if (!model.MaxResults.HasValue || model.Results.Count < model.MaxResults)
                 return null;
             var first = model.FirstResult ?? 0;
@@ -110,13 +110,13 @@ namespace NHWebConsole {
             return null;
         }
 
-        public IQuery CreateQuery(ViewModel model) {
+        public IQuery CreateQuery(Context model) {
             if (model.QueryType == QueryType.HQL)
                 return Session.CreateQuery(model.Query);
             return Session.CreateSQLQuery(model.Query);
         }
 
-        public void ExecQuery(ViewModel model) {
+        public void ExecQuery(Context model) {
             if (cfg == null)
                 throw new ApplicationException("NHibernate configuration not supplied");
             if (string.IsNullOrEmpty(model.Query))
@@ -131,7 +131,7 @@ namespace NHWebConsole {
 
         private static readonly Regex updateRx = new Regex(@"\s*(insert|update|delete)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-        public void ExecQueryByType(IQuery q, ViewModel model) {
+        public void ExecQueryByType(IQuery q, Context model) {
             if (!updateRx.IsMatch(model.Query)) {
                 if (model.Raw)
                     model.RawResult = q.UniqueResult();
@@ -151,7 +151,7 @@ namespace NHWebConsole {
             return new KeyValuePair<K, V>(key, value);
         }
 
-        public ICollection<KeyValuePair<string, string>> ConvertResult(object o, ViewModel model) {
+        public ICollection<KeyValuePair<string, string>> ConvertResult(object o, Context model) {
             var r = new List<KeyValuePair<string, string>>();
             var trueType = NHibernateProxyHelper.GetClassWithoutInitializingProxy(o);
             var mapping = cfg.GetClassMapping(trueType);
@@ -170,7 +170,7 @@ namespace NHWebConsole {
             return r;
         }
 
-        public IEnumerable<KeyValuePair<string, string>> ConvertObjectArray(object[] o, ViewModel model) {
+        public IEnumerable<KeyValuePair<string, string>> ConvertObjectArray(object[] o, Context model) {
             return o.SelectMany((x, i) => ConvertResult(x, model)
                 .Select(k => KV(string.Format("{0}[{1}]", k.Key, i), k.Value)));
         }
@@ -222,7 +222,7 @@ namespace NHWebConsole {
             return KV(p.Name, BuildEntityLink(getter.ReturnType, pk));
         }
 
-        public KeyValuePair<string, string> ConvertProperty(object o, Type entityType, Property p, ViewModel model) {
+        public KeyValuePair<string, string> ConvertProperty(object o, Type entityType, Property p, Context model) {
             if (p.Type.IsCollectionType) {
                 return ConvertCollection(o, entityType, p);
             }
@@ -265,7 +265,7 @@ namespace NHWebConsole {
             return string.Format("select {0} from {1} x where x.{2} = '{3}'", p.Name, entityType.Name, GetPkGetter(entityType).PropertyName, GetPkValue(entityType, o));
         }
 
-        public ICollection<ICollection<KeyValuePair<string, string>>> ConvertResults(IList results, ViewModel model) {
+        public ICollection<ICollection<KeyValuePair<string, string>>> ConvertResults(IList results, Context model) {
             return results.Cast<object>().Select(x => ConvertResult(x, model)).ToList();
         }
     }

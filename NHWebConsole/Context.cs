@@ -17,7 +17,7 @@
 using System.Collections.Generic;
 
 namespace NHWebConsole {
-    public class ViewModel {
+    public class Context {
         public string Url { get; set; }
         public string Query { get; set; }
         public QueryType QueryType { get; set; }
