@@ -30,6 +30,7 @@ namespace NHWebConsole {
     public class ViewResult : IResult {
         private readonly object model;
         private readonly string name;
+        public string ContentType { get; set; }
 
         public ViewResult(object model, string name) {
             this.model = model;
@@ -37,8 +38,11 @@ namespace NHWebConsole {
         }
 
         public void Execute(HttpContext context) {
+            if (ContentType != null)
+                context.Response.ContentType = ContentType;
             var vcontext = new VelocityContext();
             vcontext.Put("model", model);
+            vcontext.Put("helper", new NVHelper());
             using (var writer = new StringWriter()) {
                 TemplateEngine.GetTemplate(name).Merge(vcontext, writer);
                 context.Response.Write(writer.GetStringBuilder().ToString());

@@ -19,7 +19,7 @@ using System.Web;
 
 namespace NHWebConsole {
     /// <summary>
-    /// Handles template plumbing
+    /// Handles view plumbing
     /// </summary>
     public abstract class Controller : IController, IHttpHandler {
         public abstract IResult Execute(HttpContext context);
@@ -29,9 +29,15 @@ namespace NHWebConsole {
             result.Execute(context);
         }
 
+        public string GetEmbeddedViewName(string name) {
+            return string.Format("{0}.Resources.{1}.html", GetType().Assembly.FullName.Split(',')[0], name);
+        }
+
+        private string viewName;
+
         public virtual string ViewName {
-            get { return string.Format("{0}.Resources.{1}.html", GetType().Assembly.FullName.Split(',')[0], ControllerName); }
-            set {}
+            get { return viewName ?? GetEmbeddedViewName(ControllerName); }
+            set { viewName = value; }
         }
 
         public string ControllerName {

@@ -61,6 +61,7 @@ namespace NHWebConsole {
                 Raw = !string.IsNullOrEmpty(context.Request.QueryString["raw"]),
                 ImageFields = (context.Request.QueryString["image"] ?? "").Split(','),
                 ContentType = context.Request.QueryString["contentType"],
+                Output = context.Request.QueryString["output"],
             };
             try {
                 model.MaxResults = TryParse(context.Request["MaxResults"]);
@@ -74,12 +75,24 @@ namespace NHWebConsole {
                     .OrderBy(e => e)
                     .Select(e => KV(e, BuildEntityUrl(e)))
                     .ToList();
+                model.RssUrl = BuildRssUrl(model);
             } catch (HibernateException e) {
                 model.Error = e.ToString();
             }
             if (model.Raw)
                 return new RawResult(model.RawResult) {ContentType = model.ContentType};
-            return new ViewResult(model, ViewName);
+            if (model.Output != null)
+                ViewName = GetEmbeddedViewName(model.Output);
+            return new ViewResult(model, ViewName) { ContentType = model.ContentType };
+        }
+
+        public string BuildRssUrl(Context model) {
+            if (string.IsNullOrEmpty(model.Query) || updateRx.IsMatch(model.Query))
+                return null;
+            return UrlHelper.SetParameters(rawUrl, new Dictionary<string, object> {
+                {"contentType", "application/rss+xml"},
+                {"output", "RSS"},
+            });
         }
 
         public IEnumerable<string> GetAllEntities() {
