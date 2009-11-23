@@ -87,7 +87,7 @@ namespace NHWebConsole {
         }
 
         public string BuildRssUrl(Context model) {
-            if (string.IsNullOrEmpty(model.Query))
+            if (string.IsNullOrEmpty(model.Query) || updateRx.IsMatch(model.Query))
                 return null;
             return UrlHelper.SetParameters(rawUrl, new Dictionary<string, object> {
                 {"contentType", "application/rss+xml"},
