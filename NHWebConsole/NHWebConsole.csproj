@@ -54,6 +54,7 @@
     <Compile Include="IResult.cs" />
     <Compile Include="NHController.cs" />
     <Compile Include="NVDirectiveManager.cs" />
+    <Compile Include="NVHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NHWebConsoleSetup.cs" />
     <Compile Include="RawResult.cs" />
@@ -63,6 +64,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Index.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\RSS.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

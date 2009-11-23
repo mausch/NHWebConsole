@@ -37,6 +37,9 @@
 			    height: 10em;
 			}
 		</style>
+		#if ($model.RssUrl)
+		<link rel="alternate" type="application/rss+xml" title="RSS" href="$model.RssUrl"/>
+		#end
 	</head>
 	<body>
 	    <form method="get" action="$model.Url">

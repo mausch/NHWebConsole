@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<rss version="2.0">
+  <channel>
+    <title>$helper.XmlEncode($model.Query)</title>
+    <description>$helper.XmlEncode($model.Query)</description>
+    <link>$model.Url?q=$helper.XmlEncode($model.Query)#if ($model.MaxResults)&amp;MaxResults=$model.MaxResults#end#if ($model.FirstResult)&amp;FirstResult=$model.FirstResult#end</link>
+    <pubDate>$System.DateTime.Now</pubDate>
+    #foreach ($r in $model.Results)
+    <item>
+      <title>#$velocityCount</title>
+      <description>
+        &lt;ul&gt;
+        #foreach ($v in $r)
+          &lt;li&gt;
+            &lt;b&gt;$v.Key&lt;/b&gt;:
+            #if ($v.Value)
+            $helper.XmlEncode($v.Value)
+            #else
+            &lt;i&gt;NULL&lt;/i&gt;
+            #end
+          &lt;/li&gt;
+        #end
+        &lt;/ul&gt;
+      </description>
+    </item>
+    #end
+  </channel>
+</rss>

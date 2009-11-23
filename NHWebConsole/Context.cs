@@ -33,6 +33,8 @@ namespace NHWebConsole {
         public string[] ImageFields { get; set; }
         public string ContentType { get; set; }
         public ICollection<KeyValuePair<string, string>> AllEntities { get; set; }
+        public string Output { get; set; }
+        public string RssUrl { get; set; }
     }
 
     public enum OperationType {
