@@ -4,7 +4,7 @@
     <title>$helper.XmlEncode($model.Query)</title>
     <description>$helper.XmlEncode($model.Query)</description>
     <link>$model.Url?q=$helper.XmlEncode($model.Query)#if ($model.MaxResults)&amp;MaxResults=$model.MaxResults#end#if ($model.FirstResult)&amp;FirstResult=$model.FirstResult#end</link>
-    <pubDate>$System.DateTime.Now</pubDate>
+    <pubDate>$helper.Now.ToString("R")</pubDate>
     #foreach ($r in $model.Results)
     <item>
       <title>#$velocityCount</title>

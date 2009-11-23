@@ -14,12 +14,17 @@
 // limitations under the License.
 #endregion
 
+using System;
 using System.Security;
 
 namespace NHWebConsole {
     public class NVHelper {
         public string XmlEncode(string s) {
             return SecurityElement.Escape(s);
+        }
+
+        public DateTime Now() {
+            return DateTime.Now;
         }
     }
 }
