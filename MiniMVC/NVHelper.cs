@@ -17,7 +17,7 @@
 using System;
 using System.Security;
 
-namespace NHWebConsole {
+namespace MiniMVC {
     public class NVHelper {
         public string XmlEncode(string s) {
             return SecurityElement.Escape(s);

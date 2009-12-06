@@ -16,8 +16,8 @@
 
 using System.Web;
 
-namespace NHWebConsole {
-    public interface IController {
-        IResult Execute(HttpContext context);
+namespace MiniMVC {
+    public interface IResult {
+        void Execute(HttpContext context);
     }
 }

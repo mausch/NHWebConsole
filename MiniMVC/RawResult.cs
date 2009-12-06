@@ -17,7 +17,7 @@
 using System;
 using System.Web;
 
-namespace NHWebConsole {
+namespace MiniMVC {
     public class RawResult : IResult {
         private readonly object obj;
         public string ContentType { get; set; }

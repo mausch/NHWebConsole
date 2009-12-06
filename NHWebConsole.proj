@@ -7,6 +7,7 @@
 	<Target Name="Merge">
 		<ItemGroup>
     	<MergeAsm Include="$(MSBuildProjectDirectory)\NHWebConsole\bin\$(BuildConfig)\NHWebConsole.dll" />
+    	<MergeAsm Include="$(MSBuildProjectDirectory)\NHWebConsole\bin\$(BuildConfig)\MiniMVC.dll" />
     	<MergeAsm Include="$(MSBuildProjectDirectory)\NHWebConsole\bin\$(BuildConfig)\NVelocity.dll" />
 		</ItemGroup>
     <RemoveDir Directories="$(MergedOutputPath)"/>

@@ -26,7 +26,7 @@ using NVelocity.Runtime.Directive;
 using NVelocity.Runtime.Resource;
 using NVelocity.Runtime.Resource.Loader;
 
-namespace NHWebConsole {
+namespace MiniMVC {
     public class ViewResult : IResult {
         private readonly object model;
         private readonly string name;

@@ -17,7 +17,7 @@
 using System.Text.RegularExpressions;
 using System.Web;
 
-namespace NHWebConsole {
+namespace MiniMVC {
     /// <summary>
     /// Handles view plumbing
     /// </summary>

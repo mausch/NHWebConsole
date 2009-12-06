@@ -22,6 +22,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using MiniMVC;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Mapping;

@@ -16,6 +16,7 @@
 
 using System;
 using System.Web;
+using MiniMVC;
 using NHibernate;
 
 namespace NHWebConsole {
