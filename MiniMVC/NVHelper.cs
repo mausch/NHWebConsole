@@ -16,11 +16,16 @@
 
 using System;
 using System.Security;
+using System.Web;
 
 namespace MiniMVC {
     public class NVHelper {
         public string XmlEncode(string s) {
             return SecurityElement.Escape(s);
+        }
+
+        public string HtmlEncode(string s) {
+            return HttpUtility.HtmlEncode(s);
         }
 
         public DateTime Now() {
