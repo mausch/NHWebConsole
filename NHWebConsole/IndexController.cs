@@ -194,7 +194,7 @@ namespace NHWebConsole {
 
         public IEnumerable<KeyValuePair<string, string>> ConvertObjectArray(object[] o, Context model) {
             return o.SelectMany((x, i) => ConvertResult(x, model)
-                .Select(k => KV(HttpUtility.UrlEncode(string.Format("{0}[{1}]", k.Key, i)), k.Value)));
+                .Select(k => KV(string.Format("{0}[{1}]", HttpUtility.UrlEncode(k.Key), i), k.Value)));
         }
 
         public string BuildCollectionLink(Type ct, Type fk, object fkValue) {
