@@ -74,7 +74,7 @@
 	    #if ($model.Results)
 	    $model.Results.Count results<br />
 	    <ul>
-	        #foreach ($r in $model.Results)
+	        #foreach ($row in $model.Results)
 			#before
 	            <li 
 			#odd
@@ -83,7 +83,7 @@
 					class="even"
 			#each
 				><ul>
-	            #foreach ($v in $r)
+	            #foreach ($v in $row)
 	                <li>
 	                    <b>$v.Key</b>: 
 	                    #if ($v.Value) 
@@ -92,6 +92,9 @@
                             <i>NULL</i>
                         #end
                     </li>
+	            #end
+	            #if ($model.ExtraRowTemplate)
+	            <li>$helper.Render($model.ExtraRowTemplate, "%{row=$row}")</li>
 	            #end
 	            </ul></li>
 	        #end

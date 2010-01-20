@@ -63,6 +63,7 @@ namespace NHWebConsole {
                 ImageFields = (context.Request.QueryString["image"] ?? "").Split(','),
                 ContentType = context.Request.QueryString["contentType"],
                 Output = context.Request.QueryString["output"],
+                ExtraRowTemplate = context.Request["extraRowTemplate"],
             };
             try {
                 model.MaxResults = TryParse(context.Request["MaxResults"]);
@@ -161,11 +162,11 @@ namespace NHWebConsole {
                     model.Results = ConvertResults(q.List(), model);
             } else {
                 var count = q.ExecuteUpdate();
-                model.Results = new List<ICollection<KeyValuePair<string, string>>> {
-                    new Dictionary<string, string> {
-                        {"count", count.ToString()},
+                model.Results = new List<Row> {
+                    new Row {
+                        KV("count", count.ToString()),
                     },
-                };                
+                };
             }
         }
 
@@ -173,23 +174,29 @@ namespace NHWebConsole {
             return new KeyValuePair<K, V>(key, value);
         }
 
-        public ICollection<KeyValuePair<string, string>> ConvertResult(object o, Context model) {
-            var r = new List<KeyValuePair<string, string>>();
+        /// <summary>
+        /// Converts a single result row
+        /// </summary>
+        /// <param name="o"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public Row ConvertResult(object o, Context model) {
+            var row = new Row();
             var trueType = NHibernateProxyHelper.GetClassWithoutInitializingProxy(o);
             var mapping = cfg.GetClassMapping(trueType);
-            r.Add(KV("Type", BuildTypeLink(trueType)));
+            row.Add(KV("Type", BuildTypeLink(trueType)));
             if (mapping == null) {
                 if (o is object[]) {
-                    r.AddRange(ConvertObjectArray((object[])o, model));
+                    row.AddRange(ConvertObjectArray((object[])o, model));
                 } else {
-                    r.Add(KV("Value", HttpUtility.HtmlEncode(Convert.ToString(o))));
+                    row.Add(KV("Value", HttpUtility.HtmlEncode(Convert.ToString(o))));
                 }
             } else {
-                r.Add(KV(mapping.IdentifierProperty.Name, Convert.ToString(mapping.IdentifierProperty.GetGetter(trueType).Get(o))));
-                r.AddRange(mapping.PropertyClosureIterator
+                row.Add(KV(mapping.IdentifierProperty.Name, Convert.ToString(mapping.IdentifierProperty.GetGetter(trueType).Get(o))));
+                row.AddRange(mapping.PropertyClosureIterator
                                .Select(p => ConvertProperty(o, trueType, p, model)));
             }
-            return r;
+            return row;
         }
 
         public IEnumerable<KeyValuePair<string, string>> ConvertObjectArray(object[] o, Context model) {
@@ -293,7 +300,7 @@ namespace NHWebConsole {
             return string.Format("select x.{0} from {1} x where x.{2} = '{3}'", p.Name, entityType.Name, GetPkGetter(entityType).PropertyName, GetPkValue(entityType, o));
         }
 
-        public ICollection<ICollection<KeyValuePair<string, string>>> ConvertResults(IList results, Context model) {
+        public ICollection<Row> ConvertResults(IList results, Context model) {
             return results.Cast<object>().Select(x => ConvertResult(x, model)).ToList();
         }
     }

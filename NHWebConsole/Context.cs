@@ -23,7 +23,7 @@ namespace NHWebConsole {
         public QueryType QueryType { get; set; }
         public int? MaxResults { get; set; }
         public int? FirstResult { get; set; }
-        public ICollection<ICollection<KeyValuePair<string, string>>> Results { get; set; }
+        public ICollection<Row> Results { get; set; }
         public string Error { get; set; }
         public string NextPageUrl { get; set; }
         public string PrevPageUrl { get; set; }
@@ -35,6 +35,10 @@ namespace NHWebConsole {
         public ICollection<KeyValuePair<string, string>> AllEntities { get; set; }
         public string Output { get; set; }
         public string RssUrl { get; set; }
+        public string ExtraRowTemplate { get; set; }
+    }
+
+    public class Row : List<KeyValuePair<string, string>> {
     }
 
     public enum OperationType {
