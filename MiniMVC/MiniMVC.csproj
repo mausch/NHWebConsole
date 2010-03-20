@@ -39,10 +39,14 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controller.cs" />
+    <Compile Include="EmbeddedVelocityEngine.cs" />
+    <Compile Include="ExternalVelocityEngine.cs" />
     <Compile Include="IController.cs" />
     <Compile Include="IResult.cs" />
     <Compile Include="NVDirectiveManager.cs" />

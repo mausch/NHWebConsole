@@ -9,6 +9,7 @@
     	<MergeAsm Include="$(MSBuildProjectDirectory)\NHWebConsole\bin\$(BuildConfig)\NHWebConsole.dll" />
     	<MergeAsm Include="$(MSBuildProjectDirectory)\NHWebConsole\bin\$(BuildConfig)\MiniMVC.dll" />
     	<MergeAsm Include="$(MSBuildProjectDirectory)\NHWebConsole\bin\$(BuildConfig)\NVelocity.dll" />
+    	<MergeAsm Include="$(MSBuildProjectDirectory)\NHWebConsole\bin\$(BuildConfig)\HqlIntellisense.dll" />
 		</ItemGroup>
     <RemoveDir Directories="$(MergedOutputPath)"/>
     <MakeDir Directories="$(MergedOutputPath)" ContinueOnError="true"/>
