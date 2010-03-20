@@ -38,7 +38,7 @@ namespace MiniMVC {
             return DateTime.Now;
         }
 
-        private static readonly VelocityEngine TemplateEngine = new ExternalVelocityEngine();
+        private static readonly VelocityEngine TemplateEngine = new EmbeddedVelocityEngine();
 
         public string Render(string template, IDictionary parameters) {
             var context = new VelocityContext();

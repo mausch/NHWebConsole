@@ -44,6 +44,6 @@ namespace MiniMVC {
             }
         }
 
-        private static readonly VelocityEngine TemplateEngine = new ExternalVelocityEngine();
+        private static readonly VelocityEngine TemplateEngine = new EmbeddedVelocityEngine();
     }
 }
