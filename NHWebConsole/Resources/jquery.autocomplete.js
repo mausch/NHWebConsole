@@ -197,33 +197,12 @@ $.Autocompleter = function(input, options) {
 		if( !selected )
 			return false;
 		
-		var v = selected.result;
-		previousValue = v;
-		
-		if ( options.multiple ) {
-			var words = trimWords($input.val());
-			if ( words.length > 1 ) {
-				var seperator = options.multipleSeparator.length;
-				var cursorAt = $(input).selection().start;
-				var wordAt, progress = 0;
-				$.each(words, function(i, word) {
-					progress += word.length;
-					if (cursorAt <= progress) {
-						wordAt = i;
-						return false;
-					}
-					progress += seperator;
-				});
-				words[wordAt] = v;
-				// TODO this should set the cursor to the right position, but it gets overriden somewhere
-				//$.Autocompleter.Selection(input, progress + seperator, progress + seperator);
-				v = words.join( options.multipleSeparator );
-			}
-			v += options.multipleSeparator;
-		}
-		
+		var cursorAt = $(input).selection().start;
+		var current = $input.val();
+		v = current.substring(0, cursorAt) + selected.data + current.substring(cursorAt);
 		$input.val(v);
 		hideResultsNow();
+		$(input).setCursorPosition(cursorAt + selected.data.length);
 		$input.trigger("result", [selected.data, selected.value]);
 		return true;
 	}
