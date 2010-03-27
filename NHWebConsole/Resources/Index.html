@@ -144,6 +144,8 @@
 		jQuery('#q').autocomplete('suggestion.ashx', {
 			matchCase: true,
 			dataType: 'json',
+			scroll: true,
+			max: 1000,
 			extraParams: {
 				p: function() { return getPosition('q'); }
 			},
