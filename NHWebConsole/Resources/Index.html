@@ -70,7 +70,7 @@
 	        <br style="clear:both" />
 	        Max results: <input type="text" name="MaxResults" value="#if ($model.MaxResults)$model.MaxResults#end" size="2" /><br />
 	        First result: <input type="text" name="FirstResult" value="#if ($model.FirstResult)$model.FirstResult#end" size="2" /><br />
-	        <select name="type">
+	        <select name="type" id="queryType">
 	            <option value="HQL" #if ($model.QueryType.ToString() == "HQL") selected="selected" #end>HQL</option>
 	            <option value="SQL" #if ($model.QueryType.ToString() == "SQL") selected="selected" #end>SQL</option>
 	        </select>
@@ -139,25 +139,37 @@
     function insertString(a, pos, b) {
         return a.substr(0, pos) + b + a.substr(pos);
     }
-
-    jQuery('#q').autocomplete('suggestion.ashx', {
-        matchCase: true,
-        dataType: 'json',
-        extraParams: {
-            p: function() { return getPosition('q'); }
-        },
-        formatItem: function(r) { return r; },
-        parse: function(data) {
-            var v = jQuery('#q').val();
-            return jQuery.map(data, function(r) {
-                return {
-                    data: r,
-                    value: v + r,
-                    result: v + r
-                };
-            });
-        }
-    });
+	
+	function startAutocomplete() {
+		jQuery('#q').autocomplete('suggestion.ashx', {
+			matchCase: true,
+			dataType: 'json',
+			extraParams: {
+				p: function() { return getPosition('q'); }
+			},
+			formatItem: function(r) { return r; },
+			parse: function(data) {
+				var v = jQuery('#q').val();
+				return jQuery.map(data, function(r) {
+					return {
+						data: r,
+						value: v + r,
+						result: v + r
+					};
+				});
+			}
+		});
+	}
+	
+	if (document.getElementById('queryType').value == 'HQL')
+		startAutocomplete();
+		
+	jQuery('#queryType').change(function() {
+		if (this.value == 'HQL')
+			startAutocomplete();
+		else
+			jQuery('#q').unautocomplete();
+	});
 </script>
 	    
 	</body>
