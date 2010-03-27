@@ -17,6 +17,7 @@
 using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Web;
 using FluentNHibernate.Automapping;
 using FluentNHibernate.Cfg;
@@ -55,6 +56,11 @@ namespace SampleApp {
                     LastName = "of the Month",
                 };
                 session.Save(employee);
+                foreach (var i in Enumerable.Range(1, 100))
+                    session.Save(new Employee {
+                        FirstName = "Juan",
+                        LastName = "Perez",
+                    });
                 session.Save(new Order {
                     Customer = customer,
                     Employee = employee,
