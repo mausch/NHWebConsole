@@ -1,1 +1,1 @@
-msbuild NHWebConsole.proj
+msbuild /m NHWebConsole.sln

@@ -10,6 +10,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniMVC", "MiniMVC\MiniMVC.csproj", "{BDFDD553-E5E3-46A7-94C5-3C507510FEE6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApp", "SampleApp\SampleApp.csproj", "{A19C44C6-73E9-49E6-A386-D258E01B89CE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{277DC89B-4206-4AC2-BBD1-1DCC9B3365CD} = {277DC89B-4206-4AC2-BBD1-1DCC9B3365CD}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
