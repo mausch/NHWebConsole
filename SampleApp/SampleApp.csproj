@@ -63,9 +63,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\NHibernate.ByteCode.Castle.dll</HintPath>
     </Reference>
-    <Reference Include="NHWebConsole, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="NHWebConsole, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Build\NHWebConsole.dll</HintPath>
+      <HintPath>..\NHWebConsole\Build\NHWebConsole.dll</HintPath>
     </Reference>
     <Reference Include="NLipsum.Core, Version=0.9.0.0, Culture=neutral, PublicKeyToken=593e1df460e1bda0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
