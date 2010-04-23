@@ -13,7 +13,7 @@ namespace NHWebConsole {
         public override IResult Execute(HttpContext context) {
             var q = context.Request.QueryString["q"];
             var p = int.Parse(context.Request.QueryString["p"]);
-            new HQLCodeAssist(NHWebConsoleSetup.Configuration()).CodeComplete(q, p, this);
+            new HQLCodeAssist(new NHConfigDataProvider(NHWebConsoleSetup.Configuration())).CodeComplete(q, p, this);
             return new ViewResult(new SuggestionResponse {
                 Error = error,
                 Suggestions = string.Format("[{0}]", string.Join(",", suggestions.Select(s => string.Format("'{0}'", s)).ToArray())),

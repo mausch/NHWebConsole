@@ -11,15 +11,16 @@ using SampleModel;
 namespace NHWebConsole.Tests {
     [TestFixture]
     public class IntellisenseTests {
-        private Configuration cfg;
+        private IConfigurationDataProvider cfg;
 
         [TestFixtureSetUp]
         public void Setup() {
-            cfg = Fluently.Configure()
+            var nhcfg = Fluently.Configure()
                 .Database(SQLiteConfiguration.Standard
                               .ConnectionString("Data Source=test.db;Version=3;New=True;"))
                 .Mappings(m => m.AutoMappings.Add(AutoMap.AssemblyOf<Customer>()))
                 .BuildConfiguration();
+            new NHConfigDataProvider(nhcfg);
         }
 
         [Test]
