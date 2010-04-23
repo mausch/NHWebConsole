@@ -205,12 +205,33 @@ namespace NHWebConsole {
         }
 
         public string BuildCollectionLink(Type ct, Type fk, object fkValue) {
-            var fkp = cfg.GetClassMapping(ct).PropertyClosureIterator
-                .FirstOrDefault(p => p.Type.IsAssociationType && p.GetGetter(ct).ReturnType == fk);
-            if (fkp == null)
-                return null;
-            var hql = string.Format("from {0} x where x.{1} = '{2}'", cfg.GetClassMapping(ct).EntityName, fkp.Name, fkValue);
-            return string.Format("<a href=\"{0}?q={1}&MaxResults=10\">collection</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql));
+            var classMapping = cfg.GetClassMapping(ct);
+            var associations = classMapping.PropertyClosureIterator.Where(p => p.Type.IsAssociationType);
+            var fkp = associations.FirstOrDefault(p => p.GetGetter(ct).ReturnType == fk);
+            if (fkp != null) {
+                var hql = string.Format("from {0} x where x.{1} = '{2}'", classMapping.EntityName, fkp.Name, fkValue);
+                return string.Format("<a href=\"{0}?q={1}&MaxResults=10\">collection</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql));
+            }
+            // try many-to-many
+            var collection = associations.FirstOrDefault(p => IsCollectionOf(p.GetGetter(ct).ReturnType, fk));
+            if (collection != null) {
+                var fkType = collection.GetGetter(ct).ReturnType.GetGenericArguments()[0];
+                var fkTypePK = GetPkGetter(fkType).PropertyName;
+                var hql = string.Format("from {0} x join x.{1} y where y.{2} = '{3}'", classMapping.EntityName, collection.Name, fkTypePK, fkValue);
+                return string.Format("<a href=\"{0}?q={1}&MaxResults=10\">collection</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql));
+            }
+            return null;
+        }
+
+        public static bool IsCollectionOf(Type collectionType, Type elementType) {
+            if (!collectionType.IsGenericType)
+                return false;
+            if (!typeof(IEnumerable).IsAssignableFrom(collectionType))
+                return false;
+            var typeArgs = collectionType.GetGenericArguments();
+            if (typeArgs.Length > 1)
+                return false;
+            return typeArgs[0] == elementType;
         }
 
         public string BuildEntityUrl(string entityName) {

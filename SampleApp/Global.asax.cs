@@ -22,6 +22,7 @@ using System.Web;
 using FluentNHibernate.Automapping;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
+using Iesi.Collections.Generic;
 using NHibernate.Tool.hbm2ddl;
 using NHWebConsole;
 using SampleModel;
@@ -76,6 +77,13 @@ namespace SampleApp {
                     Employee = employee,
                     OrderDate = DateTime.Now.AddDays(1),
                 });
+                var territory = new Territory {
+                    Name = "America",
+                    Employees = new HashedSet<Employee> {
+                        employee,
+                    },
+                };
+                session.Save(territory);
             }
         }
 

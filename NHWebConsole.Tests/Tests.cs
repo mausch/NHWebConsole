@@ -15,6 +15,8 @@
 #endregion
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using FluentNHibernate.Automapping;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
@@ -96,6 +98,55 @@ namespace NHWebConsole.Tests {
                     foreach (var m in r)
                         Console.WriteLine("{0}: {1}", m.Key, m.Value);
             }
+        }
+
+        [Test]
+        public void ManyToMany() {
+            using (var session = NHWebConsoleSetup.OpenSession()) {
+                var c = new IndexController {
+                    Session = session,
+                    Cfg = NHWebConsoleSetup.Configuration(),
+                    RawUrl = "/pepe.aspx",
+                };
+                var link = c.BuildCollectionLink(typeof (Territory), typeof (Employee), 1);
+                Console.WriteLine(link);
+                Assert.IsNotNull(link);
+            }
+        }
+
+        [Test]
+        public void IsCollectionOf() {
+            var types = new[] {
+                KV(typeof(IEnumerable<string>), typeof(string)),
+                KV(typeof(IEnumerable<int>), typeof(int)),
+                KV(typeof(ICollection<int>), typeof(int)),
+                KV(typeof(List<int>), typeof(int)),
+                KV(typeof(ISet<int>), typeof(int)),
+                KV(typeof(HashedSet<int>), typeof(int)),
+            };
+
+            foreach (var t in types) {
+                Assert.IsTrue(IndexController.IsCollectionOf(t.Key, t.Value), "Expected {0} is collection of {1}", t.Key, t.Value);
+            }
+        }
+
+        [Test]
+        public void IsNotCollectionOf() {
+            var types = new[] {
+                KV(typeof(IEnumerable<string>), typeof(int)),
+                KV(typeof(IEnumerable), typeof(int)),
+                KV(typeof(ArrayList), typeof(int)),
+                KV(typeof(string), typeof(int)),
+                KV(typeof(string), typeof(char)),
+            };
+
+            foreach (var t in types) {
+                Assert.IsFalse(IndexController.IsCollectionOf(t.Key, t.Value), "Expected {0} is NOT collection of {1}", t.Key, t.Value);
+            }            
+        }
+
+        public KeyValuePair<K, V> KV<K, V>(K key, V value) {
+            return new KeyValuePair<K, V>(key, value);
         }
 
         [Test]
