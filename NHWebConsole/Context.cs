@@ -24,6 +24,7 @@ namespace NHWebConsole {
         public int? MaxResults { get; set; }
         public int? FirstResult { get; set; }
         public ICollection<Row> Results { get; set; }
+        public int Total { get; set; }
         public string Error { get; set; }
         public string NextPageUrl { get; set; }
         public string PrevPageUrl { get; set; }

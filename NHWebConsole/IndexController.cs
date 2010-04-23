@@ -116,7 +116,7 @@ namespace NHWebConsole {
         }
 
         public string BuildNextPageUrl(Context model) {
-            if (!model.MaxResults.HasValue || model.Results.Count < model.MaxResults)
+            if (!model.MaxResults.HasValue || model.Total <= model.MaxResults)
                 return null;
             var first = model.FirstResult ?? 0;
             return UrlHelper.SetParameters(rawUrl, new Dictionary<string, object> {
@@ -146,7 +146,7 @@ namespace NHWebConsole {
                 return;
             var q = CreateQuery(model);
             if (model.MaxResults.HasValue)
-                q.SetMaxResults(model.MaxResults.Value);
+                q.SetMaxResults(model.MaxResults.Value+1);
             if (model.FirstResult.HasValue)
                 q.SetFirstResult(model.FirstResult.Value);
             ExecQueryByType(q, model);
@@ -158,8 +158,11 @@ namespace NHWebConsole {
             if (!updateRx.IsMatch(model.Query)) {
                 if (model.Raw)
                     model.RawResult = q.UniqueResult();
-                else
-                    model.Results = ConvertResults(q.List(), model);
+                else {
+                    var results = q.List();
+                    model.Total = results.Count;
+                    model.Results = ConvertResults(results, model);
+                }
             } else {
                 var count = q.ExecuteUpdate();
                 model.Results = new List<Row> {
@@ -322,7 +325,11 @@ namespace NHWebConsole {
         }
 
         public ICollection<Row> ConvertResults(IList results, Context model) {
-            return results.Cast<object>().Select(x => ConvertResult(x, model)).ToList();
+            var r = results.Cast<object>()
+                .Select(x => ConvertResult(x, model));
+            if (model.MaxResults.HasValue)
+                r = r.Take(model.MaxResults.Value);
+            return r.ToList();
         }
     }
 }

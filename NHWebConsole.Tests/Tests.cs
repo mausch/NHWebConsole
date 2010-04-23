@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using FluentNHibernate.Automapping;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
@@ -156,6 +157,7 @@ namespace NHWebConsole.Tests {
             };
             Console.WriteLine(c.BuildNextPageUrl(new Context {
                 MaxResults = 10,
+                Results = Enumerable.Range(1, 11).Select(i => new Row()).ToList(),
             }));
         }
     }
