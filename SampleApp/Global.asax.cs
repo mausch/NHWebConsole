@@ -32,7 +32,7 @@ namespace SampleApp {
         protected void Application_Start(object sender, EventArgs e) {
             var cfg = Fluently.Configure()
                 .Database(SQLiteConfiguration.Standard
-                .ConnectionString("Data Source=test.db;Version=3;New=True;"))
+                    .ConnectionString(string.Format("Data Source={0};Version=3;New=True;", Server.MapPath("/test.db"))))
                 .Mappings(m => m.AutoMappings.Add(AutoMap.AssemblyOf<Customer>()))
                 .BuildConfiguration();
             var sessionFactory = cfg.BuildSessionFactory();
