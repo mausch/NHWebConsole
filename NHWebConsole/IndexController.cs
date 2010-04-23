@@ -217,7 +217,7 @@ namespace NHWebConsole {
             if (collection != null) {
                 var fkType = collection.GetGetter(ct).ReturnType.GetGenericArguments()[0];
                 var fkTypePK = GetPkGetter(fkType).PropertyName;
-                var hql = string.Format("from {0} x join x.{1} y where y.{2} = '{3}'", classMapping.EntityName, collection.Name, fkTypePK, fkValue);
+                var hql = string.Format("select x from {0} x join x.{1} y where y.{2} = '{3}'", classMapping.EntityName, collection.Name, fkTypePK, fkValue);
                 return string.Format("<a href=\"{0}?q={1}&MaxResults=10\">collection</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql));
             }
             return null;
