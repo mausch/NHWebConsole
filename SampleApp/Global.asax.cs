@@ -79,11 +79,13 @@ namespace SampleApp {
                 });
                 var territory = new Territory {
                     Name = "America",
-                    Employees = new HashedSet<Employee> {
-                        employee,
-                    },
                 };
                 session.Save(territory);
+                employee.Territories = new HashedSet<Territory> {
+                    territory,
+                };
+                session.Save(employee);
+                session.Flush();
             }
         }
 
