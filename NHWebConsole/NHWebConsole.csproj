@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <UsingTask AssemblyFile="..\lib\ILMerge.MSBuild.Tasks.dll" TaskName="ILMerge.MSBuild.Tasks.ILMerge"/>
+  <UsingTask AssemblyFile="..\lib\ILMerge.MSBuild.Tasks.dll" TaskName="ILMerge.MSBuild.Tasks.ILMerge" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -13,7 +13,7 @@
     <AssemblyName>NHWebConsole</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-	<MergedOutputPath>$(MSBuildProjectDirectory)\Build</MergedOutputPath>
+    <MergedOutputPath>$(MSBuildProjectDirectory)\Build</MergedOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,6 +47,9 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -75,17 +78,17 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-	<Target Name="Merge">
-		<ItemGroup>
-			<MergeAsm Include="bin\$(Configuration)\NHWebConsole.dll" />
-			<MergeAsm Include="bin\$(Configuration)\MiniMVC.dll" />
-			<MergeAsm Include="bin\$(Configuration)\NVelocity.dll" />
-			<MergeAsm Include="bin\$(Configuration)\HqlIntellisense.dll" />
-		</ItemGroup>
-		<RemoveDir Directories="$(MergedOutputPath)"/>
-		<MakeDir Directories="$(MergedOutputPath)" ContinueOnError="true"/>
-		<ILMerge InputAssemblies="@(MergeAsm)" OutputFile="$(MergedOutputPath)\NHWebConsole.dll" Internalize="true"/>
-	</Target>
+  <Target Name="Merge">
+    <ItemGroup>
+      <MergeAsm Include="bin\$(Configuration)\NHWebConsole.dll" />
+      <MergeAsm Include="bin\$(Configuration)\MiniMVC.dll" />
+      <MergeAsm Include="bin\$(Configuration)\NVelocity.dll" />
+      <MergeAsm Include="bin\$(Configuration)\HqlIntellisense.dll" />
+    </ItemGroup>
+    <RemoveDir Directories="$(MergedOutputPath)" />
+    <MakeDir Directories="$(MergedOutputPath)" ContinueOnError="true" />
+    <ILMerge InputAssemblies="@(MergeAsm)" OutputFile="$(MergedOutputPath)\NHWebConsole.dll" Internalize="true" />
+  </Target>
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild" DependsOnTargets="Merge">

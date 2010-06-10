@@ -22,10 +22,10 @@ namespace MiniMVC {
     /// Handles view plumbing
     /// </summary>
     public abstract class Controller : IController, IHttpHandler {
-        public abstract IResult Execute(HttpContext context);
+        public abstract IResult Execute(HttpContextBase context);
 
         public virtual void ProcessRequest(HttpContext context) {
-            var result = Execute(context);
+            var result = Execute(new HttpContextWrapper(context));
             result.Execute(context);
         }
 

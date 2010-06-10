@@ -54,7 +54,7 @@ namespace NHWebConsole {
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public override IResult Execute(HttpContext context) {
+        public override IResult Execute(HttpContextBase context) {
             rawUrl = context.Request.RawUrl;
             var model = new Context {
                 Url = rawUrl.Split('?')[0],

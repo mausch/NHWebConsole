@@ -19,7 +19,7 @@ using MiniMVC;
 
 namespace NHWebConsole {
     public class StaticController : Controller {
-        public override IResult Execute(HttpContext context) {
+        public override IResult Execute(HttpContextBase context) {
             var resource = context.Request.QueryString["r"];
             var contentType = context.Request.QueryString["t"];
             if (contentType != null)

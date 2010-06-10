@@ -10,7 +10,7 @@ namespace NHWebConsole {
         private string error;
         private readonly IList<string> suggestions = new List<string>();
 
-        public override IResult Execute(HttpContext context) {
+        public override IResult Execute(HttpContextBase context) {
             var q = context.Request.QueryString["q"];
             var p = int.Parse(context.Request.QueryString["p"]);
             new HQLCodeAssist(new NHConfigDataProvider(NHWebConsoleSetup.Configuration())).CodeComplete(q, p, this);
