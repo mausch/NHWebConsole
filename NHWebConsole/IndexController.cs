@@ -152,7 +152,7 @@ namespace NHWebConsole {
             ExecQueryByType(q, model);
         }
 
-        private static readonly Regex updateRx = new Regex(@"\s*(insert|update|delete)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private static readonly Regex updateRx = new Regex(@"^\s*(insert|update|delete)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         public void ExecQueryByType(IQuery q, Context model) {
             if (!updateRx.IsMatch(model.Query)) {
