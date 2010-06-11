@@ -32,7 +32,7 @@ namespace MiniMVC {
             this.name = name;
         }
 
-        public void Execute(HttpContext context) {
+        public void Execute(HttpContextBase context) {
             if (ContentType != null)
                 context.Response.ContentType = ContentType;
             var vcontext = new VelocityContext();

@@ -26,7 +26,7 @@ namespace MiniMVC {
             this.obj = obj;
         }
 
-        public void Execute(HttpContext context) {
+        public void Execute(HttpContextBase context) {
             if (obj == null)
                 return;
             if (ContentType != null)

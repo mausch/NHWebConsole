@@ -9,7 +9,7 @@ namespace MiniMVC {
             this.url = url;
         }
 
-        public void Execute(HttpContext context) {
+        public void Execute(HttpContextBase context) {
             context.Response.Redirect(url);
         }
     }

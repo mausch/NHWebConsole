@@ -25,8 +25,9 @@ namespace MiniMVC {
         public abstract IResult Execute(HttpContextBase context);
 
         public virtual void ProcessRequest(HttpContext context) {
-            var result = Execute(new HttpContextWrapper(context));
-            result.Execute(context);
+            var contextWrapper = new HttpContextWrapper(context);
+            var result = Execute(contextWrapper);
+            result.Execute(contextWrapper);
         }
 
         public string GetEmbeddedViewName(string name) {

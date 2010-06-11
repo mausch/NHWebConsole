@@ -18,6 +18,6 @@ using System.Web;
 
 namespace MiniMVC {
     public interface IResult {
-        void Execute(HttpContext context);
+        void Execute(HttpContextBase context);
     }
 }

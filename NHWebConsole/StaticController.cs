@@ -35,7 +35,7 @@ namespace NHWebConsole {
         }
 
         public class EmptyResult : IResult {
-            public void Execute(HttpContext context) {}
+            public void Execute(HttpContextBase context) {}
         }
     }
 }
