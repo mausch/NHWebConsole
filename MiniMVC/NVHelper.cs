@@ -34,6 +34,10 @@ namespace MiniMVC {
             return HttpUtility.HtmlEncode(s);
         }
 
+        public string UrlEncode(string s) {
+            return HttpUtility.UrlEncode(s);
+        }
+
         public DateTime Now() {
             return DateTime.Now;
         }
