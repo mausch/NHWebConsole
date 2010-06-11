@@ -33,9 +33,5 @@ namespace NHWebConsole {
                 context.Response.OutputStream.Write(buffer, 0, read);
             return new EmptyResult();
         }
-
-        public class EmptyResult : IResult {
-            public void Execute(HttpContextBase context) {}
-        }
     }
 }
