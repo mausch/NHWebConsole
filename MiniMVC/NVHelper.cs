@@ -22,7 +22,6 @@ using System.IO;
 using System.Security;
 using System.Web;
 using NVelocity;
-using NVelocity.App;
 
 namespace MiniMVC {
     public class NVHelper {
@@ -42,8 +41,6 @@ namespace MiniMVC {
             return DateTime.Now;
         }
 
-        private static readonly VelocityEngine TemplateEngine = new EmbeddedVelocityEngine();
-
         public string Render(string template, IDictionary parameters) {
             var context = new VelocityContext();
             if (parameters != null) {
@@ -52,7 +49,7 @@ namespace MiniMVC {
                 }
             }
             using (var writer = new StringWriter()) {
-                TemplateEngine.Evaluate(context, writer, "", template);
+                Setup.TemplateEngine().Evaluate(context, writer, "", template);
                 return writer.GetStringBuilder().ToString();
             }
         }

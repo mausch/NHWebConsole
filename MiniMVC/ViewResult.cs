@@ -19,7 +19,6 @@
 using System.IO;
 using System.Web;
 using NVelocity;
-using NVelocity.App;
 
 namespace MiniMVC {
     public class ViewResult : IResult {
@@ -39,11 +38,9 @@ namespace MiniMVC {
             vcontext.Put("model", model);
             vcontext.Put("helper", new NVHelper());
             using (var writer = new StringWriter()) {
-                TemplateEngine.GetTemplate(name).Merge(vcontext, writer);
+                Setup.TemplateEngine().GetTemplate(name).Merge(vcontext, writer);
                 context.Response.Write(writer.GetStringBuilder().ToString());
             }
         }
-
-        private static readonly VelocityEngine TemplateEngine = new EmbeddedVelocityEngine();
     }
 }
