@@ -41,6 +41,10 @@ namespace MiniMVC {
             return DateTime.Now;
         }
 
+        public string Nbsp(string s) {
+            return s == null ? null : s.Replace(" ", "&nbsp;");
+        }
+
         public string Render(string template, IDictionary parameters) {
             var context = new VelocityContext();
             if (parameters != null) {
