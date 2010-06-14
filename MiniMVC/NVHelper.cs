@@ -45,6 +45,10 @@ namespace MiniMVC {
             return s == null ? null : s.Replace(" ", "&nbsp;");
         }
 
+        public string YesNo(bool b) {
+            return b ? "Yes" : "No";
+        }
+
         public string Render(string template, IDictionary parameters) {
             var context = new VelocityContext();
             if (parameters != null) {
