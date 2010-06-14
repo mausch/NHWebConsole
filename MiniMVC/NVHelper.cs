@@ -22,6 +22,7 @@ using System.IO;
 using System.Security;
 using System.Web;
 using NVelocity;
+using NVelocity.Context;
 
 namespace MiniMVC {
     public class NVHelper {
@@ -49,17 +50,30 @@ namespace MiniMVC {
             return b ? "Yes" : "No";
         }
 
+        public string RenderTemplate(string template, IDictionary parameters) {
+            var context = BuildContext(parameters);
+            using (var writer = new StringWriter()) {
+                Setup.TemplateEngine().GetTemplate(template).Merge(context, writer);
+                return writer.GetStringBuilder().ToString();
+            }            
+        }
+
         public string Render(string template, IDictionary parameters) {
+            var context = BuildContext(parameters);
+            using (var writer = new StringWriter()) {
+                Setup.TemplateEngine().Evaluate(context, writer, "", template);
+                return writer.GetStringBuilder().ToString();
+            }
+        }
+
+        private IContext BuildContext(IDictionary parameters) {
             var context = new VelocityContext();
             if (parameters != null) {
                 foreach (string k in parameters.Keys) {
                     context.Put(k, parameters[k]);
                 }
             }
-            using (var writer = new StringWriter()) {
-                Setup.TemplateEngine().Evaluate(context, writer, "", template);
-                return writer.GetStringBuilder().ToString();
-            }
+            return context;
         }
     }
 }
