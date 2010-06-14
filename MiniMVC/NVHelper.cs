@@ -76,5 +76,16 @@ namespace MiniMVC {
             }
             return context;
         }
+
+        public string RenderController(string controller) {
+            var controllerType = Type.GetType(controller, false, false);
+            if (controllerType == null)
+                throw new Exception(string.Format("Type '{0}' not found", controller));
+            var instance = (IController) Activator.CreateInstance(controllerType);
+            var context = new HttpContextStub(HttpContext.Current);
+            var result = instance.Execute(context);
+            result.Execute(context);
+            return context.ResponseAsString;
+        }
     }
 }

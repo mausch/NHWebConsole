@@ -31,16 +31,20 @@ namespace MiniMVC {
             this.name = name;
         }
 
-        public void Execute(HttpContextBase context) {
-            if (ContentType != null)
-                context.Response.ContentType = ContentType;
+        public string RenderToString() {
             var vcontext = new VelocityContext();
             vcontext.Put("model", model);
             vcontext.Put("helper", new NVHelper());
             using (var writer = new StringWriter()) {
                 Setup.TemplateEngine().GetTemplate(name).Merge(vcontext, writer);
-                context.Response.Write(writer.GetStringBuilder().ToString());
+                return writer.GetStringBuilder().ToString();
             }
+        }
+
+        public void Execute(HttpContextBase context) {
+            if (ContentType != null)
+                context.Response.ContentType = ContentType;
+            context.Response.Write(RenderToString());
         }
     }
 }

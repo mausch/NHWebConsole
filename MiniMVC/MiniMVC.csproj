@@ -51,6 +51,8 @@
     <Compile Include="EmbeddedVelocityEngine.cs" />
     <Compile Include="EmptyResult.cs" />
     <Compile Include="ExternalVelocityEngine.cs" />
+    <Compile Include="HttpContextStub.cs" />
+    <Compile Include="HttpResponseStub.cs" />
     <Compile Include="IController.cs" />
     <Compile Include="IResult.cs" />
     <Compile Include="NVDirectiveManager.cs" />
