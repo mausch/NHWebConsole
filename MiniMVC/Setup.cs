@@ -21,9 +21,17 @@ namespace MiniMVC {
     public static class Setup {
         public static Func<VelocityEngine> TemplateEngine { get; set; }
 
+        public static Func<string, Controller> ControllerFactory { get; set; }
+
         static Setup() {
             var engine = new EmbeddedVelocityEngine();
             TemplateEngine = () => engine;
+            ControllerFactory = controller => {
+                var controllerType = Type.GetType(controller, false, false);
+                if (controllerType == null)
+                    throw new Exception(string.Format("Type '{0}' not found", controller));
+                return (Controller) Activator.CreateInstance(controllerType);
+            };
         }
     }
 }

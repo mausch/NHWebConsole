@@ -17,15 +17,20 @@
 using System;
 using System.Linq;
 using System.Web;
+using MiniMVC;
 
 namespace NHWebConsole {
     public class ControllerFactory : IHttpHandlerFactory {
         public IHttpHandler GetHandler(HttpContext context, string requestType, string url, string pathTranslated) {
             var name = context.Request.RawUrl.Split('/').Last().Split('?')[0].Split('.')[0];
             name = name.ToUpperInvariant().First() + new string(name.ToLowerInvariant().Skip(1).ToArray());
-            return (IHttpHandler)Activator.CreateInstance(Type.GetType(string.Format("NHWebConsole.{0}Controller", name)));
+            var typeName = string.Format("NHWebConsole.{0}Controller", name);
+            return Setup.ControllerFactory(typeName);
         }
 
-        public void ReleaseHandler(IHttpHandler handler) {}
+        public void ReleaseHandler(IHttpHandler handler) {
+            if (handler is IDisposable)
+                ((IDisposable) handler).Dispose();
+        }
     }
 }
