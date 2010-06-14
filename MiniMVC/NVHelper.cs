@@ -68,6 +68,7 @@ namespace MiniMVC {
 
         private IContext BuildContext(IDictionary parameters) {
             var context = new VelocityContext();
+            context.Put("helper", new NVHelper());
             if (parameters != null) {
                 foreach (string k in parameters.Keys) {
                     context.Put(k, parameters[k]);
