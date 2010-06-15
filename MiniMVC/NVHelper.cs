@@ -42,6 +42,10 @@ namespace MiniMVC {
             return DateTime.Now;
         }
 
+        public DateTimeOffset OffsetNow() {
+            return DateTimeOffset.Now;
+        }
+
         public string Nbsp(string s) {
             return s == null ? null : s.Replace(" ", "&nbsp;");
         }
