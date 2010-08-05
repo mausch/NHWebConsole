@@ -132,5 +132,19 @@ namespace NHWebConsole.Tests {
             };
             c.ConvertResult(employee, ctx);
         }
+
+        [Test]
+        public void NullComponent() {
+            var c = new IndexController {
+                RawUrl = "/pepe?",
+            };
+            var employee = new Employee {
+                Address = null,
+            };
+            var ctx = new Context {
+                ImageFields = new string[0],
+            };
+            c.ConvertResult(employee, ctx);            
+        }
     }
 }

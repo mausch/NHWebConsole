@@ -279,6 +279,8 @@ namespace NHWebConsole {
         }
 
         public IEnumerable<KeyValuePair<string, string>> ConvertComponent(object o, Property p, string name) {
+            if (o == null)
+                return new[] {KV<string, string>(name, null),};
             var compType = (ComponentType) p.Type;
             var t = o.GetType();
             Trace.Write(t);
