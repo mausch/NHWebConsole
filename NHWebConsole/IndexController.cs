@@ -283,7 +283,6 @@ namespace NHWebConsole {
                 return new[] {KV<string, string>(name, null),};
             var compType = (ComponentType) p.Type;
             var t = o.GetType();
-            Trace.Write(t);
             return from propName in compType.PropertyNames
                    let prop = t.GetProperty(propName)
                    let v = prop.GetValue(o, null)
