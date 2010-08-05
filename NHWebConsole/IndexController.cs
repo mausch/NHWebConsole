@@ -73,6 +73,7 @@ namespace NHWebConsole {
                 ExecQuery(model);
                 model.NextPageUrl = BuildNextPageUrl(model);
                 model.PrevPageUrl = BuildPrevPageUrl(model);
+                model.FirstPageUrl = BuildFirstPageUrl(model);
                 model.AllEntities = GetAllEntities()
                     .OrderBy(e => e)
                     .Select(e => KV(e, BuildEntityUrl(e)))
@@ -107,8 +108,20 @@ namespace NHWebConsole {
             return (QueryType) Enum.Parse(typeof (QueryType), s, true);
         }
 
+        public string BuildFirstPageUrl(Context model) {
+            if (!HasPrevPage(model))
+                return null;
+            return UrlHelper.SetParameters(rawUrl, new Dictionary<string, object> {
+                {"FirstResult", 0},
+            });
+        }
+
+        public bool HasPrevPage(Context model) {
+            return !(!model.MaxResults.HasValue || !model.FirstResult.HasValue || model.FirstResult.Value <= 0);
+        }
+
         public string BuildPrevPageUrl(Context model) {
-            if (!model.MaxResults.HasValue || !model.FirstResult.HasValue || model.FirstResult.Value <= 0)
+            if (!HasPrevPage(model))
                 return null;
             return UrlHelper.SetParameters(rawUrl, new Dictionary<string, object> {
                 {"FirstResult", Math.Max(0, model.FirstResult.Value-model.MaxResults.Value)},

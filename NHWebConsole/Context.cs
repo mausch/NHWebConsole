@@ -28,6 +28,7 @@ namespace NHWebConsole {
         public string Error { get; set; }
         public string NextPageUrl { get; set; }
         public string PrevPageUrl { get; set; }
+        public string FirstPageUrl { get; set; }
         public bool LimitLength { get; set; }
         public object RawResult { get; set; }
         public bool Raw { get; set; }

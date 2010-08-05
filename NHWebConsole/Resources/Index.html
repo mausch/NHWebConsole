@@ -120,6 +120,10 @@
 	    #end
 	    
 	    <br style="clear:both" />
+
+	    #if ($model.FirstPageUrl)
+	    <a href="$model.FirstPageUrl" accesskey="1">First page</a>
+	    #end
 	    
 	    #if ($model.PrevPageUrl)
 	    <a href="$model.PrevPageUrl" accesskey=",">Prev page</a>
