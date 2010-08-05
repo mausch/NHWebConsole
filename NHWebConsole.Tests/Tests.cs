@@ -116,5 +116,21 @@ namespace NHWebConsole.Tests {
                 Results = Enumerable.Range(1, 11).Select(i => new Row()).ToList(),
             }));
         }
+
+        [Test]
+        public void Component() {
+            var c = new IndexController {
+                RawUrl = "/pepe?",
+            };
+            var employee = new Employee {
+                Address = new Address {
+                    City = "",
+                }
+            };
+            var ctx = new Context {
+                ImageFields = new string[0],
+            };
+            c.ConvertResult(employee, ctx);
+        }
     }
 }

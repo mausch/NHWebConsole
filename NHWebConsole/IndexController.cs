@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -36,17 +37,13 @@ namespace NHWebConsole {
     /// </summary>
     public class IndexController : NHController {
         private const int maxLen = 100;
-        private string rawUrl;
-        private Configuration cfg = NHWebConsoleSetup.Configuration();
 
-        public Configuration Cfg {
-            get { return cfg; }
-            set { cfg = value; }
-        }
+        public Configuration Cfg { get; set; }
 
-        public string RawUrl {
-            get { return rawUrl; }
-            set { rawUrl = value; }
+        public string RawUrl { get; set; }
+
+        public IndexController() {
+            Cfg = NHWebConsoleSetup.Configuration();
         }
 
         /// <summary>
@@ -55,9 +52,9 @@ namespace NHWebConsole {
         /// <param name="context"></param>
         /// <returns></returns>
         public override IResult Execute(HttpContextBase context) {
-            rawUrl = context.Request.RawUrl;
+            RawUrl = context.Request.RawUrl;
             var model = new Context {
-                Url = rawUrl.Split('?')[0],
+                Url = RawUrl.Split('?')[0],
                 LimitLength = string.IsNullOrEmpty(context.Request.QueryString["limitLength"]),
                 Raw = !string.IsNullOrEmpty(context.Request.QueryString["raw"]),
                 ImageFields = (context.Request.QueryString["image"] ?? "").Split(','),
@@ -92,14 +89,14 @@ namespace NHWebConsole {
         public string BuildRssUrl(Context model) {
             if (string.IsNullOrEmpty(model.Query) || updateRx.IsMatch(model.Query))
                 return null;
-            return UrlHelper.SetParameters(rawUrl, new Dictionary<string, object> {
+            return UrlHelper.SetParameters(RawUrl, new Dictionary<string, object> {
                 {"contentType", "application/rss+xml"},
                 {"output", "RSS"},
             });
         }
 
         public IEnumerable<string> GetAllEntities() {
-            return cfg.ClassMappings.Select(c => c.EntityName);
+            return Cfg.ClassMappings.Select(c => c.EntityName);
         }
 
         public QueryType GetQueryType(string s) {
@@ -111,7 +108,7 @@ namespace NHWebConsole {
         public string BuildFirstPageUrl(Context model) {
             if (!HasPrevPage(model))
                 return null;
-            return UrlHelper.SetParameters(rawUrl, new Dictionary<string, object> {
+            return UrlHelper.SetParameters(RawUrl, new Dictionary<string, object> {
                 {"FirstResult", 0},
             });
         }
@@ -123,7 +120,7 @@ namespace NHWebConsole {
         public string BuildPrevPageUrl(Context model) {
             if (!HasPrevPage(model))
                 return null;
-            return UrlHelper.SetParameters(rawUrl, new Dictionary<string, object> {
+            return UrlHelper.SetParameters(RawUrl, new Dictionary<string, object> {
                 {"FirstResult", Math.Max(0, model.FirstResult.Value-model.MaxResults.Value)},
             });
         }
@@ -132,7 +129,7 @@ namespace NHWebConsole {
             if (!model.MaxResults.HasValue || model.Total <= model.MaxResults)
                 return null;
             var first = model.FirstResult ?? 0;
-            return UrlHelper.SetParameters(rawUrl, new Dictionary<string, object> {
+            return UrlHelper.SetParameters(RawUrl, new Dictionary<string, object> {
                 {"FirstResult", first + model.MaxResults.Value},
             });
         }
@@ -153,7 +150,7 @@ namespace NHWebConsole {
         }
 
         public void ExecQuery(Context model) {
-            if (cfg == null)
+            if (Cfg == null)
                 throw new ApplicationException("NHibernate configuration not supplied");
             if (string.IsNullOrEmpty(model.Query))
                 return;
@@ -199,7 +196,7 @@ namespace NHWebConsole {
         public Row ConvertResult(object o, Context model) {
             var row = new Row();
             var trueType = NHibernateProxyHelper.GetClassWithoutInitializingProxy(o);
-            var mapping = cfg.GetClassMapping(trueType);
+            var mapping = Cfg.GetClassMapping(trueType);
             row.Add(KV("Type", BuildTypeLink(trueType)));
             if (mapping == null) {
                 if (o is object[]) {
@@ -210,7 +207,7 @@ namespace NHWebConsole {
             } else {
                 row.Add(KV(mapping.IdentifierProperty.Name, Convert.ToString(mapping.IdentifierProperty.GetGetter(trueType).Get(o))));
                 row.AddRange(mapping.PropertyClosureIterator
-                               .Select(p => ConvertProperty(o, trueType, p, model)));
+                               .SelectMany(p => ConvertProperty(o, trueType, p, model)));
             }
             return row;
         }
@@ -221,12 +218,12 @@ namespace NHWebConsole {
         }
 
         public string BuildCollectionLink(Type ct, Type fk, object fkValue) {
-            var classMapping = cfg.GetClassMapping(ct);
+            var classMapping = Cfg.GetClassMapping(ct);
             var associations = classMapping.PropertyClosureIterator.Where(p => p.Type.IsAssociationType);
             var fkp = associations.FirstOrDefault(p => p.GetGetter(ct).ReturnType == fk);
             if (fkp != null) {
                 var hql = string.Format("from {0} x where x.{1} = '{2}'", classMapping.EntityName, fkp.Name, fkValue);
-                return string.Format("<a href=\"{0}?q={1}&MaxResults=10\">collection</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql));
+                return string.Format("<a href=\"{0}?q={1}&MaxResults=10\">collection</a>", RawUrl.Split('?')[0], HttpUtility.UrlEncode(hql));
             }
             // try many-to-many
             var collection = associations.FirstOrDefault(p => IsCollectionOf(p.GetGetter(ct).ReturnType, fk));
@@ -234,7 +231,7 @@ namespace NHWebConsole {
                 var fkType = collection.GetGetter(ct).ReturnType.GetGenericArguments()[0];
                 var fkTypePK = GetPkGetter(fkType).PropertyName;
                 var hql = string.Format("select x from {0} x join x.{1} y where y.{2} = '{3}'", classMapping.EntityName, collection.Name, fkTypePK, fkValue);
-                return string.Format("<a href=\"{0}?q={1}&MaxResults=10\">collection</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql));
+                return string.Format("<a href=\"{0}?q={1}&MaxResults=10\">collection</a>", RawUrl.Split('?')[0], HttpUtility.UrlEncode(hql));
             }
             return null;
         }
@@ -251,23 +248,23 @@ namespace NHWebConsole {
         }
 
         public string BuildEntityUrl(string entityName) {
-            return string.Format("{0}?q=from+{1}&MaxResults=10", rawUrl.Split('?')[0], HttpUtility.UrlEncode(entityName));
+            return string.Format("{0}?q=from+{1}&MaxResults=10", RawUrl.Split('?')[0], HttpUtility.UrlEncode(entityName));
         }
 
         public string BuildEntityLink(Type entityType, object pkValue) {
-            var hql = string.Format("from {0} x where x.{1} = '{2}'", cfg.GetClassMapping(entityType).EntityName, GetPkGetter(entityType).PropertyName, pkValue);
-            return string.Format("<a href=\"{0}?q={1}\">{2}#{3}</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql), entityType.Name, pkValue);
+            var hql = string.Format("from {0} x where x.{1} = '{2}'", Cfg.GetClassMapping(entityType).EntityName, GetPkGetter(entityType).PropertyName, pkValue);
+            return string.Format("<a href=\"{0}?q={1}\">{2}#{3}</a>", RawUrl.Split('?')[0], HttpUtility.UrlEncode(hql), entityType.Name, pkValue);
         }
 
         public string BuildTypeLink(Type entityType) {
-            if (cfg.GetClassMapping(entityType) == null)
+            if (Cfg.GetClassMapping(entityType) == null)
                 return entityType.Name;
-            var hql = string.Format("from {0}", cfg.GetClassMapping(entityType).EntityName);
-            return string.Format("<a href='{0}?q={1}&MaxResults=10'>{2}</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(hql), entityType.Name);
+            var hql = string.Format("from {0}", Cfg.GetClassMapping(entityType).EntityName);
+            return string.Format("<a href='{0}?q={1}&MaxResults=10'>{2}</a>", RawUrl.Split('?')[0], HttpUtility.UrlEncode(hql), entityType.Name);
         }
 
         public IGetter GetPkGetter(Type entityType) {
-            return cfg.GetClassMapping(entityType).IdentifierProperty.GetGetter(entityType);
+            return Cfg.GetClassMapping(entityType).IdentifierProperty.GetGetter(entityType);
         }
 
         public object GetPkValue(Type entityType, object o) {
@@ -281,9 +278,19 @@ namespace NHWebConsole {
             return KV(p.Name, BuildCollectionLink(fkType, entityType, fk));
         }
 
+        public IEnumerable<KeyValuePair<string, string>> ConvertComponent(object o, Property p, string name) {
+            var compType = (ComponentType) p.Type;
+            var t = o.GetType();
+            Trace.Write(t);
+            return from propName in compType.PropertyNames
+                   let prop = t.GetProperty(propName)
+                   let v = prop.GetValue(o, null)
+                   select KV(string.Format("{0}.{1}", name, propName), v == null ? null : v.ToString());
+        }
+
         public KeyValuePair<string, string> ConvertEntity(object o, Type entityType, Property p) {
             var assocType = (EntityType)p.Type;
-            var mapping = cfg.GetClassMapping(assocType.GetAssociatedEntityName());
+            var mapping = Cfg.GetClassMapping(assocType.GetAssociatedEntityName());
             var o1 = p.GetGetter(entityType).Get(o);
             if (o1 == null)
                 return KV(p.Name, null as string);
@@ -292,33 +299,40 @@ namespace NHWebConsole {
             return KV(p.Name, BuildEntityLink(getter.ReturnType, pk));
         }
 
-        public KeyValuePair<string, string> ConvertProperty(object o, Type entityType, Property p, Context model) {
+        public IEnumerable<KeyValuePair<string, string>> ConvertProperty(object o, Type entityType, Property p, Context model) {
             if (p.Type.IsCollectionType) {
-                return ConvertCollection(o, entityType, p);
+                yield return ConvertCollection(o, entityType, p);
+                yield break;
             }
             if (p.Type.IsEntityType) {
-                return ConvertEntity(o, entityType, p);
+                yield return ConvertEntity(o, entityType, p);
+                yield break;
             }
             var getter = p.GetGetter(entityType);
             var value = getter.Get(o);
+            if (p.Type.IsComponentType) {
+                foreach (var r in ConvertComponent(value, p, p.Name))
+                    yield return r;
+                yield break;
+            }
             string valueAsString = null;
             if (value != null)
                 valueAsString = Convert.ToString(value);
             if (model.ImageFields.Contains(p.Name)) {
                 var query = QueryScalar(p, entityType, o);
-                var imgUrl = string.Format("{0}?raw=1&q={1}", rawUrl.Split('?')[0], HttpUtility.UrlEncode(query));
+                var imgUrl = string.Format("{0}?raw=1&q={1}", RawUrl.Split('?')[0], HttpUtility.UrlEncode(query));
                 valueAsString = string.Format("<img src=\"{0}\"/>", imgUrl);
             } else if (model.LimitLength && value != null && valueAsString.Length > maxLen) {
                 var sb = new StringBuilder();
                 sb.Append(HttpUtility.HtmlEncode(valueAsString.Substring(0, maxLen)));
                 var query = QueryScalar(p, entityType, o);
-                sb.AppendFormat("<a href=\"{0}?q={1}&limitLength=0\">...</a>", rawUrl.Split('?')[0], HttpUtility.UrlEncode(query));
+                sb.AppendFormat("<a href=\"{0}?q={1}&limitLength=0\">...</a>", RawUrl.Split('?')[0], HttpUtility.UrlEncode(query));
                 valueAsString = sb.ToString();
             } else {
                 valueAsString = HttpUtility.HtmlEncode(valueAsString);
             }
             if (p.Type == NHibernateUtil.BinaryBlob || p.Type == NHibernateUtil.Binary) {
-                var urlParts = rawUrl.Split('?');
+                var urlParts = RawUrl.Split('?');
                 IDictionary<string, string> qs = new Dictionary<string, string>();
                 if (urlParts.Length > 1)
                     qs = UrlHelper.ParseQueryString(urlParts[1]);
@@ -330,7 +344,7 @@ namespace NHWebConsole {
                     valueAsString += string.Format("<a href=\"{0}?{1}\">(as image)</a>", urlParts[0], UrlHelper.DictToQuerystring(qs));
                 }
             }
-            return KV(p.Name, valueAsString);
+            yield return KV(p.Name, valueAsString);
         }
 
         public string QueryScalar(Property p, Type entityType, object o) {
