@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright (c) 2009 Mauricio Scheffer
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +13,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #endregion
 
 using System;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -24,26 +25,32 @@ using FluentNHibernate.Automapping;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using Iesi.Collections.Generic;
+using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
 using NHWebConsole;
+using NLipsum.Core;
 using SampleModel;
 
 namespace SampleApp {
     public class Global : HttpApplication {
-        protected void Application_Start(object sender, EventArgs e) {
-            var cfg = Fluently.Configure()
+        public static Configuration BuildNHConfiguration(string dbFile) {
+            return Fluently.Configure()
                 .Database(SQLiteConfiguration.Standard
-                    .ConnectionString(string.Format("Data Source={0};Version=3;New=True;", Server.MapPath("/test.db"))))
+                              .ConnectionString(string.Format("Data Source={0};Version=3;New=True;", dbFile)))
                 .Mappings(m => m.AutoMappings.Add(AutoMap.AssemblyOf<Customer>(new NHFluentConfig())))
                 .BuildConfiguration();
+        }
+
+        protected void Application_Start(object sender, EventArgs e) {
+            var cfg = BuildNHConfiguration(Server.MapPath("/test.db"));
             var sessionFactory = cfg.BuildSessionFactory();
             NHWebConsoleSetup.OpenSession = () => sessionFactory.OpenSession();
             NHWebConsoleSetup.Configuration = () => cfg;
             new SchemaExport(cfg).Execute(false, true, false);
-            CreateSampleData();
+            CreateSampleData(Server.MapPath("/maxi_yacht_sail9062928.jpg"));
         }
 
-        public class NHFluentConfig: DefaultAutomappingConfiguration {
+        public class NHFluentConfig : DefaultAutomappingConfiguration {
             public override bool IsComponent(Type type) {
                 return type == typeof (Address);
             }
@@ -53,14 +60,14 @@ namespace SampleApp {
             }
         }
 
-        private void CreateSampleData() {
+        public static void CreateSampleData(string pictureFile) {
             using (var session = NHWebConsoleSetup.OpenSession()) {
                 var customer = new Customer {
                     Name = "John Doe",
                     Title = "CEO",
-                    History = NLipsum.Core.LipsumGenerator.Generate(10),
-                    SomeHtml = NLipsum.Core.LipsumGenerator.GenerateHtml(10),
-                    Picture = File.ReadAllBytes(Server.MapPath("/maxi_yacht_sail9062928.jpg")),
+                    History = LipsumGenerator.Generate(10),
+                    SomeHtml = LipsumGenerator.GenerateHtml(10),
+                    Picture = pictureFile == null ? null : File.ReadAllBytes(pictureFile),
                     Address = new Address {
                         City = "Buenos Aires",
                         Country = "Argentina",

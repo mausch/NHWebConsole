@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -102,6 +103,10 @@
     <ProjectReference Include="..\NHWebConsole\NHWebConsole.csproj">
       <Project>{277DC89B-4206-4AC2-BBD1-1DCC9B3365CD}</Project>
       <Name>NHWebConsole</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SampleApp\SampleApp.csproj">
+      <Project>{A19C44C6-73E9-49E6-A386-D258E01B89CE}</Project>
+      <Name>SampleApp</Name>
     </ProjectReference>
     <ProjectReference Include="..\SampleModel\SampleModel.csproj">
       <Project>{02B7AA12-7A0B-4410-9B4B-8CD6BEE05FFE}</Project>

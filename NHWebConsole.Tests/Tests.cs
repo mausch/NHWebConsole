@@ -18,12 +18,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using FluentNHibernate.Automapping;
-using FluentNHibernate.Cfg;
-using FluentNHibernate.Cfg.Db;
 using Iesi.Collections.Generic;
 using NHibernate.Tool.hbm2ddl;
 using NUnit.Framework;
+using SampleApp;
 using SampleModel;
 
 namespace NHWebConsole.Tests {
@@ -31,55 +29,13 @@ namespace NHWebConsole.Tests {
     public class Tests {
         [SetUp]
         public void Setup() {
-            var cfg = Fluently.Configure()
-                .Database(SQLiteConfiguration.Standard
-                              .ConnectionString("Data Source=test.db;Version=3;New=True;"))
-                .Mappings(m => m.AutoMappings.Add(AutoMap.AssemblyOf<Customer>()))
-                .BuildConfiguration();
+            var cfg = Global.BuildNHConfiguration("test.db");
             var sessionFactory = cfg.BuildSessionFactory();
             NHWebConsoleSetup.OpenSession = () => sessionFactory.OpenSession();
             NHWebConsoleSetup.Configuration = () => cfg;
             new SchemaExport(cfg).Execute(false, true, false);
-            CreateSampleData();
+            Global.CreateSampleData(null);
         }
-
-        private void CreateSampleData() {
-            using (var session = NHWebConsoleSetup.OpenSession()) {
-                var customer = new Customer {
-                    Name = "John Doe",
-                    Title = "CEO",
-                };
-                session.Save(customer);
-                var employee = new Employee {
-                    FirstName = "Employee",
-                    LastName = "of the Month",
-                };
-                session.Save(employee);
-                var territory = new Territory {
-                    Name = "North east",
-                };
-                session.Save(territory);
-                session.Save(new Order {
-                    Customer = customer,
-                    Employee = employee,
-                    OrderDate = DateTime.Now,
-                });
-                session.Save(new Order {
-                    Customer = customer,
-                    Employee = employee,
-                    OrderDate = DateTime.Now.AddMonths(1),
-                });
-                session.Save(new Order {
-                    Customer = customer,
-                    Employee = employee,
-                    OrderDate = DateTime.Now.AddDays(1),
-                });
-                territory.Employees = new HashedSet<Employee> { employee };
-                employee.Territories = new HashedSet<Territory> {territory};
-                session.Flush();
-            }
-        }
-
 
         [Test]
         public void ExecQuery() {
