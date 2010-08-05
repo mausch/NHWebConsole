@@ -16,13 +16,9 @@
 
 using System;
 using System.Collections.Generic;
-using FluentNHibernate.Automapping;
-using FluentNHibernate.Cfg;
-using FluentNHibernate.Cfg.Db;
 using HqlIntellisense;
-using NHibernate.Cfg;
 using NUnit.Framework;
-using SampleModel;
+using SampleApp;
 
 namespace NHWebConsole.Tests {
     [TestFixture]
@@ -31,12 +27,8 @@ namespace NHWebConsole.Tests {
 
         [TestFixtureSetUp]
         public void Setup() {
-            var nhcfg = Fluently.Configure()
-                .Database(SQLiteConfiguration.Standard
-                              .ConnectionString("Data Source=test.db;Version=3;New=True;"))
-                .Mappings(m => m.AutoMappings.Add(AutoMap.AssemblyOf<Customer>()))
-                .BuildConfiguration();
-            new NHConfigDataProvider(nhcfg);
+            var nhcfg = Global.BuildNHConfiguration("test.db");
+            cfg = new NHConfigDataProvider(nhcfg);
         }
 
         [Test]
@@ -63,9 +55,19 @@ namespace NHWebConsole.Tests {
             PrintResult(requestor);
         }
 
+        [Test]
+        public void SelectFromWhere() {
+            var q = "select x from SampleModel.Customer x where x.";
+            var requestor = new CompletionRequestor();
+            new HQLCodeAssist(cfg).CodeComplete(q, q.Length, requestor);
+            PrintResult(requestor);
+        }
+
         public void PrintResult(CompletionRequestor r) {
             if (r.Error != null)
-                Console.WriteLine(r.Error);
+                Console.WriteLine("Error: {0}", r.Error);
+            if (r.Proposals.Count == 0)
+                Console.WriteLine("No proposals");
             foreach (var p in r.Proposals) {
                 Console.WriteLine("completion: {0}", p.GetCompletion());
                 Console.WriteLine("kind: {0}", p.GetCompletionKind());
