@@ -19,6 +19,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Web;
+using FluentNHibernate;
 using FluentNHibernate.Automapping;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
@@ -33,13 +34,23 @@ namespace SampleApp {
             var cfg = Fluently.Configure()
                 .Database(SQLiteConfiguration.Standard
                     .ConnectionString(string.Format("Data Source={0};Version=3;New=True;", Server.MapPath("/test.db"))))
-                .Mappings(m => m.AutoMappings.Add(AutoMap.AssemblyOf<Customer>()))
+                .Mappings(m => m.AutoMappings.Add(AutoMap.AssemblyOf<Customer>(new NHFluentConfig())))
                 .BuildConfiguration();
             var sessionFactory = cfg.BuildSessionFactory();
             NHWebConsoleSetup.OpenSession = () => sessionFactory.OpenSession();
             NHWebConsoleSetup.Configuration = () => cfg;
             new SchemaExport(cfg).Execute(false, true, false);
             CreateSampleData();
+        }
+
+        public class NHFluentConfig: DefaultAutomappingConfiguration {
+            public override bool IsComponent(Type type) {
+                return type == typeof (Address);
+            }
+
+            public override bool ShouldMap(Member member) {
+                return member.CanWrite;
+            }
         }
 
         private void CreateSampleData() {
@@ -50,11 +61,23 @@ namespace SampleApp {
                     History = NLipsum.Core.LipsumGenerator.Generate(10),
                     SomeHtml = NLipsum.Core.LipsumGenerator.GenerateHtml(10),
                     Picture = File.ReadAllBytes(Server.MapPath("/maxi_yacht_sail9062928.jpg")),
+                    Address = new Address {
+                        City = "Buenos Aires",
+                        Country = "Argentina",
+                        State = "Buenos Aires",
+                        Street = "El Cuco 123",
+                    }
                 };
                 session.Save(customer);
                 var employee = new Employee {
                     FirstName = "Employee",
                     LastName = "of the Month",
+                    Address = new Address {
+                        City = "Düsseldorf",
+                        Country = "Deutschland",
+                        State = "Nordrhein-Westfalen",
+                        Street = "Königsallee 44",
+                    }
                 };
                 session.Save(employee);
                 foreach (var i in Enumerable.Range(1, 100))

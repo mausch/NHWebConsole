@@ -34,7 +34,8 @@ namespace NHWebConsole {
         public static string DictToQuerystring(IDictionary<string, string> qs) {
             return string.Join("&", qs
                                         .Where(k => !string.IsNullOrEmpty(k.Key))
-                                        .Select(k => string.Format("{0}={1}", HttpUtility.UrlEncode(k.Key), HttpUtility.UrlEncode(k.Value))).ToArray());
+                                        .Select(k => string.Format("{0}={1}", HttpUtility.UrlEncode(k.Key), HttpUtility.UrlEncode(k.Value)))
+                                        .ToArray());
         }
 
 

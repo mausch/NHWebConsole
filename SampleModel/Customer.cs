@@ -24,6 +24,7 @@ namespace SampleModel {
         public virtual string History { get; set; }
         public virtual string SomeHtml { get; set; }
         public virtual byte[] Picture { get; set; }
+        public virtual Address Address { get; set; }
 
         public virtual IList<Order> Orders { get; set; }
     }

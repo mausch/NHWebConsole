@@ -29,5 +29,6 @@ namespace SampleModel {
 
         public virtual IList<Order> Orders { get; set; }
         public virtual ISet<Territory> Territories { get; set; }
+        public virtual Address Address { get; set; }
     }
 }
