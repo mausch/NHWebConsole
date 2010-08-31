@@ -16,12 +16,13 @@
 
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.SessionState;
 
 namespace NHWebConsole {
     /// <summary>
     /// Handles view plumbing
     /// </summary>
-    public abstract class Controller : IController, IHttpHandler {
+    public abstract class Controller : IController, IHttpHandler, IReadOnlySessionState {
         public abstract IResult Execute(HttpContext context);
 
         public virtual void ProcessRequest(HttpContext context) {
