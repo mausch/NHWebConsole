@@ -47,6 +47,8 @@ namespace NHWebConsole.Tests {
                 };
                 var model = new Context {
                     Query = "from System.Object",
+                    QueryType = QueryType.HQL,
+                    ImageFields = new string[0],
                 };
                 c.ExecQuery(model);
                 Assert.IsNotNull(model.Results);
