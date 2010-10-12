@@ -56,6 +56,7 @@
     <Compile Include="ControllerFactory.cs" />
     <Compile Include="IndexController.cs" />
     <Compile Include="NHController.cs" />
+    <Compile Include="OpensearchController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NHWebConsoleSetup.cs" />
     <Compile Include="StaticController.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="SuggestionResponse.cs" />
     <Compile Include="UrlHelper.cs" />
     <Compile Include="Context.cs" />
+    <Compile Include="Utils\EnumerableExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Index.html" />
@@ -76,6 +78,9 @@
       <Project>{BDFDD553-E5E3-46A7-94C5-3C507510FEE6}</Project>
       <Name>MiniMVC</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Opensearch.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="Merge">
