@@ -5,6 +5,12 @@
     <description>$helper.XmlEncode($model.Query)</description>
     <link>$model.Url?q=$helper.XmlEncode($model.Query)#if ($model.MaxResults)&amp;MaxResults=$model.MaxResults#end#if ($model.FirstResult)&amp;FirstResult=$model.FirstResult#end</link>
     <pubDate>$helper.Now.ToString("R")</pubDate>
+    #if ($model.Error)
+    <item>
+        <title>NHibernate Exception</title>
+        <description>$helper.XmlEncode($model.Error)</description>
+    </item>
+    #end
     #foreach ($r in $model.Results)
     <item>
       <title>#$velocityCount</title>

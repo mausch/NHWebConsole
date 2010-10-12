@@ -79,11 +79,16 @@ namespace NHWebConsole {
             } catch (HibernateException e) {
                 model.Error = e.ToString();
             }
-            if (model.Raw)
-                return new RawResult(model.RawResult) {ContentType = model.ContentType};
+            if (model.Raw) {
+                return new RawResult(model.Error ?? model.RawResult) {
+                    ContentType = model.ContentType
+                };
+            }
             if (model.Output != null)
                 ViewName = GetEmbeddedViewName(model.Output);
-            return new ViewResult(model, ViewName) { ContentType = model.ContentType };
+            return new ViewResult(model, ViewName) {
+                ContentType = model.ContentType
+            };
         }
 
         public string BuildRssUrl(Context model) {
