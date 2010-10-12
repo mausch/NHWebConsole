@@ -27,7 +27,7 @@ namespace NHWebConsole.Tests {
 
         [TestFixtureSetUp]
         public void Setup() {
-            var nhcfg = Global.BuildNHConfiguration("test.db");
+            var nhcfg = Global.FluentNHConfig("test.db").BuildConfiguration();
             cfg = new NHConfigDataProvider(nhcfg);
         }
 

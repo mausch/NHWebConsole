@@ -33,16 +33,15 @@ using SampleModel;
 
 namespace SampleApp {
     public class Global : HttpApplication {
-        public static Configuration BuildNHConfiguration(string dbFile) {
+        public static FluentConfiguration FluentNHConfig(string dbFile) {
             return Fluently.Configure()
                 .Database(SQLiteConfiguration.Standard
                               .ConnectionString(string.Format("Data Source={0};Version=3;New=True;", dbFile)))
-                .Mappings(m => m.AutoMappings.Add(AutoMap.AssemblyOf<Customer>(new NHFluentConfig())))
-                .BuildConfiguration();
+                .Mappings(m => m.AutoMappings.Add(AutoMap.AssemblyOf<Customer>(new NHFluentConfig())));
         }
 
         protected void Application_Start(object sender, EventArgs e) {
-            var cfg = BuildNHConfiguration(Server.MapPath("/test.db"));
+            var cfg = FluentNHConfig(Server.MapPath("/test.db")).BuildConfiguration();
             var sessionFactory = cfg.BuildSessionFactory();
             NHWebConsoleSetup.OpenSession = () => sessionFactory.OpenSession();
             NHWebConsoleSetup.Configuration = () => cfg;
@@ -65,8 +64,8 @@ namespace SampleApp {
                 var customer = new Customer {
                     Name = "John Doe",
                     Title = "CEO",
-                    History = LipsumGenerator.Generate(10),
-                    SomeHtml = LipsumGenerator.GenerateHtml(10),
+                    History = LipsumGenerator.Generate(5),
+                    SomeHtml = LipsumGenerator.GenerateHtml(5),
                     Picture = pictureFile == null ? null : File.ReadAllBytes(pictureFile),
                     Address = new Address {
                         City = "Buenos Aires",
