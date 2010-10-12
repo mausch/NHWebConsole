@@ -23,6 +23,7 @@ using NHibernate.Tool.hbm2ddl;
 using NUnit.Framework;
 using SampleApp;
 using SampleModel;
+using NHibernate.Mapping;
 
 namespace NHWebConsole.Tests {
     [TestFixture]
@@ -147,6 +148,14 @@ namespace NHWebConsole.Tests {
                 ImageFields = new string[0],
             };
             c.ConvertResult(employee, ctx);            
+        }
+
+        [Test]
+        public void QueryScalarIncludesNamespace() {
+            var c = new IndexController();
+            var prop = new Property {Name = "FirstName"};
+            var query = c.QueryScalar(prop, typeof (Employee), new Employee());
+            Assert.AreEqual("select x.FirstName from SampleModel.Employee x where x.Id = '0'", query);
         }
     }
 }

@@ -349,7 +349,7 @@ namespace NHWebConsole {
         }
 
         public string QueryScalar(Property p, Type entityType, object o) {
-            return string.Format("select x.{0} from {1} x where x.{2} = '{3}'", p.Name, entityType.Name, GetPkGetter(entityType).PropertyName, GetPkValue(entityType, o));
+            return string.Format("select x.{0} from {1} x where x.{2} = '{3}'", p.Name, entityType.FullName, GetPkGetter(entityType).PropertyName, GetPkValue(entityType, o));
         }
 
         public ICollection<Row> ConvertResults(IList results, Context model) {
