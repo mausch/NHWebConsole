@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Data;
+using System.Linq.Expressions;
 using NHibernate;
 using NHibernate.Engine;
 using NHibernate.Stat;
@@ -162,42 +163,6 @@ namespace NHWebConsole.Tests {
             session.Delete(entityName, obj);
         }
 
-        public IList Find(string query) {
-            return session.Find(query);
-        }
-
-        public IList Find(string query, object value, IType type) {
-            return session.Find(query, value, type);
-        }
-
-        public IList Find(string query, object[] values, IType[] types) {
-            return session.Find(query, values, types);
-        }
-
-        public IEnumerable Enumerable(string query) {
-            return session.Enumerable(query);
-        }
-
-        public IEnumerable Enumerable(string query, object value, IType type) {
-            return session.Enumerable(query, value, type);
-        }
-
-        public IEnumerable Enumerable(string query, object[] values, IType[] types) {
-            return session.Enumerable(query, values, types);
-        }
-
-        public ICollection Filter(object collection, string filter) {
-            return session.Filter(collection, filter);
-        }
-
-        public ICollection Filter(object collection, string filter, object value, IType type) {
-            return session.Filter(collection, filter, value, type);
-        }
-
-        public ICollection Filter(object collection, string filter, object[] values, IType[] types) {
-            return session.Filter(collection, filter, values, types);
-        }
-
         public int Delete(string query) {
             return session.Delete(query);
         }
@@ -262,8 +227,23 @@ namespace NHWebConsole.Tests {
             return session.CreateCriteria(entityName, alias);
         }
 
+        public IQueryOver<T, T> QueryOver<T>() where T : class
+        {
+            return session.QueryOver<T>();
+        }
+
+        public IQueryOver<T, T> QueryOver<T>(Expression<Func<T>> alias) where T : class
+        {
+            return session.QueryOver<T>();
+        }
+
         public IQuery CreateQuery(string queryString) {
             return session.CreateQuery(queryString);
+        }
+
+        public IQuery CreateQuery(IQueryExpression queryExpression)
+        {
+            return session.CreateQuery(queryExpression);
         }
 
         public IQuery CreateFilter(object collection, string queryString) {
@@ -272,14 +252,6 @@ namespace NHWebConsole.Tests {
 
         public IQuery GetNamedQuery(string queryName) {
             return session.GetNamedQuery(queryName);
-        }
-
-        public IQuery CreateSQLQuery(string sql, string returnAlias, Type returnClass) {
-            return session.CreateSQLQuery(sql, returnAlias, returnClass);
-        }
-
-        public IQuery CreateSQLQuery(string sql, string[] returnAliases, Type[] returnClasses) {
-            return session.CreateSQLQuery(sql, returnAliases, returnClasses);
         }
 
         public ISQLQuery CreateSQLQuery(string queryString) {

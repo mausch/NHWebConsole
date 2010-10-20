@@ -29,19 +29,21 @@ namespace NHWebConsole {
         public override IResult Execute(HttpContextBase context) {
             var q = context.Request.QueryString["q"];
             var p = int.Parse(context.Request.QueryString["p"]);
-            new HQLCodeAssist(new NHConfigDataProvider(NHWebConsoleSetup.Configuration())).CodeComplete(q, p, this);
+            new HQLCodeAssist(new SimpleConfigurationProvider(NHWebConsoleSetup.Configuration())).CodeComplete(q, p, this);
             return new ViewResult(new SuggestionResponse {
                 Error = error,
                 Suggestions = string.Format("[{0}]", string.Join(",", suggestions.Select(s => string.Format("'{0}'", s)).ToArray())),
             }, ViewName);
         }
 
-        public bool accept(HQLCompletionProposal proposal) {
-            suggestions.Add(proposal.GetCompletion());
+        public bool Accept(HQLCompletionProposal proposal)
+        {
+            suggestions.Add(proposal.Completion);
             return true;
         }
 
-        public void completionFailure(string errorMessage) {
+        public void CompletionFailure(string errorMessage)
+        {
             error = errorMessage;
         }
     }

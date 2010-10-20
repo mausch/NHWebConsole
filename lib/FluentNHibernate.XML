@@ -325,6 +325,48 @@
             HasMany(x => x.Locations);
             </example>
         </member>
+        <member name="M:FluentNHibernate.Mapping.ClasslikeMapBase`1.HasMany``2(System.Linq.Expressions.Expression{System.Func{`0,System.Collections.Generic.IDictionary{``0,``1}}})">
+            <summary>
+            Maps a dictionary
+            </summary>
+            <typeparam name="TKey">Key type</typeparam>
+            <typeparam name="TValue">Value type</typeparam>
+            <param name="memberExpression">Collection property</param>
+            <example>
+            HasMany(x => x.Locations);
+            </example>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.ClasslikeMapBase`1.HasMany``2(System.Linq.Expressions.Expression{System.Func{`0,NHibernate.Collection.Generic.PersistentGenericMap{``0,``1}}})">
+            <summary>
+            Maps a dictionary with a non-generic custom collection derived from <see cref="T:NHibernate.Collection.Generic.PersistentGenericMap`2"/>.
+            </summary>
+            <typeparam name="TKey">Key type</typeparam>
+            <typeparam name="TValue">Value type</typeparam>
+            <param name="memberExpression">Collection property</param>
+            <example>
+            HasMany(x =&gt; x.Locations);
+            </example>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.ClasslikeMapBase`1.HasMany``2(System.Linq.Expressions.Expression{System.Func{`0,System.Collections.IDictionary}})">
+            <summary>
+            Maps a dictionary
+            </summary>
+            <typeparam name="TKey">Key type</typeparam>
+            <typeparam name="TValue">Value type</typeparam>
+            <param name="memberExpression">Collection property</param>
+            <example>
+            HasMany(x => x.Locations);
+            </example>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.ClasslikeMapBase`1.HasMany(System.Linq.Expressions.Expression{System.Func{`0,System.Collections.IDictionary}})">
+            <summary>
+            Maps a dictionary
+            </summary>
+            <param name="memberExpression">Collection property</param>
+            <example>
+            HasMany(x => x.Locations);
+            </example>
+        </member>
         <member name="M:FluentNHibernate.Mapping.ClasslikeMapBase`1.HasManyToMany``1(System.Linq.Expressions.Expression{System.Func{`0,System.Collections.Generic.IEnumerable{``0}}})">
             <summary>
             Maps a collection of entities as a many-to-many
@@ -340,6 +382,48 @@
             Maps a collection of entities as a many-to-many
             </summary>
             <typeparam name="TChild">Child entity type</typeparam>
+            <param name="memberExpression">Collection property</param>
+            <example>
+            HasManyToMany(x => x.Locations);
+            </example>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.ClasslikeMapBase`1.HasManyToMany``2(System.Linq.Expressions.Expression{System.Func{`0,System.Collections.Generic.IDictionary{``0,``1}}})">
+            <summary>
+            Maps a generic dictionary
+            </summary>
+            <typeparam name="TKey">Key type</typeparam>
+            <typeparam name="TValue">Value type</typeparam>
+            <param name="memberExpression">Collection property</param>
+            <example>
+            HasManyToMany(x => x.Locations);
+            </example>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.ClasslikeMapBase`1.HasManyToMany``2(System.Linq.Expressions.Expression{System.Func{`0,NHibernate.Collection.Generic.PersistentGenericMap{``0,``1}}})">
+            <summary>
+            Maps a generic dictionary
+            </summary>
+            <typeparam name="TKey">Key type</typeparam>
+            <typeparam name="TValue">Value type</typeparam>
+            <param name="memberExpression">Collection property</param>
+            <example>
+            HasManyToMany(x => x.Locations);
+            </example>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.ClasslikeMapBase`1.HasManyToMany``2(System.Linq.Expressions.Expression{System.Func{`0,System.Collections.IDictionary}})">
+            <summary>
+            Maps a dictionary
+            </summary>
+            <typeparam name="TKey">Key type</typeparam>
+            <typeparam name="TValue">Value type</typeparam>
+            <param name="memberExpression">Collection property</param>
+            <example>
+            HasManyToMany(x => x.Locations);
+            </example>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.ClasslikeMapBase`1.HasManyToMany(System.Linq.Expressions.Expression{System.Func{`0,System.Collections.IDictionary}})">
+            <summary>
+            Maps a dictionary
+            </summary>
             <param name="memberExpression">Collection property</param>
             <example>
             HasManyToMany(x => x.Locations);
@@ -369,11 +453,29 @@
             </summary>
             <param name="innerText">Stored procedure call</param>
         </member>
+        <member name="M:FluentNHibernate.Mapping.JoinedSubClassPart`1.Key(System.Action{FluentNHibernate.Mapping.Builders.KeyBuilder})">
+            <summary>
+            Specify how the foreign key is configured.
+            </summary>
+            <param name="keyConfiguration">Configuration <see cref="T:System.Action"/></param>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.JoinedSubClassPart`1.KeyColumn(System.String)">
+            <summary>
+            Specify the foreign key column name
+            </summary>
+            <param name="keyColumn">Key column name</param>
+        </member>
         <member name="M:FluentNHibernate.Mapping.JoinedSubClassPart`1.EntityName(System.String)">
             <summary>
             Specifies an entity-name.
             </summary>
             <remarks>See http://nhforge.org/blogs/nhibernate/archive/2008/10/21/entity-name-in-action-a-strongly-typed-entity.aspx</remarks>
+        </member>
+        <member name="P:FluentNHibernate.Mapping.JoinedSubClassPart`1.KeyColumns">
+            <summary>
+            Modify the key columns collection
+            </summary>
         </member>
         <member name="P:FluentNHibernate.Mapping.JoinedSubClassPart`1.Not">
             <summary>
@@ -385,6 +487,13 @@
             Maps to the Join element in NH 2.0
             </summary>
             <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.JoinPart`1.Key(System.Action{FluentNHibernate.Mapping.Builders.KeyBuilder})">
+            <summary>
+            Specify how the foreign key is configured.
+            </summary>
+            <param name="keyConfiguration">Configuration <see cref="T:System.Action"/></param>
+            <returns>Builder</returns>
         </member>
         <member name="M:FluentNHibernate.Mapping.JoinPart`1.KeyColumn(System.String)">
             <summary>
@@ -1214,6 +1323,58 @@
             this allows the user to find any columns with the matching name.
             </summary>
         </member>
+        <member name="T:FluentNHibernate.Diagnostics.DiagnosticsConfiguration">
+            <summary>
+            Diagnostic logging configuration
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Diagnostics.DiagnosticsConfiguration.Enable(System.Boolean)">
+            <summary>
+            Conditionally enable logging
+            </summary>
+            <param name="enable">Enable logging</param>
+        </member>
+        <member name="M:FluentNHibernate.Diagnostics.DiagnosticsConfiguration.Enable">
+            <summary>
+            Enable logging
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Diagnostics.DiagnosticsConfiguration.Disable">
+            <summary>
+            Disable logging
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Diagnostics.DiagnosticsConfiguration.RegisterListener(FluentNHibernate.Diagnostics.IDiagnosticListener)">
+            <summary>
+            Register a logging listener
+            </summary>
+            <param name="listener">Listener</param>
+        </member>
+        <member name="M:FluentNHibernate.Diagnostics.DiagnosticsConfiguration.OutputToConsole">
+            <summary>
+            Register a default Console.Write listener
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FluentNHibernate.Diagnostics.DiagnosticsConfiguration.OutputToConsole(FluentNHibernate.Diagnostics.IDiagnosticResultsFormatter)">
+            <summary>
+            Register a Console.Write listener with a custom result formatter
+            </summary>
+            <param name="formatter">Result formatter</param>
+        </member>
+        <member name="M:FluentNHibernate.Diagnostics.DiagnosticsConfiguration.OutputToFile(System.String)">
+            <summary>
+            Register a default file output listener
+            </summary>
+            <param name="path">Output path</param>
+        </member>
+        <member name="M:FluentNHibernate.Diagnostics.DiagnosticsConfiguration.OutputToFile(FluentNHibernate.Diagnostics.IDiagnosticResultsFormatter,System.String)">
+            <summary>
+            Register a file output listener with a custom result formatter
+            </summary>
+            <param name="formatter">Result formatter</param>
+            <param name="path">Output path</param>
+        </member>
         <member name="M:FluentNHibernate.Cfg.Db.PersistenceConfiguration`2.Dialect(System.String)">
             <summary>
             Sets the database dialect. This shouldn't be necessary
@@ -1349,6 +1510,30 @@
             <param name="key">Setting key</param>
             <param name="value">Setting value</param>
             <returns>Configuration builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Cfg.Db.PersistenceConfiguration`2.CollectionTypeFactory(System.String)">
+            <summary>
+            Sets the collectiontype.factory_class property.
+            NOTE: NHibernate 2.1 only
+            </summary>
+            <param name="collectionTypeFactoryClass">factory class</param>
+            <returns>Configuration</returns>
+        </member>
+        <member name="M:FluentNHibernate.Cfg.Db.PersistenceConfiguration`2.CollectionTypeFactory(System.Type)">
+            <summary>
+            Sets the collectiontype.factory_class property.
+            NOTE: NHibernate 2.1 only
+            </summary>
+            <param name="collectionTypeFactoryClass">factory class</param>
+            <returns>Configuration</returns>
+        </member>
+        <member name="M:FluentNHibernate.Cfg.Db.PersistenceConfiguration`2.CollectionTypeFactory``1">
+            <summary>
+            Sets the collectiontype.factory_class property.
+            NOTE: NHibernate 2.1 only
+            </summary>
+            <typeparam name="TCollectionTypeFactory">factory class</typeparam>
+            <returns>Configuration</returns>
         </member>
         <member name="M:FluentNHibernate.Cfg.Db.PersistenceConfiguration`2.ProxyFactoryFactory(System.String)">
             <summary>
@@ -1559,6 +1744,16 @@
             </summary>
             <typeparam name="T"></typeparam>
             <returns></returns>
+        </member>
+        <member name="P:FluentNHibernate.Conventions.Inspections.IManyToManyInspector.Where">
+            <summary>
+            Applies to the joining table for this many-to-many. 
+            </summary>
+        </member>
+        <member name="P:FluentNHibernate.Conventions.Inspections.IManyToManyInspector.OrderBy">
+            <summary>
+            Applies to the joining table for this many-to-many. 
+            </summary>
         </member>
         <member name="M:FluentNHibernate.Conventions.Instances.GeneratorInstance.Increment">
             <summary>
@@ -1898,6 +2093,16 @@
             <param name="property"></param>
             <param name="paramValues">Params configuration</param>
         </member>
+        <member name="M:FluentNHibernate.Conventions.Instances.IManyToManyInstance.Where(System.String)">
+            <summary>
+            Applies to the joining table for this many-to-many. 
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Conventions.Instances.IManyToManyInstance.OrderBy(System.String)">
+            <summary>
+            Applies to the joining table for this many-to-many. 
+            </summary>
+        </member>
         <member name="M:FluentNHibernate.Conventions.Instances.IManyToOneInstance.LazyLoad">
             <summary>
             Specify the lazy behaviour of this relationship.
@@ -2063,6 +2268,1236 @@
             This bad boy is the entry point to the visitor
             </summary>
             <param name="mappings"></param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.CacheBuilder.ReadWrite">
+            <summary>
+            Sets caching to read-write
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.CacheBuilder.NonStrictReadWrite">
+            <summary>
+            Sets caching to non-strict read-write
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.CacheBuilder.ReadOnly">
+            <summary>
+            Sets caching to read-only
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.CacheBuilder.Transactional">
+            <summary>
+            Sets caching to transactional
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.CacheBuilder.CustomUsage(System.String)">
+            <summary>
+            Specifies a custom cache behaviour
+            </summary>
+            <param name="custom">Custom behaviour</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.CacheBuilder.Region(System.String)">
+            <summary>
+            Specifies the cache region
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.CacheBuilder.IncludeAll">
+            <summary>
+            Include all properties for caching
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.CacheBuilder.IncludeNonLazy">
+            <summary>
+            Include only non-lazy properties for caching
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.CacheBuilder.CustomInclude(System.String)">
+            <summary>
+            Specify a custom property inclusion strategy
+            </summary>
+            <param name="custom">Inclusion strategy</param>
+        </member>
+        <member name="T:FluentNHibernate.Mapping.Builders.CompositeElementBuilder`1">
+            <summary>
+            Component-element for component HasMany's.
+            </summary>
+            <typeparam name="T">Component type</typeparam>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.CompositeElementBuilder`1.Map(System.Linq.Expressions.Expression{System.Func{`0,System.Object}})">
+            <summary>
+            Map a property
+            </summary>
+            <param name="expression">Property</param>
+            <example>
+            Map(x => x.Age);
+            </example>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.CompositeElementBuilder`1.Map(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.String)">
+            <summary>
+            Map a property
+            </summary>
+            <param name="expression">Property</param>
+            <param name="columnName">Column name</param>
+            <example>
+            Map(x => x.Age, "person_age");
+            </example>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.CompositeElementBuilder`1.References``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Create a reference to another entity. In database terms, this is a many-to-one
+            relationship.
+            </summary>
+            <typeparam name="TOther">Other entity</typeparam>
+            <param name="expression">Property on the current entity</param>
+            <example>
+            References(x => x.Company);
+            </example>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.CompositeElementBuilder`1.References``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.String)">
+            <summary>
+            Create a reference to another entity. In database terms, this is a many-to-one
+            relationship.
+            </summary>
+            <typeparam name="TOther">Other entity</typeparam>
+            <param name="expression">Property on the current entity</param>
+            <param name="columnName">Column name</param>
+            <example>
+            References(x => x.Company, "person_company_id");
+            </example>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.CompositeElementBuilder`1.ParentReference(System.Linq.Expressions.Expression{System.Func{`0,System.Object}})">
+            <summary>
+            Maps a property of the component class as a reference back to the containing entity
+            </summary>
+            <param name="expression">Parent reference property</param>
+            <returns>Component being mapped</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.CompositeElementBuilder`1.Component``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Action{FluentNHibernate.Mapping.Builders.CompositeElementBuilder{``0}})">
+            <summary>
+            Create a nested component mapping.
+            </summary>
+            <param name="property">Component property</param>
+            <param name="nestedCompositeElementAction">Action for creating the component</param>
+            <example>
+            HasMany(x => x.Locations)
+              .Component(c =>
+              {
+                c.Map(x => x.Name);
+                c.Component(x => x.Address, addr =>
+                {
+                  addr.Map(x => x.Street);
+                  addr.Map(x => x.PostCode);
+                });
+              });
+            </example>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.CompositeIndexBuilder`1.Type``1">
+            <summary>
+            Specifies the type of the element
+            </summary>
+            <typeparam name="TElementType">Value type</typeparam>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.CompositeIndexBuilder`1.Type(System.Type)">
+            <summary>
+            Specifies the type of the element
+            </summary>
+            <param name="type">Type</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.CompositeIndexBuilder`1.Type(System.String)">
+            <summary>
+            Specifies the type of the element
+            </summary>
+            <param name="type">Type name</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.CompositeIndexBuilder`1.Map(System.Linq.Expressions.Expression{System.Func{`0,System.Object}})">
+            <summary>
+            Defines a property to be used as a key for this composite-id.
+            </summary>
+            <param name="expression">A member access lambda expression for the property</param>
+            <returns>The composite identity part fluent interface</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.CompositeIndexBuilder`1.Map(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.String)">
+            <summary>
+            Defines a property to be used as a key for this composite-id with an explicit column name.
+            </summary>
+            <param name="expression">A member access lambda expression for the property</param>
+            <param name="columnName">The column name in the database to use for this key, or null to use the property name</param>
+            <returns>The composite identity part fluent interface</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.CompositeIndexBuilder`1.Reference(System.Linq.Expressions.Expression{System.Func{`0,System.Object}})">
+            <summary>
+            Defines a reference to be used as a many-to-one key for this composite-id with an explicit column name.
+            </summary>
+            <param name="expression">A member access lambda expression for the property</param>
+            <returns>The composite identity part fluent interface</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.CompositeIndexBuilder`1.Reference(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.String[])">
+            <summary>
+            Defines a reference to be used as a many-to-one key for this composite-id with an explicit column name.
+            </summary>
+            <param name="expression">A member access lambda expression for the property</param>
+            <param name="columnNames">A list of column names used for this key</param>
+            <returns>The composite identity part fluent interface</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ElementBuilder.Type``1">
+            <summary>
+            Specifies the type of the values contained in the dictionary, while using the
+            default column name.
+            </summary>
+            <typeparam name="TElementType">Value type</typeparam>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ElementBuilder.Type(System.Type)">
+            <summary>
+            Specifies the type of the values contained in the dictionary, while using the
+            default column name.
+            </summary>
+            <param name="type">Type</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ElementBuilder.Type(System.String)">
+            <summary>
+            Specifies the type of the values contained in the dictionary, while using the
+            default column name.
+            </summary>
+            <param name="type">Type name</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ElementBuilder.Column(System.String)">
+            <summary>
+            Specifies the name of the column used for the values of the dictionary, while using
+            the type inferred from the dictionary signature.
+            </summary>
+            <param name="elementColumnName">Value column name</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ElementBuilder.Length(System.Int32)">
+            <summary>
+            Specify the element column length
+            </summary>
+            <param name="length">Column length</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ElementBuilder.Formula(System.String)">
+            <summary>
+            Specify the element column formula
+            </summary>
+            <param name="formula">Formula</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ElementBuilder.Precision(System.Int32)">
+            <summary>
+            Specify the precision for decimal types
+            </summary>
+            <param name="precision">Precision</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ElementBuilder.Scale(System.Int32)">
+            <summary>
+            Specify the scale for decimal types
+            </summary>
+            <param name="scale">Scale</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ElementBuilder.PrecisionAndScale(System.Int32,System.Int32)">
+            <summary>
+            Specify the precision and scale for decimal types
+            </summary>
+            <param name="precision">Precision</param>
+            <param name="scale">Scale</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ElementBuilder.Nullable">
+            <summary>
+            Specifies that the element is nullable (or not, if the <see cref="P:FluentNHibernate.Mapping.Builders.ElementBuilder.Not"/>
+            switch is used)
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ElementBuilder.Unique">
+            <summary>
+            Specifies that the element should be unique (or not, if the <see cref="P:FluentNHibernate.Mapping.Builders.ElementBuilder.Not"/>
+            switch is used)
+            </summary>
+        </member>
+        <member name="P:FluentNHibernate.Mapping.Builders.ElementBuilder.Not">
+            <summary>
+            Inverts the next boolean operation
+            </summary>
+        </member>
+        <member name="P:FluentNHibernate.Mapping.Builders.ElementBuilder.Columns">
+            <summary>
+            Modify the columns for this element
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.FetchTypeBuilder.Join">
+            <summary>
+            Join fetching
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.FetchTypeBuilder.Select">
+            <summary>
+            Select fetching
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.FetchTypeBuilder.Subselect">
+            <summary>
+            Subselect/subquery fetching
+            </summary>
+        </member>
+        <member name="T:FluentNHibernate.Mapping.Builders.FilterBuilder">
+            <summary>
+            Maps to the Filter element in NH 2.0
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.IndexBuilder.AsManyToMany">
+            <summary>
+            Specifies that this index is a many-to-many index. Note: not all methods are available
+            for many-to-many indexes.
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.IndexBuilder.AsOneToMany">
+            <summary>
+            Specifies that this index is a one-to-many index. Note: not all methods are available
+            for one-to-many indexes.
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.IndexBuilder.Column(System.String)">
+            <summary>
+            Specifies the column name for the index or key of the dictionary.
+            </summary>
+            <param name="indexColumnName">Column name</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.IndexBuilder.Type``1">
+            <summary>
+            Specifies the type of the index/key column
+            </summary>
+            <typeparam name="TIndex">Index type</typeparam>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.IndexBuilder.Type(System.Type)">
+            <summary>
+            Specifies the type of the index/key column
+            </summary>
+            <param name="type">Type</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.IndexBuilder.Type(System.String)">
+            <summary>
+            Specifies the type of the index/key column
+            </summary>
+            <param name="type">Type</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.IndexBuilder.ForeignKey(System.String)">
+            <summary>
+            Specifies a foreign key constraint name
+            </summary>
+            <param name="constraint">Constraint name</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.IndexBuilder.Length(System.Int32)">
+            <summary>
+            Specify the index column length
+            </summary>
+            <param name="length">Column length</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.IndexBuilder.EntityName(System.String)">
+            <summary>
+            Specify the index entity-name
+            </summary>
+            <param name="entityName">Entity name</param>
+        </member>
+        <member name="P:FluentNHibernate.Mapping.Builders.IndexBuilder.Columns">
+            <summary>
+            Modify the columns for this element
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.KeyBuilder.Column(System.String)">
+            <summary>
+            Sets the column name
+            </summary>
+            <param name="keyColumnName"></param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.KeyBuilder.PropertyRef(System.String)">
+            <summary>
+            This method is used to set a different key column in this table to be used for joins.
+            The output is set as the property-ref attribute in the "key" subelement of the collection
+            </summary>
+            <param name="propertyRef">The name of the column in this table which is linked to the foreign key</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.KeyBuilder.CascadeOnDelete">
+            <summary>
+            Specifies that the foreign key should cascade when deleted.
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.KeyBuilder.ForeignKey(System.String)">
+            <summary>
+            Specifies the foreign key constraint name
+            </summary>
+            <param name="foreignKeyName">Constraint name</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.KeyBuilder.Update">
+            <summary>
+            Specifies that the foreign key is updatable.
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.KeyBuilder.Unique">
+            <summary>
+            Specifies that the foreign key is unique.
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.KeyBuilder.Nullable">
+            <summary>
+            Specify that the key is nullable.
+            </summary>
+        </member>
+        <member name="P:FluentNHibernate.Mapping.Builders.KeyBuilder.Not">
+            <summary>
+            Inverts the next boolean operation
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToManyBuilder.Type``1">
+            <summary>
+            Specifies the type of the values contained in the dictionary, while using the
+            default column name.
+            </summary>
+            <typeparam name="TChild">Child type</typeparam>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToManyBuilder.Type(System.Type)">
+            <summary>
+            Specifies the type of the values contained in the dictionary, while using the
+            default column name.
+            </summary>
+            <param name="type">Type</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToManyBuilder.Type(System.String)">
+            <summary>
+            Specifies the type of the values contained in the dictionary, while using the
+            default column name.
+            </summary>
+            <param name="type">Type name</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToManyBuilder.EntityName(System.String)">
+            <summary>
+            Specifies the entity-name for the relationship
+            </summary>
+            <param name="entityName">Entity name</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToManyBuilder.Formula(System.String)">
+            <summary>
+            Specifies the formula for the relationship
+            </summary>
+            <param name="formula">Formula</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToManyBuilder.Lazy">
+            <summary>
+            Specifies whether this relationship is lazy
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToManyBuilder.ForeignKey(System.String)">
+            <summary>
+            Specifies the foreign key constraint
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToManyBuilder.Unique">
+            <summary>
+            Specifies whether this relationship is unique
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToManyBuilder.Where(System.String)">
+            <summary>
+            Specifies the where clause
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToManyBuilder.OrderBy(System.String)">
+            <summary>
+            Specifies the order by clause
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToManyBuilder.PropertyRef(System.String)">
+            <summary>
+            Specifies the property ref
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToManyBuilder.Column(System.String)">
+            <summary>
+            Specifies the name of the column used for the values of the dictionary, while using
+            the type inferred from the dictionary signature.
+            </summary>
+            <param name="relationshipColumn">Value column name</param>
+        </member>
+        <member name="P:FluentNHibernate.Mapping.Builders.ManyToManyBuilder.Not">
+            <summary>
+            Inverts the next boolean operation
+            </summary>
+        </member>
+        <member name="P:FluentNHibernate.Mapping.Builders.ManyToManyBuilder.NotFound">
+            <summary>
+            Specifies the not-found behaviour
+            </summary>
+        </member>
+        <member name="P:FluentNHibernate.Mapping.Builders.ManyToManyBuilder.Fetch">
+            <summary>
+            Specifies the fetch behaviour
+            </summary>
+        </member>
+        <member name="P:FluentNHibernate.Mapping.Builders.ManyToManyBuilder.Columns">
+            <summary>
+            Modify the columns for this element
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.Unique">
+            <summary>
+            Sets whether this relationship is unique
+            </summary>
+            <example>
+            Unique();
+            Not.Unique();
+            </example>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.UniqueKey(System.String)">
+            <summary>
+            Specifies the name of a multi-column unique constraint.
+            </summary>
+            <param name="keyName">Name of constraint</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.Index(System.String)">
+            <summary>
+            Specifies the index name
+            </summary>
+            <param name="indexName">Index name</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.Class``1">
+            <summary>
+            Specifies the child class of this relationship
+            </summary>
+            <typeparam name="T">Child</typeparam>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.Class(System.Type)">
+            <summary>
+            Specifies the child class of this relationship
+            </summary>
+            <param name="type">Child</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.ReadOnly">
+            <summary>
+            Sets this relationship to read-only
+            </summary>
+            <remarks>
+            This is the same as calling both Not.Insert() and Not.Update()
+            </remarks>
+            <example>
+            ReadOnly();
+            Not.ReadOnly();
+            </example>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.LazyLoad">
+            <summary>
+            Specify the lazy behaviour of this relationship.
+            </summary>
+            <remarks>
+            Defaults to Proxy lazy-loading. Use the <see cref="P:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.Not"/> modifier to disable
+            lazy-loading, and use the <see cref="M:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.LazyLoad(FluentNHibernate.Mapping.Laziness)"/>
+            overload to specify alternative lazy strategies.
+            </remarks>
+            <example>
+            LazyLoad();
+            Not.LazyLoad();
+            </example>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.LazyLoad(FluentNHibernate.Mapping.Laziness)">
+            <summary>
+            Specify the lazy behaviour of this relationship. Cannot be used
+            with the <see cref="P:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.Not"/> modifier.
+            </summary>
+            <param name="laziness">Laziness strategy</param>
+            <example>
+            LazyLoad(Laziness.NoProxy);
+            </example>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.ForeignKey">
+            <summary>
+            Specifies this relationship should be created with a default-named
+            foreign key.
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.ForeignKey(System.String)">
+            <summary>
+            Specifies the foreign-key constraint name
+            </summary>
+            <param name="foreignKeyName">Constraint name</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.Insert">
+            <summary>
+            Specifies that this relationship is insertable
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.Update">
+            <summary>
+            Specifies that this relationship is updatable
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.Column(System.String)">
+            <summary>
+            Specify the column name
+            </summary>
+            <param name="columnName">Column name</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.Formula(System.String)">
+            <summary>
+            Specifies the sql formula used for this relationship
+            </summary>
+            <param name="formula">Formula</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.PropertyRef(System.Linq.Expressions.Expression{System.Func{`0,System.Object}})">
+            <summary>
+            Specifies the property reference
+            </summary>
+            <param name="expression">Property</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.PropertyRef(System.String)">
+            <summary>
+            Specifies the property reference
+            </summary>
+            <param name="property">Property</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.Nullable">
+            <summary>
+            Sets this relationship to nullable
+            </summary>
+            <example>
+            Nullable();
+            Not.Nullable();
+            </example>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.EntityName(System.String)">
+            <summary>
+            Specifies an entity-name.
+            </summary>
+            <remarks>See http://nhforge.org/blogs/nhibernate/archive/2008/10/21/entity-name-in-action-a-strongly-typed-entity.aspx</remarks>
+        </member>
+        <member name="P:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.Fetch">
+            <summary>
+            Set the fetching strategy
+            </summary>
+            <example>
+            Fetch.Select();
+            </example>
+        </member>
+        <member name="P:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.NotFound">
+            <summary>
+            Set the behaviour for when this relationship is null in the database
+            </summary>
+            <example>
+            NotFound.Exception();
+            </example>
+        </member>
+        <member name="P:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.Columns">
+            <summary>
+            Modify the columns collection
+            </summary>
+        </member>
+        <member name="P:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.Cascade">
+            <summary>
+            Specifies the cascade behaviour for this relationship
+            </summary>
+            <example>
+            Cascade.All();
+            </example>
+        </member>
+        <member name="P:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.Access">
+            <summary>
+            Specifies the access strategy for this relationship
+            </summary>
+            <example>
+            Access.Field();
+            </example>
+        </member>
+        <member name="P:FluentNHibernate.Mapping.Builders.ManyToOneBuilder`1.Not">
+            <summary>
+            Inverts the next boolean
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.Name(System.String)">
+            <summary>
+            Sets the map name. Optional.
+            </summary>
+            <param name="mapName">Map name</param>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.Table(System.String)">
+            <summary>
+            Sets the name of the table containing the dictionary values. Optional.
+            </summary>
+            <param name="tableName">Table name</param>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.Schema(System.String)">
+            <summary>
+            Sets the name of the schema containing the map table.
+            </summary>
+            <param name="schema">Schema name</param>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.Catalog(System.String)">
+            <summary>
+            Sets the name of the catalog containing the map table.
+            </summary>
+            <param name="catalog">Catalog name</param>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.Lazy">
+            <summary>
+            Specifies whether this collection is lazy
+            </summary>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.ExtraLazy">
+            <summary>
+            Specifies whether this collection is extra lazy
+            </summary>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.Inverse">
+            <summary>
+            Specifies whether this collection is inverse
+            </summary>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.ReadOnly">
+            <summary>
+            Specifies whether this collection is read-only (mutable=false)
+            </summary>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.OrderBy(System.String)">
+            <summary>
+            Sets the order by clause
+            </summary>
+            <param name="clause">Order by</param>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.Where(System.String)">
+            <summary>
+            Sets the where clause
+            </summary>
+            <param name="clause">Order by</param>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.BatchSize(System.Int32)">
+            <summary>
+            Sets the batch size
+            </summary>
+            <param name="batchSize">Batch size</param>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.Persister``1">
+            <summary>
+            Sets the collection persister
+            </summary>
+            <typeparam name="TPersister">Persister type</typeparam>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.Persister(System.Type)">
+            <summary>
+            Sets the collection persister
+            </summary>
+            <param name="persister">Persister type</param>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.Persister(System.String)">
+            <summary>
+            Sets the collection persister
+            </summary>
+            <param name="persister">Persister type</param>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.CollectionType``1">
+            <summary>
+            Sets the collection type
+            </summary>
+            <typeparam name="TCollection">Collection type</typeparam>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.CollectionType(System.Type)">
+            <summary>
+            Sets the collection type
+            </summary>
+            <param name="collectionType">Collection type</param>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.CollectionType(System.String)">
+            <summary>
+            Sets the collection type
+            </summary>
+            <param name="collectionType">Collection type</param>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.Check(System.String)">
+            <summary>
+            Sets the check constraint name
+            </summary>
+            <param name="constraint">Constraint name</param>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.OptimisticLock">
+            <summary>
+            Specifies whether this collection is optimistically locked
+            </summary>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.Subselect(System.String)">
+            <summary>
+            Sets the subselect query
+            </summary>
+            <param name="query">Subselect query</param>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.Cache(System.Action{FluentNHibernate.Mapping.Builders.CacheBuilder})">
+            <summary>
+            Configure the caching of this collection
+            </summary>
+            <param name="cacheConfiguration">Cache configuration</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.ApplyFilter(System.String,System.String)">
+            <overloads>
+            Applies a filter to this entity given it's name.
+            </overloads>
+            <summary>
+            Applies a filter to this entity given it's name.
+            </summary>
+            <param name="name">The filter's name</param>
+            <param name="condition">The condition to apply</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.ApplyFilter(System.String)">
+            <overloads>
+            Applies a filter to this entity given it's name.
+            </overloads>
+            <summary>
+            Applies a filter to this entity given it's name.
+            </summary>
+            <param name="name">The filter's name</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.ApplyFilter``1(System.String)">
+            <overloads>
+            Applies a named filter to this one-to-many.
+            </overloads>
+            <summary>
+            Applies a named filter to this one-to-many.
+            </summary>
+            <param name="condition">The condition to apply</param>
+            <typeparam name="TFilter">
+            The type of a <see cref="T:FluentNHibernate.Mapping.FilterDefinition"/> implementation
+            defining the filter to apply.
+            </typeparam>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.ApplyFilter``1">
+            <summary>
+            Applies a named filter to this one-to-many.
+            </summary>
+            <typeparam name="TFilter">
+            The type of a <see cref="T:FluentNHibernate.Mapping.FilterDefinition"/> implementation
+            defining the filter to apply.
+            </typeparam>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.DictionaryKey(System.Action{FluentNHibernate.Mapping.Builders.IndexBuilder})">
+            <summary>
+            Specify how the index (or key) is configured.
+            </summary>
+            <param name="indexConfiguration">Configuration <see cref="T:System.Action"/></param>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.DictionaryKey``1(System.String)">
+            <summary>
+            Specifies the name of the column used for the keys of the dictionary, and the
+            type of the key.
+            </summary>
+            <param name="indexColumnName">Key column name</param>
+            <typeparam name="TIndexType">Key type</typeparam>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.DictionaryKey(System.String)">
+            <summary>
+            Specifies the name of the column used for the keys of the dictionary, while using
+            the type inferred from the dictionary signature.
+            </summary>
+            <param name="indexColumnName">Key column name</param>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.DictionaryKey``1">
+            <summary>
+            Specifies the type of the keys used for the dictionary, while using the
+            default column name.
+            </summary>
+            <typeparam name="TIndexType">Key type</typeparam>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.DictionaryValue(System.Action{FluentNHibernate.Mapping.Builders.ElementBuilder})">
+            <summary>
+            Specify how the element (or value) is configured.
+            </summary>
+            <param name="elementConfiguration">Configuration <see cref="T:System.Action"/></param>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.DictionaryValue``1(System.String)">
+            <summary>
+            Specifies the name of the column used for the values of the dictionary, and the
+            type of the values.
+            </summary>
+            <param name="elementColumnName">Value column name</param>
+            <typeparam name="TElementType">Value type</typeparam>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.DictionaryValue(System.String)">
+            <summary>
+            Specifies the name of the column used for the values of the dictionary, while using
+            the type inferred from the dictionary signature.
+            </summary>
+            <param name="elementColumnName">Value column name</param>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.DictionaryValue``1">
+            <summary>
+            Specifies the type of the values contained in the dictionary, while using the
+            default column name.
+            </summary>
+            <typeparam name="TElementType">Value type</typeparam>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.ForeignKey(System.Action{FluentNHibernate.Mapping.Builders.KeyBuilder})">
+            <summary>
+            Specify how the foreign key is configured.
+            </summary>
+            <param name="keyConfiguration">Configuration <see cref="T:System.Action"/></param>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.ForeignKey(System.String)">
+            <summary>
+            Specifies the name of the column used for the foreign key.
+            </summary>
+            <param name="keyColumnName">Key column name</param>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.Component(System.Action{FluentNHibernate.Mapping.Builders.CompositeElementBuilder{`1}})">
+            <summary>
+            Define a component (composite-element) to be used as the value of the dictionary.
+            </summary>
+            <param name="componentBuilder">Builder action</param>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.ComponentIndex(System.Action{FluentNHibernate.Mapping.Builders.CompositeIndexBuilder{`0}})">
+            <summary>
+            Define a component for use as the index (composite-index) or dictionary key.
+            </summary>
+            <param name="componentBuilder">Builder action</param>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.OneToMany">
+            <summary>
+            Specify the relationship is a one-to-many, this implies the key and value columns of the
+            dictionary will be stored in the child table.
+            </summary>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.OneToMany(System.Action{FluentNHibernate.Mapping.Builders.OneToManyBuilder})">
+            <summary>
+            Specify the relationship is a one-to-many, this implies the key and value columns of the
+            dictionary will be stored in the child table.
+            </summary>
+            <param name="relationshipConfiguration">Builder for one-to-many</param>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.OneToMany``1">
+            <summary>
+            Specify this relationship as a one-to-many of <typeparamref name="TChild"/>
+            </summary>
+            <typeparam name="TChild">Child type</typeparam>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.ManyToMany">
+            <summary>
+            Specify the relationship is a many-to-many, this implies that the key and value columns of the
+            dictionary will be stored in a separate table.
+            </summary>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.ManyToMany(System.Action{FluentNHibernate.Mapping.Builders.ManyToManyBuilder})">
+            <summary>
+            Specify the relationship is a many-to-many, this implies that the key and value columns of the
+            dictionary will be stored in a separate table.
+            </summary>
+            <param name="relationshipConfiguration">Builder for many-to-many</param>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.ManyToMany``1(System.String)">
+            <summary>
+            Specify this relationship as a many-to-many with the <see cref="!:relationshipColumn"/> column name,
+            and type of <typeparam name="TChild"/>
+            </summary>
+            <param name="relationshipColumn">Column name</param>
+            <typeparam name="TChild">Child type</typeparam>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.ManyToMany(System.String)">
+            <summary>
+            Specify this relationship as a many-to-many with the <see cref="!:relationshipColumn"/> column name
+            </summary>
+            <param name="relationshipColumn">Column name</param>
+            <returns>Builder</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.MapBuilder`2.ManyToMany``1">
+            <summary>
+            Specify this relationship as a many-to-many of <typeparamref name="TChild"/>
+            </summary>
+            <typeparam name="TChild">Child type</typeparam>
+            <returns>Builder</returns>
+        </member>
+        <member name="P:FluentNHibernate.Mapping.Builders.MapBuilder`2.Not">
+            <summary>
+            Inverts the next boolean operation
+            </summary>
+        </member>
+        <member name="P:FluentNHibernate.Mapping.Builders.MapBuilder`2.Access">
+            <summary>
+            Specify the access strategy for the map property
+            </summary>
+        </member>
+        <member name="P:FluentNHibernate.Mapping.Builders.MapBuilder`2.Cascade">
+            <summary>
+            Specify the cascade strategy for the collection
+            </summary>
+        </member>
+        <member name="P:FluentNHibernate.Mapping.Builders.MapBuilder`2.Fetch">
+            <summary>
+            Specify the cascade strategy for the collection
+            </summary>
+        </member>
+        <member name="P:FluentNHibernate.Mapping.Builders.MapBuilder`2.Sort">
+            <summary>
+            Specify the sorting for the dictionary.
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.NotFoundBuilder.Ignore">
+            <summary>
+            Used to set the Not-Found attribute to ignore.  This tells NHibernate to 
+            return a null object rather then throw an exception when the join fails
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.NotFoundBuilder.Exception">
+            <summary>
+            Used to set the Not-Found attribute to exception (Nhibernate default).  This 
+            tells NHibernate to throw an exception when the join fails
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.OneToManyBuilder.Type``1">
+            <summary>
+            Specifies the type of the values contained in the dictionary, while using the
+            default column name.
+            </summary>
+            <typeparam name="TChild">Child type</typeparam>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.OneToManyBuilder.Type(System.Type)">
+            <summary>
+            Specifies the type of the values contained in the dictionary, while using the
+            default column name.
+            </summary>
+            <param name="type">Type</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.OneToManyBuilder.Type(System.String)">
+            <summary>
+            Specifies the type of the values contained in the dictionary, while using the
+            default column name.
+            </summary>
+            <param name="type">Type name</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.OneToManyBuilder.EntityName(System.String)">
+            <summary>
+            Specifies the entity-name for the relationship
+            </summary>
+            <param name="entityName">Type name</param>
+        </member>
+        <member name="P:FluentNHibernate.Mapping.Builders.OneToManyBuilder.NotFound">
+            <summary>
+            Specify the not-found behaviour for the relationship
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.PropertyGeneratedBuilder.Never">
+            <summary>
+            Property is never database generated
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.PropertyGeneratedBuilder.Insert">
+            <summary>
+            Property is only generated on insert
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.PropertyGeneratedBuilder.Always">
+            <summary>
+            Property is always database generated
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.PropertyBuilder.Column(System.String)">
+            <summary>
+            Specify the property column name
+            </summary>
+            <param name="columnName">Column name</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.PropertyBuilder.Insert">
+            <summary>
+            Specify that this property is insertable
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.PropertyBuilder.Update">
+            <summary>
+            Specify that this property is updatable
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.PropertyBuilder.Length(System.Int32)">
+            <summary>
+            Specify the column length
+            </summary>
+            <param name="length">Column length</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.PropertyBuilder.Nullable">
+            <summary>
+            Specify the nullability of this property
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.PropertyBuilder.ReadOnly">
+            <summary>
+            Specify that this property is read-only
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.PropertyBuilder.Formula(System.String)">
+            <summary>
+            Specify the property formula
+            </summary>
+            <param name="formula">Formula</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.PropertyBuilder.LazyLoad">
+            <summary>
+            Specify the lazy-loading behaviour
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.PropertyBuilder.Index(System.String)">
+            <summary>
+            Specify an index name
+            </summary>
+            <param name="index">Index name</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.PropertyBuilder.CustomType``1">
+            <summary>
+            Specifies that a custom type (an implementation of <see cref="T:NHibernate.UserTypes.IUserType"/>) should be used for this property for mapping it to/from one or more database columns whose format or type doesn't match this .NET property.
+            </summary>
+            <typeparam name="TCustomtype">A type which implements <see cref="T:NHibernate.UserTypes.IUserType"/>.</typeparam>
+            <returns>This property mapping to continue the method chain</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.PropertyBuilder.CustomType(System.Type)">
+            <summary>
+            Specifies that a custom type (an implementation of <see cref="T:NHibernate.UserTypes.IUserType"/>) should be used for this property for mapping it to/from one or more database columns whose format or type doesn't match this .NET property.
+            </summary>
+            <param name="type">A type which implements <see cref="T:NHibernate.UserTypes.IUserType"/>.</param>
+            <returns>This property mapping to continue the method chain</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.PropertyBuilder.CustomType(System.String)">
+            <summary>
+            Specifies that a custom type (an implementation of <see cref="T:NHibernate.UserTypes.IUserType"/>) should be used for this property for mapping it to/from one or more database columns whose format or type doesn't match this .NET property.
+            </summary>
+            <param name="type">A type which implements <see cref="T:NHibernate.UserTypes.IUserType"/>.</param>
+            <returns>This property mapping to continue the method chain</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.PropertyBuilder.CustomType(System.Func{System.Type,System.Type})">
+            <summary>
+            Specifies that a custom type (an implementation of <see cref="T:NHibernate.UserTypes.IUserType"/>) should be used for this property for mapping it to/from one or more database columns whose format or type doesn't match this .NET property.
+            </summary>
+            <param name="typeFunc">A function which returns a type which implements <see cref="T:NHibernate.UserTypes.IUserType"/>. The argument of the function is the mapped property type</param>
+            <returns>This property mapping to continue the method chain</returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.PropertyBuilder.CustomSqlType(System.String)">
+            <summary>
+            Specify a custom SQL type
+            </summary>
+            <param name="sqlType">SQL type</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.PropertyBuilder.Unique">
+            <summary>
+            Specify that this property has a unique constranit
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.PropertyBuilder.Precision(System.Int32)">
+            <summary>
+            Specify decimal precision
+            </summary>
+            <param name="precision">Decimal precision</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.PropertyBuilder.Scale(System.Int32)">
+            <summary>
+            Specify decimal scale
+            </summary>
+            <param name="scale">Decimal scale</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.PropertyBuilder.Default(System.String)">
+            <summary>
+            Specify a default value
+            </summary>
+            <param name="value">Default value</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.PropertyBuilder.UniqueKey(System.String)">
+            <summary>
+            Specifies the name of a multi-column unique constraint.
+            </summary>
+            <param name="keyName">Name of constraint</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.PropertyBuilder.OptimisticLock">
+            <summary>
+            Specify that this property is optimistically locked
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.PropertyBuilder.Check(System.String)">
+            <summary>
+            Specify a check constraint
+            </summary>
+            <param name="constraint">Constraint name</param>
+        </member>
+        <member name="P:FluentNHibernate.Mapping.Builders.PropertyBuilder.Generated">
+            <summary>
+            Specify if this property is database generated
+            </summary>
+            <example>
+            Generated.Insert();
+            </example>
+        </member>
+        <member name="P:FluentNHibernate.Mapping.Builders.PropertyBuilder.Columns">
+            <summary>
+            Modify the columns collection
+            </summary>
+        </member>
+        <member name="P:FluentNHibernate.Mapping.Builders.PropertyBuilder.Access">
+            <summary>
+            Set the access and naming strategy for this property.
+            </summary>
+        </member>
+        <member name="P:FluentNHibernate.Mapping.Builders.PropertyBuilder.Not">
+            <summary>
+            Inverts the next boolean
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.SortBuilder`1.Natural">
+            <summary>
+            Specify natural sorting.
+            </summary>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.SortBuilder`1.Unsorted">
+            <summary>
+            Specify no sorting.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.SortBuilder`1.WithComparer``1">
+            <summary>
+            Specify sorting using a custom comparer.
+            </summary>
+            <typeparam name="TComparer">Comparer</typeparam>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.SortBuilder`1.WithComparer(System.Type)">
+            <summary>
+            Specify sorting using a custom comparer.
+            </summary>
+            <param name="comparer">Comparer</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.Builders.SortBuilder`1.WithComparer(System.String)">
+            <summary>
+            Specify sorting using a custom comparer.
+            </summary>
+            <param name="comparer">Comparer</param>
         </member>
         <member name="T:FluentNHibernate.Mapping.Laziness">
             <summary>
@@ -2311,11 +3746,6 @@
             </example>
             <param name="prefix">Prefix for column names</param>
         </member>
-        <member name="T:FluentNHibernate.Mapping.FilterPart">
-            <summary>
-            Maps to the Filter element in NH 2.0
-            </summary>
-        </member>
         <member name="M:FluentNHibernate.Mapping.KeyManyToOnePart.EntityName(System.String)">
             <summary>
             Specifies an entity-name.
@@ -2455,6 +3885,13 @@
             Specifies a check constraint
             </summary>
             <param name="constraint">Constraint name</param>
+        </member>
+        <member name="M:FluentNHibernate.Mapping.SubclassMap`1.Key(System.Action{FluentNHibernate.Mapping.Builders.KeyBuilder})">
+            <summary>
+            Specify how the foreign key is configured.
+            </summary>
+            <param name="keyConfiguration">Configuration <see cref="T:System.Action"/></param>
+            <returns>Builder</returns>
         </member>
         <member name="M:FluentNHibernate.Mapping.SubclassMap`1.KeyColumn(System.String)">
             <summary>
@@ -2916,6 +4353,12 @@
             Fluent configuration API for NHibernate
             </summary>
         </member>
+        <member name="M:FluentNHibernate.Cfg.FluentConfiguration.Diagnostics(System.Action{FluentNHibernate.Diagnostics.DiagnosticsConfiguration})">
+            <summary>
+            Configure diagnostic logging
+            </summary>
+            <param name="diagnosticsSetup">Diagnostic configuration</param>
+        </member>
         <member name="M:FluentNHibernate.Cfg.FluentConfiguration.Database(System.Func{FluentNHibernate.Cfg.Db.IPersistenceConfigurer})">
             <summary>
             Apply database settings
@@ -3088,6 +4531,7 @@
             <summary>
             Applies any mappings to the NHibernate Configuration
             </summary>
+            <param name="logger">Diagnostics logger</param>
             <param name="cfg">NHibernate Configuration instance</param>
         </member>
         <member name="P:FluentNHibernate.Cfg.MappingConfiguration.FluentMappings">
@@ -3114,6 +4558,12 @@
             <summary>
             Convention finder - used to search through assemblies for types that implement a specific convention interface.
             </summary>
+        </member>
+        <member name="M:FluentNHibernate.Conventions.IConventionFinder.AddSource(FluentNHibernate.ITypeSource)">
+            <summary>
+            Add a source to be queried.
+            </summary>
+            <param name="source">Source to query</param>
         </member>
         <member name="M:FluentNHibernate.Conventions.IConventionFinder.AddAssembly(System.Reflection.Assembly)">
             <summary>
@@ -3319,6 +4769,11 @@
             Sets the access-strategy to use the backing-field of an auto-property.
             </summary>
         </member>
+        <member name="M:FluentNHibernate.Mapping.AccessStrategyBuilder.ReadOnly">
+            <summary>
+            Sets the access-strategy to readonly.
+            </summary>
+        </member>
         <member name="M:FluentNHibernate.Mapping.AccessStrategyBuilder.CamelCaseField">
             <summary>
             Sets the access-strategy to field and the naming-strategy to camelcase (field.camelcase).
@@ -3511,84 +4966,6 @@
             Non-null discriminator value
             </summary>
         </member>
-        <member name="M:FluentNHibernate.Mapping.ElementPart.Column(System.String)">
-            <summary>
-            Specify the element column name
-            </summary>
-            <param name="elementColumnName">Column name</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ElementPart.Type``1">
-            <summary>
-            Specify the element type
-            </summary>
-            <typeparam name="TElement">Element type</typeparam>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ElementPart.Length(System.Int32)">
-            <summary>
-            Specify the element column length
-            </summary>
-            <param name="length">Column length</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ElementPart.Formula(System.String)">
-            <summary>
-            Specify the element column formula
-            </summary>
-            <param name="formula">Formula</param>
-        </member>
-        <member name="P:FluentNHibernate.Mapping.ElementPart.Columns">
-            <summary>
-            Modify the columns for this element
-            </summary>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.CachePart.ReadWrite">
-            <summary>
-            Sets caching to read-write
-            </summary>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.CachePart.NonStrictReadWrite">
-            <summary>
-            Sets caching to non-strict read-write
-            </summary>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.CachePart.ReadOnly">
-            <summary>
-            Sets caching to read-only
-            </summary>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.CachePart.Transactional">
-            <summary>
-            Sets caching to transactional
-            </summary>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.CachePart.CustomUsage(System.String)">
-            <summary>
-            Specifies a custom cache behaviour
-            </summary>
-            <param name="custom">Custom behaviour</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.CachePart.Region(System.String)">
-            <summary>
-            Specifies the cache region
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.CachePart.IncludeAll">
-            <summary>
-            Include all properties for caching
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.CachePart.IncludeNonLazy">
-            <summary>
-            Include only non-lazy properties for caching
-            </summary>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.CachePart.CustomInclude(System.String)">
-            <summary>
-            Specify a custom property inclusion strategy
-            </summary>
-            <param name="custom">Inclusion strategy</param>
-        </member>
         <member name="T:FluentNHibernate.Conventions.UserTypeConvention`1">
             <summary>
             Base class for user type conventions. Create a subclass of this to automatically
@@ -3689,21 +5066,6 @@
         <member name="T:FluentNHibernate.Mapping.Prefix">
             <summary>
             Naming strategy prefix.
-            </summary>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.PropertyGeneratedBuilder.Never">
-            <summary>
-            Property is never database generated
-            </summary>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.PropertyGeneratedBuilder.Insert">
-            <summary>
-            Property is only generated on insert
-            </summary>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.PropertyGeneratedBuilder.Always">
-            <summary>
-            Property is always database generated
             </summary>
         </member>
         <member name="M:FluentNHibernate.Testing.PersistenceSpecificationExtensions.CheckComponentList``2(FluentNHibernate.Testing.PersistenceSpecification{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Collections.Generic.IEnumerable{``1},System.Collections.IEqualityComparer)">
@@ -3896,6 +5258,13 @@
             Use all locking
             </summary>
         </member>
+        <member name="M:FluentNHibernate.Mapping.ToManyBase`3.Key(System.Action{FluentNHibernate.Mapping.Builders.KeyBuilder})">
+            <summary>
+            Specify how the foreign key is configured.
+            </summary>
+            <param name="keyConfiguration">Configuration <see cref="T:System.Action"/></param>
+            <returns>Builder</returns>
+        </member>
         <member name="M:FluentNHibernate.Mapping.ToManyBase`3.PropertyRef(System.String)">
             <summary>
             This method is used to set a different key column in this table to be used for joins.
@@ -3947,87 +5316,11 @@
             Use a list collection
             </summary>
         </member>
-        <member name="M:FluentNHibernate.Mapping.ToManyBase`3.AsList(System.Action{FluentNHibernate.Mapping.IndexPart})">
+        <member name="M:FluentNHibernate.Mapping.ToManyBase`3.AsList(System.Action{FluentNHibernate.Mapping.Builders.IndexBuilder})">
             <summary>
             Use a list collection with an index
             </summary>
             <param name="customIndexMapping">Index mapping</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ToManyBase`3.AsMap``1(System.Linq.Expressions.Expression{System.Func{`1,``0}})">
-            <summary>
-            Use a map collection
-            </summary>
-            <typeparam name="TIndex">Index type</typeparam>
-            <param name="indexSelector">Index property</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ToManyBase`3.AsMap``1(System.Linq.Expressions.Expression{System.Func{`1,``0}},FluentNHibernate.MappingModel.Collections.SortType)">
-            <summary>
-            Use a map collection
-            </summary>
-            <typeparam name="TIndex">Index type</typeparam>
-            <param name="indexSelector">Index property</param>
-            <param name="sort">Sorting</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ToManyBase`3.AsMap(System.String)">
-            <summary>
-            Use a map collection
-            </summary>
-            <param name="indexColumnName">Index column name</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ToManyBase`3.AsMap(System.String,FluentNHibernate.MappingModel.Collections.SortType)">
-            <summary>
-            Use a map collection
-            </summary>
-            <param name="indexColumnName">Index column name</param>
-            <param name="sort">Sorting</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ToManyBase`3.AsMap``1(System.String)">
-            <summary>
-            Use a map collection
-            </summary>
-            <typeparam name="TIndex">Index type</typeparam>
-            <param name="indexColumnName">Index column name</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ToManyBase`3.AsMap``1(System.String,FluentNHibernate.MappingModel.Collections.SortType)">
-            <summary>
-            Use a map collection
-            </summary>
-            <typeparam name="TIndex">Index type</typeparam>
-            <param name="indexColumnName">Index column name</param>
-            <param name="sort">Sorting</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ToManyBase`3.AsMap``2(System.String)">
-            <summary>
-            Use a map collection
-            </summary>
-            <typeparam name="TIndex">Index type</typeparam>
-            <typeparam name="TComparer">Comparer</typeparam>
-            <param name="indexColumnName">Index column name</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ToManyBase`3.AsMap``1(System.Linq.Expressions.Expression{System.Func{`1,``0}},System.Action{FluentNHibernate.Mapping.IndexPart})">
-            <summary>
-            Use a map collection
-            </summary>
-            <typeparam name="TIndex">Index type</typeparam>
-            <param name="indexSelector">Index property</param>
-            <param name="customIndexMapping">Index mapping</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ToManyBase`3.AsMap``1(System.Linq.Expressions.Expression{System.Func{`1,``0}},System.Action{FluentNHibernate.Mapping.IndexPart},FluentNHibernate.MappingModel.Collections.SortType)">
-            <summary>
-            Use a map collection
-            </summary>
-            <typeparam name="TIndex">Index type</typeparam>
-            <param name="indexSelector">Index property</param>
-            <param name="customIndexMapping">Index mapping</param>
-            <param name="sort">Sorting</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ToManyBase`3.AsMap``1(System.Action{FluentNHibernate.Mapping.IndexPart},System.Action{FluentNHibernate.Mapping.ElementPart})">
-            <summary>
-            Use a map collection
-            </summary>
-            <typeparam name="TIndex">Index type</typeparam>
-            <param name="customIndexMapping">Index mapping</param>
-            <param name="customElementMapping">Element mapping</param>
         </member>
         <member name="M:FluentNHibernate.Mapping.ToManyBase`3.AsArray``1(System.Linq.Expressions.Expression{System.Func{`1,``0}})">
             <summary>
@@ -4036,7 +5329,7 @@
             <typeparam name="TIndex">Index type</typeparam>
             <param name="indexSelector">Index property</param>
         </member>
-        <member name="M:FluentNHibernate.Mapping.ToManyBase`3.AsArray``1(System.Linq.Expressions.Expression{System.Func{`1,``0}},System.Action{FluentNHibernate.Mapping.IndexPart})">
+        <member name="M:FluentNHibernate.Mapping.ToManyBase`3.AsArray``1(System.Linq.Expressions.Expression{System.Func{`1,``0}},System.Action{FluentNHibernate.Mapping.Builders.IndexBuilder})">
             <summary>
             Use an array
             </summary>
@@ -4044,7 +5337,7 @@
             <param name="indexSelector">Index property</param>
             <param name="customIndexMapping">Index mapping</param>
         </member>
-        <member name="M:FluentNHibernate.Mapping.ToManyBase`3.AsIndexedCollection``1(System.Linq.Expressions.Expression{System.Func{`1,``0}},System.Action{FluentNHibernate.Mapping.IndexPart})">
+        <member name="M:FluentNHibernate.Mapping.ToManyBase`3.AsIndexedCollection``1(System.Linq.Expressions.Expression{System.Func{`1,``0}},System.Action{FluentNHibernate.Mapping.Builders.IndexBuilder})">
             <summary>
             Make this collection indexed
             </summary>
@@ -4052,7 +5345,7 @@
             <param name="indexSelector">Index property</param>
             <param name="customIndexMapping">Index mapping</param>
         </member>
-        <member name="M:FluentNHibernate.Mapping.ToManyBase`3.AsIndexedCollection``1(System.String,System.Action{FluentNHibernate.Mapping.IndexPart})">
+        <member name="M:FluentNHibernate.Mapping.ToManyBase`3.AsIndexedCollection``1(System.String,System.Action{FluentNHibernate.Mapping.Builders.IndexBuilder})">
             <summary>
             Make this collection index
             </summary>
@@ -4066,14 +5359,14 @@
             </summary>
             <param name="columnName">Column name</param>
         </member>
-        <member name="M:FluentNHibernate.Mapping.ToManyBase`3.Element(System.String,System.Action{FluentNHibernate.Mapping.ElementPart})">
+        <member name="M:FluentNHibernate.Mapping.ToManyBase`3.Element(System.String,System.Action{FluentNHibernate.Mapping.Builders.ElementBuilder})">
             <summary>
             Map an element/value type
             </summary>
             <param name="columnName">Column name</param>
             <param name="customElementMapping">Custom mapping</param>
         </member>
-        <member name="M:FluentNHibernate.Mapping.ToManyBase`3.Component(System.Action{FluentNHibernate.Mapping.CompositeElementPart{`1}})">
+        <member name="M:FluentNHibernate.Mapping.ToManyBase`3.Component(System.Action{FluentNHibernate.Mapping.Builders.CompositeElementBuilder{`1}})">
             <summary>
             Maps this collection as a collection of components.
             </summary>
@@ -4255,6 +5548,12 @@
             Sets the access-strategy to use the backing-field of an auto-property.
             </summary>
         </member>
+        <member name="M:FluentNHibernate.Mapping.AccessStrategyBuilder`1.ReadOnly">
+            <summary>
+            Sets the access-strategy to readonly.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:FluentNHibernate.Mapping.AccessStrategyBuilder`1.CamelCaseField">
             <summary>
             Sets the access-strategy to field and the naming-strategy to camelcase (field.camelcase).
@@ -4333,80 +5632,6 @@
             <summary>
             Specify the lazy-load behaviour
             </summary>
-        </member>
-        <member name="T:FluentNHibernate.Mapping.CompositeElementPart`1">
-            <summary>
-            Component-element for component HasMany's.
-            </summary>
-            <typeparam name="T">Component type</typeparam>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.CompositeElementPart`1.Map(System.Linq.Expressions.Expression{System.Func{`0,System.Object}})">
-            <summary>
-            Map a property
-            </summary>
-            <param name="expression">Property</param>
-            <example>
-            Map(x => x.Age);
-            </example>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.CompositeElementPart`1.Map(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.String)">
-            <summary>
-            Map a property
-            </summary>
-            <param name="expression">Property</param>
-            <param name="columnName">Column name</param>
-            <example>
-            Map(x => x.Age, "person_age");
-            </example>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.CompositeElementPart`1.References``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
-            <summary>
-            Create a reference to another entity. In database terms, this is a many-to-one
-            relationship.
-            </summary>
-            <typeparam name="TOther">Other entity</typeparam>
-            <param name="expression">Property on the current entity</param>
-            <example>
-            References(x => x.Company);
-            </example>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.CompositeElementPart`1.References``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.String)">
-            <summary>
-            Create a reference to another entity. In database terms, this is a many-to-one
-            relationship.
-            </summary>
-            <typeparam name="TOther">Other entity</typeparam>
-            <param name="expression">Property on the current entity</param>
-            <param name="columnName">Column name</param>
-            <example>
-            References(x => x.Company, "person_company_id");
-            </example>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.CompositeElementPart`1.ParentReference(System.Linq.Expressions.Expression{System.Func{`0,System.Object}})">
-            <summary>
-            Maps a property of the component class as a reference back to the containing entity
-            </summary>
-            <param name="expression">Parent reference property</param>
-            <returns>Component being mapped</returns>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.CompositeElementPart`1.Component``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Action{FluentNHibernate.Mapping.CompositeElementPart{``0}})">
-            <summary>
-            Create a nested component mapping.
-            </summary>
-            <param name="property">Component property</param>
-            <param name="nestedCompositeElementAction">Action for creating the component</param>
-            <example>
-            HasMany(x => x.Locations)
-              .Component(c =>
-              {
-                c.Map(x => x.Name);
-                c.Component(x => x.Address, addr =>
-                {
-                  addr.Map(x => x.Street);
-                  addr.Map(x => x.PostCode);
-                });
-              });
-            </example>
         </member>
         <member name="M:FluentNHibernate.Mapping.IdentityGenerationStrategyBuilder`1.Increment">
             <summary>
@@ -4929,208 +6154,6 @@
             Sets the where clause for this relationship, on the many-to-many element.
             </summary>
         </member>
-        <member name="M:FluentNHibernate.Mapping.ManyToOnePart`1.Unique">
-            <summary>
-            Sets whether this relationship is unique
-            </summary>
-            <example>
-            Unique();
-            Not.Unique();
-            </example>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ManyToOnePart`1.UniqueKey(System.String)">
-            <summary>
-            Specifies the name of a multi-column unique constraint.
-            </summary>
-            <param name="keyName">Name of constraint</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ManyToOnePart`1.Index(System.String)">
-            <summary>
-            Specifies the index name
-            </summary>
-            <param name="indexName">Index name</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ManyToOnePart`1.Class``1">
-            <summary>
-            Specifies the child class of this relationship
-            </summary>
-            <typeparam name="T">Child</typeparam>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ManyToOnePart`1.Class(System.Type)">
-            <summary>
-            Specifies the child class of this relationship
-            </summary>
-            <param name="type">Child</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ManyToOnePart`1.ReadOnly">
-            <summary>
-            Sets this relationship to read-only
-            </summary>
-            <remarks>
-            This is the same as calling both Not.Insert() and Not.Update()
-            </remarks>
-            <example>
-            ReadOnly();
-            Not.ReadOnly();
-            </example>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ManyToOnePart`1.LazyLoad">
-            <summary>
-            Specify the lazy behaviour of this relationship.
-            </summary>
-            <remarks>
-            Defaults to Proxy lazy-loading. Use the <see cref="P:FluentNHibernate.Mapping.ManyToOnePart`1.Not"/> modifier to disable
-            lazy-loading, and use the <see cref="M:FluentNHibernate.Mapping.ManyToOnePart`1.LazyLoad(FluentNHibernate.Mapping.Laziness)"/>
-            overload to specify alternative lazy strategies.
-            </remarks>
-            <example>
-            LazyLoad();
-            Not.LazyLoad();
-            </example>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ManyToOnePart`1.LazyLoad(FluentNHibernate.Mapping.Laziness)">
-            <summary>
-            Specify the lazy behaviour of this relationship. Cannot be used
-            with the <see cref="P:FluentNHibernate.Mapping.ManyToOnePart`1.Not"/> modifier.
-            </summary>
-            <param name="laziness">Laziness strategy</param>
-            <example>
-            LazyLoad(Laziness.NoProxy);
-            </example>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ManyToOnePart`1.ForeignKey">
-            <summary>
-            Specifies this relationship should be created with a default-named
-            foreign key.
-            </summary>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ManyToOnePart`1.ForeignKey(System.String)">
-            <summary>
-            Specifies the foreign-key constraint name
-            </summary>
-            <param name="foreignKeyName">Constraint name</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ManyToOnePart`1.Insert">
-            <summary>
-            Specifies that this relationship is insertable
-            </summary>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ManyToOnePart`1.Update">
-            <summary>
-            Specifies that this relationship is updatable
-            </summary>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ManyToOnePart`1.Column(System.String)">
-            <summary>
-            Sets the single column used in this relationship. Use <see cref="M:FluentNHibernate.Mapping.ManyToOnePart`1.Columns(System.String[])"/>
-            if you need to specify more than one column.
-            </summary>
-            <param name="name">Column name</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ManyToOnePart`1.Columns(System.String[])">
-            <summary>
-            Specifies the columns used in this relationship
-            </summary>
-            <param name="columns">Columns</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ManyToOnePart`1.Columns(System.Linq.Expressions.Expression{System.Func{`0,System.Object}}[])">
-            <summary>
-            Specifies the columns used in this relationship
-            </summary>
-            <param name="columns">Columns</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ManyToOnePart`1.Formula(System.String)">
-            <summary>
-            Specifies the sql formula used for this relationship
-            </summary>
-            <param name="formula">Formula</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ManyToOnePart`1.PropertyRef(System.Linq.Expressions.Expression{System.Func{`0,System.Object}})">
-            <summary>
-            Specifies the property reference
-            </summary>
-            <param name="expression">Property</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ManyToOnePart`1.PropertyRef(System.String)">
-            <summary>
-            Specifies the property reference
-            </summary>
-            <param name="property">Property</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ManyToOnePart`1.Nullable">
-            <summary>
-            Sets this relationship to nullable
-            </summary>
-            <example>
-            Nullable();
-            Not.Nullable();
-            </example>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.ManyToOnePart`1.EntityName(System.String)">
-            <summary>
-            Specifies an entity-name.
-            </summary>
-            <remarks>See http://nhforge.org/blogs/nhibernate/archive/2008/10/21/entity-name-in-action-a-strongly-typed-entity.aspx</remarks>
-        </member>
-        <member name="P:FluentNHibernate.Mapping.ManyToOnePart`1.Fetch">
-            <summary>
-            Set the fetching strategy
-            </summary>
-            <example>
-            Fetch.Select();
-            </example>
-        </member>
-        <member name="P:FluentNHibernate.Mapping.ManyToOnePart`1.NotFound">
-            <summary>
-            Set the behaviour for when this relationship is null in the database
-            </summary>
-            <example>
-            NotFound.Exception();
-            </example>
-        </member>
-        <member name="P:FluentNHibernate.Mapping.ManyToOnePart`1.Cascade">
-            <summary>
-            Specifies the cascade behaviour for this relationship
-            </summary>
-            <example>
-            Cascade.All();
-            </example>
-        </member>
-        <member name="P:FluentNHibernate.Mapping.ManyToOnePart`1.Access">
-            <summary>
-            Specifies the access strategy for this relationship
-            </summary>
-            <example>
-            Access.Field();
-            </example>
-        </member>
-        <member name="P:FluentNHibernate.Mapping.ManyToOnePart`1.Not">
-            <summary>
-            Inverts the next boolean
-            </summary>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.OneToManyPart`1.AsTernaryAssociation">
-            <summary>
-            Specify that this is a ternary association
-            </summary>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.OneToManyPart`1.AsTernaryAssociation(System.String)">
-            <summary>
-            Specify that this is a ternary association
-            </summary>
-            <param name="indexColumnName">Index column</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.OneToManyPart`1.AsEntityMap">
-            <summary>
-            Specify this as an entity map
-            </summary>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.OneToManyPart`1.AsEntityMap(System.String)">
-            <summary>
-            Specify this as an entity map
-            </summary>
-            <param name="indexColumnName">Index column</param>
-        </member>
         <member name="M:FluentNHibernate.Mapping.OneToManyPart`1.KeyColumn(System.String)">
             <summary>
             Specify the key column name
@@ -5182,152 +6205,6 @@
         <member name="P:FluentNHibernate.Mapping.OneToManyPart`1.KeyColumns">
             <summary>
             Modify the key columns collection
-            </summary>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.PropertyPart.Column(System.String)">
-            <summary>
-            Specify the property column name
-            </summary>
-            <param name="columnName">Column name</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.PropertyPart.Insert">
-            <summary>
-            Specify that this property is insertable
-            </summary>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.PropertyPart.Update">
-            <summary>
-            Specify that this property is updatable
-            </summary>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.PropertyPart.Length(System.Int32)">
-            <summary>
-            Specify the column length
-            </summary>
-            <param name="length">Column length</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.PropertyPart.Nullable">
-            <summary>
-            Specify the nullability of this property
-            </summary>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.PropertyPart.ReadOnly">
-            <summary>
-            Specify that this property is read-only
-            </summary>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.PropertyPart.Formula(System.String)">
-            <summary>
-            Specify the property formula
-            </summary>
-            <param name="formula">Formula</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.PropertyPart.LazyLoad">
-            <summary>
-            Specify the lazy-loading behaviour
-            </summary>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.PropertyPart.Index(System.String)">
-            <summary>
-            Specify an index name
-            </summary>
-            <param name="index">Index name</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.PropertyPart.CustomType``1">
-            <summary>
-            Specifies that a custom type (an implementation of <see cref="T:NHibernate.UserTypes.IUserType"/>) should be used for this property for mapping it to/from one or more database columns whose format or type doesn't match this .NET property.
-            </summary>
-            <typeparam name="TCustomtype">A type which implements <see cref="T:NHibernate.UserTypes.IUserType"/>.</typeparam>
-            <returns>This property mapping to continue the method chain</returns>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.PropertyPart.CustomType(System.Type)">
-            <summary>
-            Specifies that a custom type (an implementation of <see cref="T:NHibernate.UserTypes.IUserType"/>) should be used for this property for mapping it to/from one or more database columns whose format or type doesn't match this .NET property.
-            </summary>
-            <param name="type">A type which implements <see cref="T:NHibernate.UserTypes.IUserType"/>.</param>
-            <returns>This property mapping to continue the method chain</returns>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.PropertyPart.CustomType(System.String)">
-            <summary>
-            Specifies that a custom type (an implementation of <see cref="T:NHibernate.UserTypes.IUserType"/>) should be used for this property for mapping it to/from one or more database columns whose format or type doesn't match this .NET property.
-            </summary>
-            <param name="type">A type which implements <see cref="T:NHibernate.UserTypes.IUserType"/>.</param>
-            <returns>This property mapping to continue the method chain</returns>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.PropertyPart.CustomType(System.Func{System.Type,System.Type})">
-            <summary>
-            Specifies that a custom type (an implementation of <see cref="T:NHibernate.UserTypes.IUserType"/>) should be used for this property for mapping it to/from one or more database columns whose format or type doesn't match this .NET property.
-            </summary>
-            <param name="typeFunc">A function which returns a type which implements <see cref="T:NHibernate.UserTypes.IUserType"/>. The argument of the function is the mapped property type</param>
-            <returns>This property mapping to continue the method chain</returns>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.PropertyPart.CustomSqlType(System.String)">
-            <summary>
-            Specify a custom SQL type
-            </summary>
-            <param name="sqlType">SQL type</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.PropertyPart.Unique">
-            <summary>
-            Specify that this property has a unique constranit
-            </summary>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.PropertyPart.Precision(System.Int32)">
-            <summary>
-            Specify decimal precision
-            </summary>
-            <param name="precision">Decimal precision</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.PropertyPart.Scale(System.Int32)">
-            <summary>
-            Specify decimal scale
-            </summary>
-            <param name="scale">Decimal scale</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.PropertyPart.Default(System.String)">
-            <summary>
-            Specify a default value
-            </summary>
-            <param name="value">Default value</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.PropertyPart.UniqueKey(System.String)">
-            <summary>
-            Specifies the name of a multi-column unique constraint.
-            </summary>
-            <param name="keyName">Name of constraint</param>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.PropertyPart.OptimisticLock">
-            <summary>
-            Specify that this property is optimistically locked
-            </summary>
-        </member>
-        <member name="M:FluentNHibernate.Mapping.PropertyPart.Check(System.String)">
-            <summary>
-            Specify a check constraint
-            </summary>
-            <param name="constraint">Constraint name</param>
-        </member>
-        <member name="P:FluentNHibernate.Mapping.PropertyPart.Generated">
-            <summary>
-            Specify if this property is database generated
-            </summary>
-            <example>
-            Generated.Insert();
-            </example>
-        </member>
-        <member name="P:FluentNHibernate.Mapping.PropertyPart.Columns">
-            <summary>
-            Modify the columns collection
-            </summary>
-        </member>
-        <member name="P:FluentNHibernate.Mapping.PropertyPart.Access">
-            <summary>
-            Set the access and naming strategy for this property.
-            </summary>
-        </member>
-        <member name="P:FluentNHibernate.Mapping.PropertyPart.Not">
-            <summary>
-            Inverts the next boolean
             </summary>
         </member>
         <member name="M:FluentNHibernate.Mapping.VersionPart.Column(System.String)">
