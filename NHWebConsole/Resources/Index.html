@@ -135,48 +135,46 @@
 	    #end
 
 <script type="text/javascript">
-    function getPosition(textarea) {
-        var a = document.getElementById(textarea);
-        a.focus();
-        return a.selectionStart;
-    }
-
-    function insertString(a, pos, b) {
-        return a.substr(0, pos) + b + a.substr(pos);
-    }
+    (function(_) {
+        function getPosition(textarea) {
+            var a = document.getElementById(textarea);
+            a.focus();
+            return a.selectionStart;
+        }
 	
-	function startAutocomplete() {
-		jQuery('#q').autocomplete('suggestion.ashx', {
-			matchCase: true,
-			dataType: 'json',
-			scroll: true,
-			max: 1000,
-			extraParams: {
-				p: function() { return getPosition('q'); }
-			},
-			formatItem: function(r) { return r; },
-			parse: function(data) {
-				var v = jQuery('#q').val();
-				return jQuery.map(data, function(r) {
-					return {
-						data: r,
-						value: v + r,
-						result: v + r
-					};
-				});
-			}
-		});
-	}
+	    function startAutocomplete() {
+		    _('#q').autocomplete('suggestion.ashx', {
+			    matchCase: true,
+			    dataType: 'json',
+			    scroll: true,
+			    max: 1000,
+			    extraParams: {
+				    p: function() { return getPosition('q'); }
+			    },
+			    formatItem: function(r) { return r; },
+			    parse: function(data) {
+				    var v = _('#q').val();
+				    return _.map(data, function(r) {
+					    return {
+						    data: r,
+						    value: v + r,
+						    result: v + r
+					    };
+				    });
+			    }
+		    });
+	    }
 	
-	if (document.getElementById('queryType').value == 'HQL')
-		startAutocomplete();
+	    if (document.getElementById('queryType').value == 'HQL')
+		    startAutocomplete();
 		
-	jQuery('#queryType').change(function() {
-		if (this.value == 'HQL')
-			startAutocomplete();
-		else
-			jQuery('#q').unautocomplete();
-	});
+	    _('#queryType').change(function() {
+		    if (this.value == 'HQL')
+			    startAutocomplete();
+		    else
+			    _('#q').unautocomplete();
+	    });
+    })(jQuery);
 </script>
 	    
 	</body>
