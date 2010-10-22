@@ -14,6 +14,7 @@
 // limitations under the License.
 #endregion
 
+using System;
 using System.Web;
 using MiniMVC;
 
@@ -22,6 +23,9 @@ namespace NHWebConsole {
         public override IResult Execute(HttpContextBase context) {
             var resource = context.Request.QueryString["r"];
             var contentType = context.Request.QueryString["t"];
+            var cache = context.Request.QueryString["cache"];
+            if (!string.IsNullOrEmpty(cache))
+                context.Response.Cache.SetExpires(DateTime.Now.AddYears(10));
             if (contentType != null)
                 context.Response.ContentType = contentType;
             var fullResourceName = string.Format("{0}.Resources.{1}", GetType().Assembly.FullName.Split(',')[0], resource);
