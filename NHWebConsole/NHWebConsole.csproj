@@ -74,8 +74,6 @@
     <EmbeddedResource Include="Resources\Index.html" />
     <EmbeddedResource Include="Resources\RSS.html" />
     <EmbeddedResource Include="Resources\Suggestion.html" />
-    <EmbeddedResource Include="Resources\jquery.autocomplete.css" />
-    <EmbeddedResource Include="Resources\jquery.autocomplete.js" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MiniMVC\MiniMVC.csproj">
