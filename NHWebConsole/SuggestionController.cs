@@ -32,7 +32,7 @@ namespace NHWebConsole {
             new HQLCodeAssist(new NHConfigDataProvider(NHWebConsoleSetup.Configuration())).CodeComplete(q, p, this);
             return new ViewResult(new SuggestionResponse {
                 Error = error,
-                Suggestions = string.Format("[{0}]", string.Join(",", suggestions.Select(s => string.Format("'{0}'", s)).ToArray())),
+                Suggestions = string.Format("[{0}]", string.Join(",", suggestions.Select(s => string.Format("\"{0}\"", s)).ToArray())),
             }, ViewName);
         }
 
