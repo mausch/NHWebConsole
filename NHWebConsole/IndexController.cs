@@ -17,8 +17,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -54,6 +52,7 @@ namespace NHWebConsole {
         public override IResult Execute(HttpContextBase context) {
             RawUrl = context.Request.RawUrl;
             var model = new Context {
+                Version = Setup.AssemblyDate.Ticks.ToString(),
                 Url = RawUrl.Split('?')[0],
                 LimitLength = string.IsNullOrEmpty(context.Request.QueryString["limitLength"]),
                 Raw = !string.IsNullOrEmpty(context.Request.QueryString["raw"]),
