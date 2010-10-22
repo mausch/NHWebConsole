@@ -15,6 +15,8 @@
 #endregion
 
 using System;
+using System.IO;
+using System.Reflection;
 using NVelocity.App;
 
 namespace MiniMVC {
@@ -23,7 +25,10 @@ namespace MiniMVC {
 
         public static Func<string, Controller> ControllerFactory { get; set; }
 
+        public static readonly DateTime AssemblyDate;
+
         static Setup() {
+            AssemblyDate = new FileInfo(Assembly.GetExecutingAssembly().Location).LastWriteTime;
             var engine = new EmbeddedVelocityEngine();
             TemplateEngine = () => engine;
             ControllerFactory = controller => {

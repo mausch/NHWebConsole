@@ -38,6 +38,7 @@ namespace NHWebConsole {
         public string Output { get; set; }
         public string RssUrl { get; set; }
         public string ExtraRowTemplate { get; set; }
+        public string Version { get; set; }
     }
 
     public class Row : List<KeyValuePair<string, string>> {
