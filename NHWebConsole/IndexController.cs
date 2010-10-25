@@ -228,7 +228,7 @@ namespace NHWebConsole {
             if (fkp != null) {
                 var hql = string.Format("from {0} x where x.{1} = '{2}'", classMapping.EntityName, fkp.Name, fkValue);
                 var url = string.Format("{0}?q={1}&MaxResults=10", RawUrl.Split('?')[0], HttpUtility.UrlEncode(hql));
-                return Link(url, "collection");
+                return UrlHelper.Link(url, "collection");
             }
             // try many-to-many
             var collection = associations.FirstOrDefault(p => IsCollectionOf(p.GetGetter(ct).ReturnType, fk));
@@ -237,7 +237,7 @@ namespace NHWebConsole {
                 var fkTypePK = GetPkGetter(fkType).PropertyName;
                 var hql = string.Format("select x from {0} x join x.{1} y where y.{2} = '{3}'", classMapping.EntityName, collection.Name, fkTypePK, fkValue);
                 var url = string.Format("{0}?q={1}&MaxResults=10", RawUrl.Split('?')[0], HttpUtility.UrlEncode(hql));
-                return Link(url, "collection");
+                return UrlHelper.Link(url, "collection");
             }
             return null;
         }
@@ -261,7 +261,7 @@ namespace NHWebConsole {
             var hql = string.Format("from {0} x where x.{1} = '{2}'", Cfg.GetClassMapping(entityType).EntityName, GetPkGetter(entityType).PropertyName, pkValue);
             var url = string.Format("{0}?q={1}", RawUrl.Split('?')[0], HttpUtility.UrlEncode(hql));
             var text = string.Format("{0}#{1}", entityType.Name, pkValue);
-            return Link(url, text);
+            return UrlHelper.Link(url, text);
         }
 
         public string BuildTypeLink(Type entityType) {
@@ -269,7 +269,7 @@ namespace NHWebConsole {
                 return entityType.Name;
             var hql = string.Format("from {0}", Cfg.GetClassMapping(entityType).EntityName);
             var url = string.Format("{0}?q={1}&MaxResults=10", RawUrl.Split('?')[0], HttpUtility.UrlEncode(hql));
-            return Link(url, entityType.Name);
+            return UrlHelper.Link(url, entityType.Name);
         }
 
         public IGetter GetPkGetter(Type entityType) {
@@ -337,7 +337,7 @@ namespace NHWebConsole {
                 sb.Append(HttpUtility.HtmlEncode(valueAsString.Substring(0, maxLen)));
                 var query = QueryScalar(p, entityType, o);
                 var url = string.Format("{0}?q={1}&limitLength=0", RawUrl.Split('?')[0], HttpUtility.UrlEncode(query));
-                sb.AppendFormat(Link(url, "..."));
+                sb.AppendFormat(UrlHelper.Link(url, "..."));
                 valueAsString = sb.ToString();
             } else {
                 valueAsString = HttpUtility.HtmlEncode(valueAsString);
@@ -353,14 +353,10 @@ namespace NHWebConsole {
                     else
                         qs["image"] = p.Name;
                     var url = string.Format("{0}?{1}", urlParts[0], UrlHelper.DictToQuerystring(qs));
-                    valueAsString += Link(url, "(as image)");
+                    valueAsString += UrlHelper.Link(url, "(as image)");
                 }
             }
             yield return KV(p.Name, valueAsString);
-        }
-
-        public string Link(string url, string text) {
-            return string.Format("<a href=\"{0}\">{1}</a>", url, text);
         }
 
         public string QueryScalar(Property p, Type entityType, object o) {
