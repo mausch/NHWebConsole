@@ -41,9 +41,17 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\HqlIntellisense.dll</HintPath>
     </Reference>
+    <Reference Include="MiniMVC, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\MiniMVC.dll</HintPath>
+    </Reference>
     <Reference Include="NHibernate, Version=2.1.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="NVelocity, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\NVelocity.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -74,12 +82,6 @@
     <EmbeddedResource Include="Resources\Index.html" />
     <EmbeddedResource Include="Resources\RSS.html" />
     <EmbeddedResource Include="Resources\Suggestion.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MiniMVC\MiniMVC.csproj">
-      <Project>{BDFDD553-E5E3-46A7-94C5-3C507510FEE6}</Project>
-      <Name>MiniMVC</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Opensearch.html" />
