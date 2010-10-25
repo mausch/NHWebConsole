@@ -203,19 +203,28 @@ namespace NHWebConsole {
             var mapping = Cfg.GetClassMapping(trueType);
             row.Add(KV("Type", BuildTypeLink(trueType)));
             if (mapping == null) {
+                // not a mapped type
                 if (o is object[]) {
                     row.AddRange(ConvertObjectArray((object[])o, model));
                 } else {
                     row.Add(KV("Value", HttpUtility.HtmlEncode(Convert.ToString(o))));
                 }
             } else {
-                row.Add(KV(mapping.IdentifierProperty.Name, Convert.ToString(mapping.IdentifierProperty.GetGetter(trueType).Get(o))));
+                var idProp = mapping.IdentifierProperty;
+                var id = idProp.GetGetter(trueType).Get(o);
+                row.Add(KV(idProp.Name, Convert.ToString(id)));
                 row.AddRange(mapping.PropertyClosureIterator
                                .SelectMany(p => ConvertProperty(o, trueType, p, model)));
             }
             return row;
         }
 
+        /// <summary>
+        /// Converts an array of unmapped objects
+        /// </summary>
+        /// <param name="o"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public IEnumerable<KeyValuePair<string, string>> ConvertObjectArray(object[] o, Context model) {
             return o.SelectMany((x, i) => ConvertResult(x, model)
                 .Select(k => KV(string.Format("{0}[{1}]", HttpUtility.UrlEncode(k.Key), i), k.Value)));
@@ -233,6 +242,7 @@ namespace NHWebConsole {
             // try many-to-many
             var collection = associations.FirstOrDefault(p => IsCollectionOf(p.GetGetter(ct).ReturnType, fk));
             if (collection != null) {
+                // assume generic collection
                 var fkType = collection.GetGetter(ct).ReturnType.GetGenericArguments()[0];
                 var fkTypePK = GetPkGetter(fkType).PropertyName;
                 var hql = string.Format("select x from {0} x join x.{1} y where y.{2} = '{3}'", classMapping.EntityName, collection.Name, fkTypePK, fkValue);
@@ -266,9 +276,10 @@ namespace NHWebConsole {
         }
 
         public string BuildTypeLink(Type entityType) {
-            if (Cfg.GetClassMapping(entityType) == null)
+            var mapping = Cfg.GetClassMapping(entityType);
+            if (mapping == null)
                 return entityType.Name;
-            var hql = string.Format("from {0}", Cfg.GetClassMapping(entityType).EntityName);
+            var hql = string.Format("from {0}", mapping.EntityName);
             var url = string.Format("{0}?q={1}&MaxResults=10", RawUrl.Split('?')[0], HttpUtility.UrlEncode(hql));
             return UrlHelper.Link(url, entityType.Name);
         }
@@ -302,10 +313,10 @@ namespace NHWebConsole {
 
         public KeyValuePair<string, string> ConvertEntity(object o, Type entityType, Property p) {
             var assocType = (EntityType)p.Type;
-            var mapping = Cfg.GetClassMapping(assocType.GetAssociatedEntityName());
             var o1 = p.GetGetter(entityType).Get(o);
             if (o1 == null)
                 return KV(p.Name, null as string);
+            var mapping = Cfg.GetClassMapping(assocType.GetAssociatedEntityName());
             var pk = GetPkValue(mapping.MappedClass, o1);
             var getter = p.GetGetter(entityType);
             return KV(p.Name, BuildEntityLink(getter.ReturnType, pk));
