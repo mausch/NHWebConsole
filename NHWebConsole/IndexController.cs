@@ -254,7 +254,8 @@ namespace NHWebConsole {
         }
 
         public string BuildEntityUrl(string entityName) {
-            return string.Format("{0}?q=from+{1}&MaxResults=10", RawUrl.Split('?')[0], HttpUtility.UrlEncode(entityName));
+            var hql = HttpUtility.UrlEncode("from " + entityName);
+            return string.Format("{0}?q={1}&MaxResults=10", RawUrl.Split('?')[0], hql);
         }
 
         public string BuildEntityLink(Type entityType, object pkValue) {
@@ -295,7 +296,8 @@ namespace NHWebConsole {
             return from propName in compType.PropertyNames
                    let prop = t.GetProperty(propName)
                    let v = prop.GetValue(o, null)
-                   select KV(string.Format("{0}.{1}", name, propName), v == null ? null : v.ToString());
+                   let k = string.Format("{0}.{1}", name, propName)
+                   select KV(k, v == null ? null : v.ToString());
         }
 
         public KeyValuePair<string, string> ConvertEntity(object o, Type entityType, Property p) {
