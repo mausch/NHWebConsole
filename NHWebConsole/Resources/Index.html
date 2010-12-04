@@ -99,6 +99,7 @@
 	            <option value="HQL" #if ($model.QueryType.ToString() == "HQL") selected="selected" #end>HQL</option>
 	            <option value="SQL" #if ($model.QueryType.ToString() == "SQL") selected="selected" #end>SQL</option>
 	        </select>
+            <input type="checkbox" id="autocomplete" />
 	        <input type="submit" value="Run" accesskey="x" />
 	    </form>
 	    <script type="text/javascript">
@@ -188,7 +189,52 @@
             if (e.keyCode == 37 || e.keyCode == 39)
                 _('#q').autocomplete('close');
         });
-	
+
+        ## http://www.quirksmode.org/js/cookies.html
+        var Cookie = {
+            create: function(name, value, days) {
+                var expires = (function(){
+	                if (days) {
+		                var date = new Date();
+		                date.setTime(date.getTime()+(days*24*60*60*1000));
+		                return "; expires="+date.toGMTString();
+	                }
+	                return "";
+                })();
+    	        document.cookie = name+"="+value+expires+"; path=/";
+            },
+            read: function(name) {
+	            var nameEQ = name + "=";
+	            var ca = document.cookie.split(';');
+	            for (var i=0; i < ca.length; i++) {
+		            var c = ca[i];
+		            while (c.charAt(0)==' ') 
+                        c = c.substring(1,c.length);
+		            if (c.indexOf(nameEQ) == 0) 
+                        return c.substring(nameEQ.length,c.length);
+	            }
+	            return null;
+            },
+            erase: function(name) {
+                createCookie(name,"",-1);
+            }
+        };
+
+        var autocomplete = (function() {
+            return {
+                load: function() {
+                    var qtype = document.getElementById('queryType').value;
+                    var hql = qtype == 'HQL';
+                    var enabled = hql;
+                    _('#autocomplete').attr('checked', 'checked');
+                    _('#q').autocomplete(enabled ? "enable" : "disable");
+                },
+                disable: function() {
+                    
+                }
+            };
+        })();
+
 	    if (document.getElementById('queryType').value != 'HQL')
 		    _('#q').autocomplete("disable");
 		
