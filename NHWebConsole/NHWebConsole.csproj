@@ -27,6 +27,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\NHWebConsole.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,6 +36,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\NHWebConsole.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="HqlIntellisense, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
@@ -96,7 +98,7 @@
     </ItemGroup>
     <RemoveDir Directories="$(MergedOutputPath)" />
     <MakeDir Directories="$(MergedOutputPath)" ContinueOnError="true" />
-    <ILMerge InputAssemblies="@(MergeAsm)" OutputFile="$(MergedOutputPath)\NHWebConsole.dll" Internalize="false" />
+    <ILMerge InputAssemblies="@(MergeAsm)" OutputFile="$(MergedOutputPath)\NHWebConsole.dll" Internalize="false" XmlDocs="true" DebugInfo="true" />
   </Target>
   <Target Name="BeforeBuild">
   </Target>

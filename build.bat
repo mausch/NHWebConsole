@@ -1,1 +1,0 @@
-msbuild /m NHWebConsole.sln
