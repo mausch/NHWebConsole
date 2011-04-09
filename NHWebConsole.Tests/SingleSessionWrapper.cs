@@ -51,6 +51,14 @@ namespace NHWebConsole.Tests {
             return session.IsDirty();
         }
 
+        public bool IsReadOnly(object entityOrProxy) {
+            return session.IsReadOnly(entityOrProxy);
+        }
+
+        public void SetReadOnly(object entityOrProxy, bool readOnly) {
+            session.SetReadOnly(entityOrProxy, readOnly);
+        }
+
         public object GetIdentifier(object obj) {
             return session.GetIdentifier(obj);
         }
@@ -241,11 +249,6 @@ namespace NHWebConsole.Tests {
             return session.CreateQuery(queryString);
         }
 
-        public IQuery CreateQuery(IQueryExpression queryExpression)
-        {
-            return session.CreateQuery(queryExpression);
-        }
-
         public IQuery CreateFilter(object collection, string queryString) {
             return session.CreateFilter(collection, queryString);
         }
@@ -346,6 +349,11 @@ namespace NHWebConsole.Tests {
 
         public bool IsConnected {
             get { return session.IsConnected; }
+        }
+
+        public bool DefaultReadOnly {
+            get { return session.DefaultReadOnly; }
+            set { session.DefaultReadOnly = value; }
         }
 
         public ITransaction Transaction {
