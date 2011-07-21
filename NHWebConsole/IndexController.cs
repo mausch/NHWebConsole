@@ -86,15 +86,15 @@ namespace NHWebConsole {
                 };
             }
             var v = GetView(model);
-            return new XDocResult(new XDocument(X.XHTML1_0_Transitional, v)) {
+            return new XDocResult(v) {
                 ContentType = model.ContentType
             };
         }
 
-        public XElement GetView(Context model) {
+        public XDocument GetView(Context model) {
             if (model.Output != null && model.Output.ToLowerInvariant() == "rss")
-                return Views.Views.RSS(model);
-            return Views.Views.Index(model);
+                return new XDocument(Views.Views.RSS(model));
+            return new XDocument(X.XHTML1_0_Transitional, Views.Views.Index(model));
         }
 
         public string BuildRssUrl(Context model) {
