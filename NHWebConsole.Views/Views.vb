@@ -150,6 +150,29 @@ Public Module Views
 
     End Function
 
+    Public Function Pager(ByVal firstPageUrl As String, ByVal prevPageUrl As String, ByVal nextPageUrl As String) As XElement
+        Return _
+            <div class="pager">
+                <%= If(firstPageUrl IsNot Nothing,
+                    <a href=<%= firstPageUrl %> accesskey="1"><%= X.laquo %> First</a>,
+                    Nothing) %>
+
+                <%= X.nbsp %>
+
+                <%= If(prevPageUrl IsNot Nothing,
+                    <a href=<%= prevPageUrl %> accesskey=","><%= X.lsaquo %> Prev</a>,
+                    Nothing) %>
+
+                <%= X.nbsp %>
+
+                <%= If(nextPageUrl IsNot Nothing,
+                    <a href=<%= nextPageUrl %> accesskey=".">Next <%= X.rsaquo %></a>,
+                    Nothing) %>
+
+            </div>
+
+    End Function
+
     Public Function Index(ByVal model As Context) As XElement
         Return _
 <html>
@@ -210,24 +233,7 @@ Public Module Views
             </x>,
             <x></x>).Nodes %>
         <br style="clear:both"/>
-        <div class="pager">
-            <%= If(model.FirstPageUrl IsNot Nothing,
-                <a href=<%= model.FirstPageUrl %> accesskey="1"><%= X.laquo %> First</a>,
-                Nothing) %>
-
-            <%= X.nbsp %>
-
-            <%= If(model.PrevPageUrl IsNot Nothing,
-                <a href=<%= model.PrevPageUrl %> accesskey=","><%= X.lsaquo %> Prev</a>,
-                Nothing) %>
-
-            <%= X.nbsp %>
-
-            <%= If(model.NextPageUrl IsNot Nothing,
-                <a href=<%= model.NextPageUrl %> accesskey=".">Next <%= X.rsaquo %></a>,
-                Nothing) %>
-
-        </div>
+        <%= Pager(model.FirstPageUrl, model.PrevPageUrl, model.NextPageUrl) %>
 
         <script type="text/javascript">
         //<![CDATA[
