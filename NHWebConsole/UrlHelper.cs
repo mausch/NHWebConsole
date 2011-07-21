@@ -60,9 +60,5 @@ namespace NHWebConsole {
             return d;
         }
 
-        public static string Link(string url, string text) {
-            return string.Format("<a href=\"{0}\">{1}</a>", SecurityElement.Escape(url), SecurityElement.Escape(text));
-        }
-
     }
 }

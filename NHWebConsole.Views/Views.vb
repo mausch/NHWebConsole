@@ -16,6 +16,20 @@ Public Module Views
             </OpenSearchDescription>
     End Function
 
+    Public Function RssDescription(ByVal e As Row) As XElement
+        Return _
+            <ul>
+                <%= From v In e
+                    Select
+                    <li>
+                        <b><%= v.Key %></b>
+                        <%= X.nbsp %>
+                        <%= v.Value %>
+                    </li>
+                %>
+            </ul>
+    End Function
+
     Public Function RSS(ByVal model As Context) As XElement
         Return _
 <rss version="2.0">
@@ -35,18 +49,8 @@ Public Module Views
             <item>
                 <title><%= row.i %></title>
                 <description>
-                &lt;ul&gt; 
-                <%= (From v In row.e
-                    Select
-                    <x>
-                  &lt;li&gt;
-                    &lt;b&gt;<%= v.Key %>&lt;/b&gt;:
-                    <%= If(v.Value, "&lt;i&gt;NULL&lt;/i&gt;") %>
-                  &lt;/li&gt;
-                    </x>).Nodes
-                %>
-                &lt;/ul&gt;
-              </description>
+                    <%= RssDescription(row.e).ToString %>
+                </description>
             </item> %>
     </channel>
 </rss>
@@ -195,8 +199,8 @@ Public Module Views
                                     <li>
                                         <b><%= v.Key %></b>:
                                         <%= If(v.Value IsNot Nothing,
-                                            <span><%= X.Raw(v.Value) %></span>,
-                                            <i>NULL</i>) %>
+                                            v.Value,
+                                            <x><i>NULL</i></x>.Nodes.ToArray) %>
                                     </li> %>
                             </ul>
                         </li>
@@ -265,5 +269,13 @@ Public Module Views
         </script>
     </body>
 </html>
+    End Function
+
+    Public Function Link(ByVal url As String, ByVal text As String) As XElement
+        Return <a href=<%= url %>><%= text %></a>
+    End Function
+
+    Public Function Img(ByVal src As String, Optional ByVal alt As String = "") As XElement
+        Return <img src=<%= src %> alt=<%= alt %>/>
     End Function
 End Module

@@ -27,7 +27,7 @@
 End Class
 
 Public Class Row
-    Inherits List(Of KeyValuePair(Of String, String))
+    Inherits List(Of KeyValuePair(Of String, XNode()))
 End Class
 
 Public Enum OperationType
