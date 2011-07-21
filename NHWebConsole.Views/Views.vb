@@ -186,21 +186,6 @@ Public Module Views
         <link rel="Stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/themes/ui-lightness/jquery-ui.css" type="text/css"/>
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js" type="text/javascript"></script>
         <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js" type="text/javascript"></script>
-        <script type="text/javascript">
-			(function(_) {
-			  _.fn.setCursorPosition = function(pos) {
-			    if (_(this).get(0).setSelectionRange) {
-			      _(this).get(0).setSelectionRange(pos, pos);
-			    } else if (_(this).get(0).createTextRange) {
-			      var range = _(this).get(0).createTextRange();
-			      range.collapse(true);
-			      range.moveEnd('character', pos);
-			      range.moveStart('character', pos);
-			      range.select();
-			    }
-			  }
-			})(jQuery);
-		</script>
     </head>
     <body>
         <%= QueryForm(model) %>
