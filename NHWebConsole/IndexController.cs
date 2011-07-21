@@ -339,6 +339,36 @@ namespace NHWebConsole {
             return new[] { e };
         }
 
+        public IEnumerable<XNode> ConvertPropertyValue(object value, Property p, Context model, object obj, Type entityType) {
+            if (model.ImageFields.Contains(p.Name)) {
+                var query = QueryScalar(p, entityType, obj);
+                var imgUrl = string.Format("{0}?raw=1&q={1}", RawUrl.Split('?')[0], HttpUtility.UrlEncode(query));
+                yield return Views.Views.Img(imgUrl);
+            } else if (model.LimitLength && value != null && Convert.ToString(value).Length > maxLen) {
+                yield return new XText(Convert.ToString(value).Substring(0, maxLen));
+                var query = QueryScalar(p, entityType, obj);
+                var url = string.Format("{0}?q={1}&limitLength=0", RawUrl.Split('?')[0], HttpUtility.UrlEncode(query));
+                yield return Views.Views.Link(url, "...");
+            } else if (value != null) {
+                yield return new XText(Convert.ToString(value));
+            }
+
+            if (p.Type == NHibernateUtil.BinaryBlob || p.Type == NHibernateUtil.Binary) {
+                var urlParts = RawUrl.Split('?');
+                IDictionary<string, string> qs = new Dictionary<string, string>();
+                if (urlParts.Length > 1)
+                    qs = UrlHelper.ParseQueryString(urlParts[1]);
+                if (!qs.ContainsKey("image") || !qs["image"].Contains(p.Name)) {
+                    if (qs.ContainsKey("image"))
+                        qs["image"] += "," + p.Name;
+                    else
+                        qs["image"] = p.Name;
+                    var url = string.Format("{0}?{1}", urlParts[0], UrlHelper.DictToQuerystring(qs));
+                    yield return Views.Views.Link(url, "(as image)");
+                }
+            }
+        }
+
         public IEnumerable<KeyValuePair<string, XNode[]>> ConvertProperty(object o, Type entityType, Property p, Context model) {
             if (p.Type.IsCollectionType) {
                 var c = ConvertCollection(o, entityType, p);
@@ -357,35 +387,7 @@ namespace NHWebConsole {
                     yield return KV(r.Key, NonNullArray(r.Value));
                 yield break;
             }
-            var container = X.E("x");
-            if (value != null)
-                container.Add(Convert.ToString(value));
-            if (model.ImageFields.Contains(p.Name)) {
-                var query = QueryScalar(p, entityType, o);
-                var imgUrl = string.Format("{0}?raw=1&q={1}", RawUrl.Split('?')[0], HttpUtility.UrlEncode(query));
-                container.RemoveAll();
-                container.Add(Views.Views.Img(imgUrl));
-            } else if (model.LimitLength && value != null && Convert.ToString(value).Length > maxLen) {
-                container.RemoveAll();
-                container.Add(Convert.ToString(value).Substring(0, maxLen));
-                var query = QueryScalar(p, entityType, o);
-                var url = string.Format("{0}?q={1}&limitLength=0", RawUrl.Split('?')[0], HttpUtility.UrlEncode(query));
-                container.Add(Views.Views.Link(url, "..."));
-            }
-            if (p.Type == NHibernateUtil.BinaryBlob || p.Type == NHibernateUtil.Binary) {
-                var urlParts = RawUrl.Split('?');
-                IDictionary<string, string> qs = new Dictionary<string, string>();
-                if (urlParts.Length > 1)
-                    qs = UrlHelper.ParseQueryString(urlParts[1]);
-                if (!qs.ContainsKey("image") || !qs["image"].Contains(p.Name)) {
-                    if (qs.ContainsKey("image"))
-                        qs["image"] += "," + p.Name;
-                    else
-                        qs["image"] = p.Name;
-                    var url = string.Format("{0}?{1}", urlParts[0], UrlHelper.DictToQuerystring(qs));
-                    container.Add(Views.Views.Link(url, "(as image)"));
-                }
-            }
+            var container = X.E("x", ConvertPropertyValue(value, p, model, o, entityType));
             yield return KV(p.Name, container.Nodes().ToArray());
         }
 
