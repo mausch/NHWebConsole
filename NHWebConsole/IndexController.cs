@@ -21,6 +21,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Xml.Linq;
 using MiniMVC;
 using NHibernate;
 using NHibernate.Cfg;
@@ -28,6 +29,7 @@ using NHibernate.Mapping;
 using NHibernate.Properties;
 using NHibernate.Proxy;
 using NHibernate.Type;
+using NHWebConsole.Views;
 
 namespace NHWebConsole {
     /// <summary>
@@ -83,11 +85,16 @@ namespace NHWebConsole {
                     ContentType = model.ContentType
                 };
             }
-            if (model.Output != null)
-                ViewName = GetEmbeddedViewName(model.Output);
-            return new ViewResult(model, ViewName) {
+            var v = GetView(model);
+            return new XDocResult(new XDocument(X.XHTML1_0_Transitional, v)) {
                 ContentType = model.ContentType
             };
+        }
+
+        public XElement GetView(Context model) {
+            if (model.Output != null && model.Output.ToLowerInvariant() == "rss")
+                return Views.Views.RSS(model);
+            return Views.Views.Index(model);
         }
 
         public string BuildRssUrl(Context model) {

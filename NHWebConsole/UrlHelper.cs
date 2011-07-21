@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Web;
 
 namespace NHWebConsole {
@@ -60,7 +61,7 @@ namespace NHWebConsole {
         }
 
         public static string Link(string url, string text) {
-            return string.Format("<a href=\"{0}\">{1}</a>", url, text);
+            return string.Format("<a href=\"{0}\">{1}</a>", SecurityElement.Escape(url), SecurityElement.Escape(text));
         }
 
     }

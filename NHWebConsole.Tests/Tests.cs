@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Iesi.Collections.Generic;
+using NHWebConsole.Views;
 using NHibernate;
 using NHibernate.Mapping;
 using NHibernate.Tool.hbm2ddl;

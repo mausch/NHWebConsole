@@ -51,10 +51,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\NHibernate.dll</HintPath>
     </Reference>
-    <Reference Include="NVelocity, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\NVelocity.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -65,6 +61,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ControllerFactory.cs" />
@@ -77,23 +74,20 @@
     <Compile Include="SuggestionController.cs" />
     <Compile Include="SuggestionResponse.cs" />
     <Compile Include="UrlHelper.cs" />
-    <Compile Include="Context.cs" />
     <Compile Include="Utils\EnumerableExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\Index.html" />
-    <EmbeddedResource Include="Resources\RSS.html" />
-    <EmbeddedResource Include="Resources\Suggestion.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\Opensearch.html" />
+    <ProjectReference Include="..\NHWebConsole.Views\NHWebConsole.Views.vbproj">
+      <Project>{D175C732-9EA3-4429-9D3D-1A745874F72D}</Project>
+      <Name>NHWebConsole.Views</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="Merge">
     <ItemGroup>
       <MergeAsm Include="bin\$(Configuration)\NHWebConsole.dll" />
       <MergeAsm Include="bin\$(Configuration)\MiniMVC.dll" />
-      <MergeAsm Include="bin\$(Configuration)\NVelocity.dll" />
+      <MergeAsm Include="bin\$(Configuration)\NHWebConsole.Views.dll" />
       <MergeAsm Include="bin\$(Configuration)\HqlIntellisense.dll" />
     </ItemGroup>
     <RemoveDir Directories="$(MergedOutputPath)" />
