@@ -135,19 +135,20 @@ Public Module Views
 	                Max results: <input type="text" name="MaxResults" value=<%= model.MaxResults %> size="2"/><br/>
 	                First result: <input type="text" name="FirstResult" value=<%= model.FirstResult %> size="2"/><br/>
                     <select name="type" id="queryType">
-                        <%= If(model.QueryType = QueryType.HQL,
-                            <x>
-                                <option value="HQL" selected="selected">HQL</option>
-                                <option value="SQL">SQL</option>
-                            </x>,
-                            <x>
-                                <option value="HQL">HQL</option>
-                                <option value="SQL" selected="selected">SQL</option>
-                            </x>).Nodes %>
+                        <%= QueryTypeOption(QueryType.HQL, model.QueryType) %>
+                        <%= QueryTypeOption(QueryType.SQL, model.QueryType) %>
                     </select>
                     <input type="submit" value="Run" accesskey="x"/>
                 </form>
 
+    End Function
+
+    Public Function QueryTypeOption(ByVal qt As QueryType, ByVal selected As QueryType) As XElement
+        Dim e = <option value=<%= qt.ToString %>><%= qt.ToString %></option>
+        If qt = selected Then
+            e.Add(X.A("selected", "selected"))
+        End If
+        Return e
     End Function
 
     Public Function Pager(ByVal firstPageUrl As String, ByVal prevPageUrl As String, ByVal nextPageUrl As String) As XElement
