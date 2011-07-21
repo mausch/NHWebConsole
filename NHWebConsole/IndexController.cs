@@ -333,22 +333,28 @@ namespace NHWebConsole {
             return KV(p.Name, BuildEntityLink(getter.ReturnType, pk) as XNode);
         }
 
+        public XNode[] NonNullArray(XNode e) {
+            if (e == null)
+                return new XNode[0];
+            return new[] { e };
+        }
+
         public IEnumerable<KeyValuePair<string, XNode[]>> ConvertProperty(object o, Type entityType, Property p, Context model) {
             if (p.Type.IsCollectionType) {
                 var c = ConvertCollection(o, entityType, p);
-                yield return KV(c.Key, new[] { c.Value as XNode});
+                yield return KV(c.Key, NonNullArray(c.Value));
                 yield break;
             }
             if (p.Type.IsEntityType) {
                 var c = ConvertEntity(o, entityType, p);
-                yield return KV(c.Key, new[] { c.Value });
+                yield return KV(c.Key, NonNullArray(c.Value));
                 yield break;
             }
             var getter = p.GetGetter(entityType);
             var value = getter.Get(o);
             if (p.Type.IsComponentType) {
                 foreach (var r in ConvertComponent(value, p, p.Name))
-                    yield return KV(r.Key, new[] {r.Value});
+                    yield return KV(r.Key, NonNullArray(r.Value));
                 yield break;
             }
             var container = X.E("x");
@@ -358,7 +364,7 @@ namespace NHWebConsole {
                 var query = QueryScalar(p, entityType, o);
                 var imgUrl = string.Format("{0}?raw=1&q={1}", RawUrl.Split('?')[0], HttpUtility.UrlEncode(query));
                 container.RemoveAll();
-                container.Add(Views.Views.Img(imgUrl, ""));
+                container.Add(Views.Views.Img(imgUrl));
             } else if (model.LimitLength && value != null && Convert.ToString(value).Length > maxLen) {
                 container.RemoveAll();
                 container.Add(Convert.ToString(value).Substring(0, maxLen));

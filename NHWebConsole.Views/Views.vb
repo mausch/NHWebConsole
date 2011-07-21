@@ -198,7 +198,7 @@ Public Module Views
                                     Select
                                     <li>
                                         <b><%= v.Key %></b>:
-                                        <%= If(v.Value IsNot Nothing,
+                                        <%= If(v.Value.Length > 0,
                                             v.Value,
                                             <x><i>NULL</i></x>.Nodes.ToArray) %>
                                     </li> %>
