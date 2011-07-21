@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Web;
 
 namespace NHWebConsole {
@@ -57,10 +58,6 @@ namespace NHWebConsole {
                 d[HttpUtility.UrlDecode(v[0])] = HttpUtility.UrlDecode(v[1]);
             }
             return d;
-        }
-
-        public static string Link(string url, string text) {
-            return string.Format("<a href=\"{0}\">{1}</a>", url, text);
         }
 
     }

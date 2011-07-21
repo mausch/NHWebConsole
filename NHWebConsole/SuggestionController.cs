@@ -30,10 +30,11 @@ namespace NHWebConsole {
             var q = context.Request.QueryString["q"];
             var p = int.Parse(context.Request.QueryString["p"]);
             new HQLCodeAssist(new SimpleConfigurationProvider(NHWebConsoleSetup.Configuration())).CodeComplete(q, p, this);
-            return new ViewResult(new SuggestionResponse {
-                Error = error,
-                Suggestions = string.Join(",", suggestions.Select(s => string.Format("\"{0}\"", s)).ToArray()),
-            }, ViewName);
+            if (error != null)
+                return new RawResult(error);
+            var sugg = string.Join(",", suggestions.Select(s => string.Format("\"{0}\"", s)).ToArray());
+            var json = "{\"suggestions\": [$]}".Replace("$", sugg);
+            return new RawResult(json);
         }
 
         public bool Accept(HQLCompletionProposal proposal)

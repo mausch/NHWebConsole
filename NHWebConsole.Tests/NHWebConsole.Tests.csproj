@@ -95,6 +95,10 @@
     <Compile Include="Tests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NHWebConsole.Views\NHWebConsole.Views.vbproj">
+      <Project>{D175C732-9EA3-4429-9D3D-1A745874F72D}</Project>
+      <Name>NHWebConsole.Views</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NHWebConsole\NHWebConsole.csproj">
       <Project>{277DC89B-4206-4AC2-BBD1-1DCC9B3365CD}</Project>
       <Name>NHWebConsole</Name>
