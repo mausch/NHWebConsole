@@ -18,7 +18,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml.Linq;
@@ -94,28 +93,7 @@ namespace NHWebConsole {
         public XDocument GetView(Context model) {
             if (model.Output != null && model.Output.ToLowerInvariant() == "rss")
                 return new XDocument(Views.Views.RSS(model));
-            var ns = XNamespace.Get("http://www.w3.org/1999/xhtml");
-            var root = Views.Views.Index(model);
-            var nroot = NoEmptyScripts(AddNamespace(ns, root));
-            return new XDocument(X.XHTML1_0_Transitional, nroot);
-        }
-
-        public static XNode NoEmptyScripts(XNode n) {
-            if (n is XElement) {
-                var e = n as XElement;
-                if (e.Name.LocalName == "script" && e.Attribute("src") != null)
-                    e.Add(new XText(""));
-                return new XElement(e.Name, e.Attributes(), e.Nodes().Select(NoEmptyScripts));
-            }
-            return n;
-        }
-
-        public static XNode AddNamespace(XNamespace ns, XNode n) {
-            if (n is XElement) {
-                var e = n as XElement;
-                return new XElement(ns + e.Name.LocalName, e.Attributes(), e.Nodes().Select(x => AddNamespace(ns, x)));
-            }
-            return n;
+            return X.MakeHTML5Doc(Views.Views.Index(model));
         }
 
         public string BuildRssUrl(Context model) {
