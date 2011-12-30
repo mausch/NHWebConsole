@@ -16,17 +16,17 @@ Public Module Views
             </OpenSearchDescription>
     End Function
 
-    Public Function RssDescription(ByVal e As Row) As XElement
+    Public Function RowDescription(ByVal e As Row) As XElement
         Return _
             <ul>
                 <%= From v In e
                     Select
                     <li>
-                        <b><%= v.Key %></b>
-                        <%= X.nbsp %>
-                        <%= v.Value %>
-                    </li>
-                %>
+                        <b><%= v.Key %></b>:
+                        <%= If(v.Value.Length > 0,
+                            v.Value,
+                            <x><i>NULL</i></x>.Nodes.ToArray) %>
+                    </li> %>
             </ul>
     End Function
 
@@ -49,19 +49,16 @@ Public Module Views
             <item>
                 <title><%= row.i %></title>
                 <description>
-                    <%= RssDescription(row.e).ToString %>
+                    <%= RowDescription(row.e).ToString %>
                 </description>
             </item> %>
     </channel>
 </rss>
     End Function
 
-    Public Function Index(ByVal model As Context) As XElement
+    Public Function Styles() As XElement
         Return _
-<html>
-    <head>
-        <title>NHibernate console</title>
-        <style type="text/css">
+            <style type="text/css">
 		    ul {
 		        list-style-type: none;
 		        padding: 0px;
@@ -107,13 +104,7 @@ Public Module Views
             {
 	            background-color: #FFFFCC;
             }
-		</style>
-        <%= If(model.RssUrl IsNot Nothing,
-            <link rel="alternate" type="application/rss+xml" title="RSS" href=<%= model.RssUrl %>/>,
-            Nothing) %>
-        <link rel="search" type="application/opensearchdescription+xml" href="openSearch.ashx" title="HQL search"/>
-        <link rel="Stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/themes/ui-lightness/jquery-ui.css" type="text/css"/>
-        <style type="text/css">
+
             .ui-widget 
             {
             	font-size: 90%;
@@ -124,53 +115,81 @@ Public Module Views
             	overflow-y: scroll; 
             	overflow-x: hidden;
             }
-        </style>
+            </style>
+    End Function
+
+    Public Function QueryForm(ByVal model As Context) As XElement
+        Return _
+                <form method="get" action=<%= model.Url %>>
+                    <textarea id="q" name="q" cols="80" rows="10" accesskey="q"><%= If(model.Query, "") %></textarea>
+                    <div class="entitylist">
+                        <%= From e In model.AllEntities
+                            Select
+                            <span>
+                                <a href=<%= e.Value %>><%= e.Key %></a>
+                                <br/>
+                            </span> %>
+                        <span></span>
+                    </div>
+                    <br style="clear:both"/>
+	                Max results: <input type="text" name="MaxResults" value=<%= model.MaxResults %> size="2"/><br/>
+	                First result: <input type="text" name="FirstResult" value=<%= model.FirstResult %> size="2"/><br/>
+                    <select name="type" id="queryType">
+                        <%= QueryTypeOption(QueryType.HQL, model.QueryType) %>
+                        <%= QueryTypeOption(QueryType.SQL, model.QueryType) %>
+                    </select>
+                    <input type="submit" value="Run" accesskey="x"/>
+                </form>
+
+    End Function
+
+    Public Function QueryTypeOption(ByVal qt As QueryType, ByVal selected As QueryType) As XElement
+        Dim e = <option value=<%= qt.ToString %>><%= qt.ToString %></option>
+        If qt = selected Then
+            e.Add(X.A("selected", "selected"))
+        End If
+        Return e
+    End Function
+
+    Public Function Pager(ByVal firstPageUrl As String, ByVal prevPageUrl As String, ByVal nextPageUrl As String) As XElement
+        Return _
+            <div class="pager">
+                <%= If(firstPageUrl IsNot Nothing,
+                    <a href=<%= firstPageUrl %> accesskey="1"><%= X.laquo %> First</a>,
+                    Nothing) %>
+
+                <%= X.nbsp %>
+
+                <%= If(prevPageUrl IsNot Nothing,
+                    <a href=<%= prevPageUrl %> accesskey=","><%= X.lsaquo %> Prev</a>,
+                    Nothing) %>
+
+                <%= X.nbsp %>
+
+                <%= If(nextPageUrl IsNot Nothing,
+                    <a href=<%= nextPageUrl %> accesskey=".">Next <%= X.rsaquo %></a>,
+                    Nothing) %>
+
+            </div>
+
+    End Function
+
+    Public Function Index(ByVal model As Context) As XElement
+        Return _
+<html>
+    <head>
+        <title>NHibernate console</title>
+        <%= Styles() %>
+        <%= If(model.RssUrl IsNot Nothing,
+            <link rel="alternate" type="application/rss+xml" title="RSS" href=<%= model.RssUrl %>/>,
+            Nothing) %>
+        <link rel="search" type="application/opensearchdescription+xml" href="openSearch.ashx" title="HQL search"/>
+        <link rel="Stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/themes/ui-lightness/jquery-ui.css" type="text/css"/>
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js" type="text/javascript"></script>
         <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js" type="text/javascript"></script>
-        <script type="text/javascript">
-			(function(_) {
-			  _.fn.setCursorPosition = function(pos) {
-			    if (_(this).get(0).setSelectionRange) {
-			      _(this).get(0).setSelectionRange(pos, pos);
-			    } else if (_(this).get(0).createTextRange) {
-			      var range = _(this).get(0).createTextRange();
-			      range.collapse(true);
-			      range.moveEnd('character', pos);
-			      range.moveStart('character', pos);
-			      range.select();
-			    }
-			  }
-			})(jQuery);
-		</script>
     </head>
     <body>
-        <form method="get" action=<%= model.Url %>>
-            <textarea id="q" name="q" cols="80" rows="10" accesskey="q"><%= If(model.Query, "") %></textarea>
-            <div class="entitylist">
-                <%= From e In model.AllEntities
-                    Select
-                    <span>
-                        <a href=<%= e.Value %>><%= e.Key %></a>
-                        <br/>
-                    </span> %>
-                <span></span>
-            </div>
-            <br style="clear:both"/>
-	        Max results: <input type="text" name="MaxResults" value=<%= model.MaxResults %> size="2"/><br/>
-	        First result: <input type="text" name="FirstResult" value=<%= model.FirstResult %> size="2"/><br/>
-            <select name="type" id="queryType">
-                <%= If(model.QueryType = QueryType.HQL,
-                    <x>
-                        <option value="HQL" selected="selected">HQL</option>
-                        <option value="SQL">SQL</option>
-                    </x>,
-                    <x>
-                        <option value="HQL">HQL</option>
-                        <option value="SQL" selected="selected">SQL</option>
-                    </x>).Nodes %>
-            </select>
-            <input type="submit" value="Run" accesskey="x"/>
-        </form>
+        <%= QueryForm(model) %>
         <script type="text/javascript">
             //<![CDATA[
 	        document.forms[0].onsubmit = function() {
@@ -193,40 +212,14 @@ Public Module Views
                     <%= From row In model.Results.Select(Function(r, i) New With {.e = r, .i = i})
                         Select
                         <li class=<%= If(row.i Mod 2 = 0, "even", "odd") %>>
-                            <ul>
-                                <%= From v In row.e
-                                    Select
-                                    <li>
-                                        <b><%= v.Key %></b>:
-                                        <%= If(v.Value.Length > 0,
-                                            v.Value,
-                                            <x><i>NULL</i></x>.Nodes.ToArray) %>
-                                    </li> %>
-                            </ul>
+                            <%= RowDescription(row.e) %>
                         </li>
                     %>
                 </ul>
             </x>,
             <x></x>).Nodes %>
         <br style="clear:both"/>
-        <div class="pager">
-            <%= If(model.FirstPageUrl IsNot Nothing,
-                <a href=<%= model.FirstPageUrl %> accesskey="1"><%= X.laquo %> First</a>,
-                Nothing) %>
-
-            <%= X.nbsp %>
-
-            <%= If(model.PrevPageUrl IsNot Nothing,
-                <a href=<%= model.PrevPageUrl %> accesskey=","><%= X.lsaquo %> Prev</a>,
-                Nothing) %>
-
-            <%= X.nbsp %>
-
-            <%= If(model.NextPageUrl IsNot Nothing,
-                <a href=<%= model.NextPageUrl %> accesskey=".">Next <%= X.rsaquo %></a>,
-                Nothing) %>
-
-        </div>
+        <%= Pager(model.FirstPageUrl, model.PrevPageUrl, model.NextPageUrl) %>
 
         <script type="text/javascript">
         //<![CDATA[

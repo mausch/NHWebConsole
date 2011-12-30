@@ -18,7 +18,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml.Linq;
@@ -94,7 +93,7 @@ namespace NHWebConsole {
         public XDocument GetView(Context model) {
             if (model.Output != null && model.Output.ToLowerInvariant() == "rss")
                 return new XDocument(Views.Views.RSS(model));
-            return new XDocument(X.XHTML1_0_Transitional, Views.Views.Index(model));
+            return X.MakeHTML5Doc(Views.Views.Index(model));
         }
 
         public string BuildRssUrl(Context model) {
