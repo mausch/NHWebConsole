@@ -50,7 +50,7 @@ namespace NHWebConsole {
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public override IResult Execute(HttpContextBase context) {
+        public override void Execute(HttpContextBase context) {
             RawUrl = context.Request.RawUrl;
             var model = new Context {
                 Version = Setup.AssemblyDate.Ticks.ToString(),
@@ -80,20 +80,17 @@ namespace NHWebConsole {
                 model.Error = e.ToString();
             }
             if (model.Raw) {
-                return new RawResult(model.Error ?? model.RawResult) {
-                    ContentType = model.ContentType
-                };
+                context.Raw(model.Error ?? model.RawResult, model.ContentType);
+            } else {
+                var v = GetView(model);
+                context.XDocument(v, model.ContentType);
             }
-            var v = GetView(model);
-            return new XDocResult(v) {
-                ContentType = model.ContentType
-            };
         }
 
         public XDocument GetView(Context model) {
             if (model.Output != null && model.Output.ToLowerInvariant() == "rss")
                 return new XDocument(Views.Views.RSS(model));
-            return X.MakeHTML5Doc(Views.Views.Index(model));
+            return Views.Views.Index(model).MakeHTML5Doc();
         }
 
         public string BuildRssUrl(Context model) {

@@ -26,15 +26,17 @@ namespace NHWebConsole {
         private string error;
         private readonly IList<string> suggestions = new List<string>();
 
-        public override IResult Execute(HttpContextBase context) {
+        public override void Execute(HttpContextBase context) {
             var q = context.Request.QueryString["q"];
             var p = int.Parse(context.Request.QueryString["p"]);
             new HQLCodeAssist(new NHConfigDataProvider(NHWebConsoleSetup.Configuration())).CodeComplete(q, p, this);
-            if (error != null)
-                return new RawResult(error);
+            if (error != null) {
+                context.Raw(error);
+                return;
+            }
             var sugg = string.Join(",", suggestions.Select(s => string.Format("\"{0}\"", s)).ToArray());
             var json = "{\"suggestions\": [$]}".Replace("$", sugg);
-            return new RawResult(json);
+            context.Raw(json);
         }
 
         public bool accept(HQLCompletionProposal proposal) {

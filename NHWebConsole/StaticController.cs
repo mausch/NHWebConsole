@@ -20,7 +20,7 @@ using MiniMVC;
 
 namespace NHWebConsole {
     public class StaticController : Controller {
-        public override IResult Execute(HttpContextBase context) {
+        public override void Execute(HttpContextBase context) {
             var resource = context.Request.QueryString["r"];
             var contentType = context.Request.QueryString["t"];
             var cache = context.Request.QueryString["cache"];
@@ -35,7 +35,6 @@ namespace NHWebConsole {
             var read = 0;
             while ((read = resourceStream.Read(buffer, 0, size)) > 0)
                 context.Response.OutputStream.Write(buffer, 0, read);
-            return new EmptyResult();
         }
     }
 }
