@@ -63,17 +63,12 @@ namespace NHWebConsole.Tests {
 
         public static readonly Action<ISession, Configuration> ExecQuery =
             (session, cfg) => {
-                var c = new IndexController {
-                    Session = session,
-                    Cfg = cfg,
-                    RawUrl = "/pepe.aspx",
-                };
                 var model = new Context {
                     Query = "from System.Object",
                     QueryType = QueryType.HQL,
                     ImageFields = new string[0],
                 };
-                c.ExecQuery(model);
+                ControllerFactory.ExecQuery(model, cfg, session, "/pepe.aspx");
                 Assert.IsNotNull(model.Results);
                 Assert.Greater(model.Results.Count, 0);
                 //foreach (var r in model.Results)
@@ -83,30 +78,20 @@ namespace NHWebConsole.Tests {
 
         public static readonly Action<ISession, Configuration> ManyToMany =
             (session, cfg) => {
-                var c = new IndexController {
-                    Session = session,
-                    Cfg = cfg,
-                    RawUrl = "/pepe.aspx",
-                };
-                var link = c.BuildCollectionLink(typeof (Territory), typeof (Employee), 1);
+                var link = ControllerFactory.BuildCollectionLink(typeof (Territory), typeof (Employee), 1, cfg, "/pepe.aspx");
                 //Console.WriteLine(link);
                 Assert.IsNotNull(link);
             };
 
         public static readonly Action<ISession, Configuration> QueryScalarWithNamespace =
             (session, cfg) => {
-                var c = new IndexController {Cfg = cfg};
                 var prop = new Property { Name = "FirstName" };
-                var query = c.QueryScalar(prop, typeof(Employee), new Employee());
+                var query = ControllerFactory.QueryScalar(prop, typeof(Employee), new Employee(), cfg);
                 Assert.AreEqual("select x.FirstName from SampleModel.Employee x where x.Id = '0'", query);
             };
 
         public static readonly Action<ISession, Configuration> Component =
             (session, cfg) => {
-                var c = new IndexController {
-                    RawUrl = "/pepe?",
-                    Cfg = cfg,
-                };
                 var employee = new Employee {
                     Address = new Address {
                         City = "",
@@ -115,22 +100,18 @@ namespace NHWebConsole.Tests {
                 var ctx = new Context {
                     ImageFields = new string[0],
                 };
-                c.ConvertResult(employee, ctx);
+                ControllerFactory.ConvertResult(employee, ctx, cfg, "/pepe?");
             };
 
         public static readonly Action<ISession, Configuration> NullComponent =
             (session, cfg) => {
-                var c = new IndexController {
-                    RawUrl = "/pepe?",
-                    Cfg = cfg,
-                };
                 var employee = new Employee {
                     Address = null,
                 };
                 var ctx = new Context {
                     ImageFields = new string[0],
                 };
-                c.ConvertResult(employee, ctx);
+                ControllerFactory.ConvertResult(employee, ctx, cfg, "/pepe?");
             };
 
         public static readonly Test SessionTests = Test.List("Session tests", new[] {
@@ -145,13 +126,11 @@ namespace NHWebConsole.Tests {
             Test.List(new[] {
                 SessionTests,
                 Test.Case("next page", () => {
-                    var c = new IndexController {
-                        RawUrl = "/pepe.aspx?hql=from+System.Object&",
-                    };
-                    var url = c.BuildNextPageUrl(new Context {
-                        MaxResults = 10,
+                    var context = new Context {
+                        MaxResults = 10, 
                         Results = Enumerable.Range(1, 11).Select(i => new Row()).ToList(),
-                    });
+                    };
+                    var url = ControllerFactory.BuildNextPageUrl(context, "/pepe.aspx?hql=from+System.Object&");
                     Console.WriteLine(url);
                 }),
                 Test.Case("is not collection of", () => {
@@ -164,7 +143,7 @@ namespace NHWebConsole.Tests {
                     };
 
                     foreach (var t in types) {
-                        Assert.IsFalse(IndexController.IsCollectionOf(t.Item1, t.Item2),
+                        Assert.IsFalse(ControllerFactory.IsCollectionOf(t.Item1, t.Item2),
                                        "Expected {0} is NOT collection of {1}", t.Item1, t.Item2);
                     }
                 }),
@@ -179,7 +158,7 @@ namespace NHWebConsole.Tests {
                     };
 
                     foreach (var t in types) {
-                        Assert.IsTrue(IndexController.IsCollectionOf(t.Item1, t.Item2),
+                        Assert.IsTrue(ControllerFactory.IsCollectionOf(t.Item1, t.Item2),
                                       "Expected {0} is collection of {1}", t.Item1, t.Item2);
                     }
                 })
