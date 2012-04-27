@@ -4,7 +4,7 @@
     Public Property QueryType As QueryType
     Public Property MaxResults As Integer?
     Public Property FirstResult As Integer?
-    Public Property Results As ICollection(Of Row)
+    Public Property Results As IEnumerable(Of Row)
     Public Property Total As Integer
     Public Property [Error] As String
     Public Property NextPageUrl As String
@@ -15,7 +15,7 @@
     Public Property Raw As Boolean
     Public Property ImageFields As String()
     Public Property ContentType As String
-    Public Property AllEntities As ICollection(Of KeyValuePair(Of String, String))
+    Public Property AllEntities As IEnumerable(Of KeyValuePair(Of String, String))
     Public Property Output As String
     Public Property RssUrl As String
     Public Property ExtraRowTemplate As String

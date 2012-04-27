@@ -70,7 +70,7 @@ namespace NHWebConsole.Tests {
                 };
                 ControllerFactory.ExecQuery(model, cfg, session, "/pepe.aspx");
                 Assert.IsNotNull(model.Results);
-                Assert.Greater(model.Results.Count, 0);
+                Assert.Greater(model.Results.Count(), 0);
                 //foreach (var r in model.Results)
                 //    foreach (var m in r)
                 //        Console.WriteLine("{0}: {1}", m.Key, m.Value);

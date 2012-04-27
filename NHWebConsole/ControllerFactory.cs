@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -79,13 +80,18 @@ namespace NHWebConsole {
                 context.Response.Cache.SetExpires(DateTime.Now.AddYears(10));
             if (contentType != null)
                 context.Response.ContentType = contentType;
-            var fullResourceName = string.Format("{0}.Resources.{1}", typeof(ControllerFactory).Assembly.FullName.Split(',')[0], resource);
-            var resourceStream = typeof(ControllerFactory).Assembly.GetManifestResourceStream(fullResourceName);
+            var assembly = typeof (ControllerFactory).Assembly;
+            var fullResourceName = string.Format("{0}.Resources.{1}", assembly.FullName.Split(',')[0], resource);
+            using (var resourceStream = assembly.GetManifestResourceStream(fullResourceName))
+                Copy(resourceStream, context.Response.OutputStream);
+        }
+
+        public static void Copy(Stream source, Stream dest) {
             const int size = 32768;
             var buffer = new byte[size];
             var read = 0;
-            while ((read = resourceStream.Read(buffer, 0, size)) > 0)
-                context.Response.OutputStream.Write(buffer, 0, read);
+            while ((read = source.Read(buffer, 0, size)) > 0)
+                dest.Write(buffer, 0, read);
         }
 
         public static readonly IHttpHandler SuggestionHandler = new HttpHandlerWithReadOnlySession(WithNHSession(Suggestion));
@@ -106,17 +112,21 @@ namespace NHWebConsole {
 
         public static readonly IHttpHandler IndexHandler = new HttpHandlerWithReadOnlySession(WithNHSession(Index));
 
-        public static void Index(HttpContextBase context, ISession session, Configuration cfg) {
-            var model = new Context {
+        public static Context InitialContext(HttpRequestBase request) {
+            return new Context {
                 Version = Setup.AssemblyDate.Ticks.ToString(),
-                Url = context.Request.RawUrl.Split('?')[0],
-                LimitLength = string.IsNullOrEmpty(context.Request.QueryString["limitLength"]),
-                Raw = !string.IsNullOrEmpty(context.Request.QueryString["raw"]),
-                ImageFields = (context.Request.QueryString["image"] ?? "").Split(','),
-                ContentType = context.Request.QueryString["contentType"],
-                Output = context.Request.QueryString["output"],
-                ExtraRowTemplate = context.Request["extraRowTemplate"],
+                Url = request.RawUrl.Split('?')[0],
+                LimitLength = string.IsNullOrEmpty(request.QueryString["limitLength"]),
+                Raw = !string.IsNullOrEmpty(request.QueryString["raw"]),
+                ImageFields = (request.QueryString["image"] ?? "").Split(','),
+                ContentType = request.QueryString["contentType"],
+                Output = request.QueryString["output"],
+                ExtraRowTemplate = request["extraRowTemplate"],
             };
+        }
+
+        public static void Index(HttpContextBase context, ISession session, Configuration cfg) {
+            var model = InitialContext(context.Request);
             try {
                 model.MaxResults = TryParse(context.Request["MaxResults"]);
                 model.FirstResult = TryParse(context.Request["FirstResult"]);
@@ -217,7 +227,7 @@ namespace NHWebConsole {
                 else {
                     var results = q.List();
                     model.Total = results.Count;
-                    model.Results = ConvertResults(results, model, cfg, rawUrl);
+                    model.Results = ConvertResults(results, model, cfg, rawUrl).ToList();
                 }
             } else {
                 var count = q.ExecuteUpdate();
@@ -229,12 +239,12 @@ namespace NHWebConsole {
             }
         }
 
-        public static ICollection<Row> ConvertResults(IList results, Context model, Configuration cfg, string rawUrl) {
+        public static IEnumerable<Row> ConvertResults(IList results, Context model, Configuration cfg, string rawUrl) {
             var r = results.Cast<object>()
                 .Select(x => ConvertResult(x, model, cfg, rawUrl));
             if (model.MaxResults.HasValue)
                 r = r.Take(model.MaxResults.Value);
-            return r.ToList();
+            return r;
         }
 
         public static Row ConvertResult(object o, Context model, Configuration Cfg, string rawUrl) {
