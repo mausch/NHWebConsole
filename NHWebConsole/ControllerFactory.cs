@@ -22,13 +22,12 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml.Linq;
-using HqlIntellisense;
 using MiniMVC;
 using NHWebConsole.Views;
 using NHibernate;
 using NHWebConsole.Utils;
 using NHibernate.Cfg;
-using NHibernate.Properties;
+using NHibernate.Property;
 using NHibernate.Proxy;
 using NHibernate.Mapping;
 using NHibernate.Type;
@@ -44,7 +43,6 @@ namespace NHWebConsole {
             new[] {
                 KV("opensearch", OpensearchHandler),
                 KV("index", IndexHandler),
-                KV("suggestion", SuggestionHandler),
             };
 
         public static Action<HttpContextBase> WithNHSession(Action<HttpContextBase, ISession, Configuration> action) {
@@ -94,22 +92,6 @@ namespace NHWebConsole {
                 dest.Write(buffer, 0, read);
         }
 
-        public static readonly IHttpHandler SuggestionHandler = new HttpHandlerWithReadOnlySession(WithNHSession(Suggestion));
-
-        public static void Suggestion(HttpContextBase context, ISession session, Configuration cfg) {
-            var q = context.Request.QueryString["q"];
-            var p = int.Parse(context.Request.QueryString["p"]);
-            var hqlAssist = new HQLCompletionRequestor();
-            new HQLCodeAssist(new NHConfigDataProvider(cfg)).CodeComplete(q, p, hqlAssist);
-            if (hqlAssist.Error != null) {
-                context.Raw(hqlAssist.Error);
-                return;
-            }
-            var sugg = string.Join(",", hqlAssist.Suggestions.Select(s => string.Format("\"{0}\"", s)).ToArray());
-            var json = "{\"suggestions\": [$]}".Replace("$", sugg);
-            context.Raw(json);            
-        }
-
         public static readonly IHttpHandler IndexHandler = new HttpHandlerWithReadOnlySession(WithNHSession(Index));
 
         public static Context InitialContext(HttpRequestBase request) {
@@ -153,7 +135,7 @@ namespace NHWebConsole {
         }
 
         public static IEnumerable<string> GetAllEntities(Configuration Cfg) {
-            return Cfg.ClassMappings.Select(c => c.EntityName);
+            return Cfg.ClassMappings.Cast<PersistentClass>().Select(c => c.Name);
         }
 
         public static bool HasPrevPage(Context model) {
@@ -230,12 +212,7 @@ namespace NHWebConsole {
                     model.Results = ConvertResults(results, model, cfg, rawUrl).ToList();
                 }
             } else {
-                var count = q.ExecuteUpdate();
-                model.Results = new List<Row> {
-                    new Row {
-                        KV("count", new[] {X.T(count.ToString())} ),
-                    },
-                };
+                model.Error = "NHibernate 1.2 does not support DML";
             }
         }
 
@@ -249,7 +226,7 @@ namespace NHWebConsole {
 
         public static Row ConvertResult(object o, Context model, Configuration Cfg, string rawUrl) {
             var row = new Row();
-            var trueType = NHibernateProxyHelper.GetClassWithoutInitializingProxy(o);
+            var trueType = NHibernateProxyHelper.GetClass(o);
             var mapping = Cfg.GetClassMapping(trueType);
             row.Add(KV("Type", new[] { BuildTypeLink(trueType, Cfg, rawUrl) }));
             if (mapping == null) {
@@ -263,7 +240,7 @@ namespace NHWebConsole {
                 var idProp = mapping.IdentifierProperty;
                 var id = idProp.GetGetter(trueType).Get(o);
                 row.Add(KV(idProp.Name, new[] { X.T(Convert.ToString(id)) }));
-                row.AddRange(mapping.PropertyClosureIterator
+                row.AddRange(mapping.PropertyClosureCollection.Cast<Property>()
                                .SelectMany(p => ConvertProperty(o, trueType, p, model, Cfg, rawUrl)));
             }
             return row;
@@ -286,10 +263,10 @@ namespace NHWebConsole {
 
         public static XElement BuildCollectionLink(Type ct, Type fk, object fkValue, Configuration Cfg, string RawUrl) {
             var classMapping = Cfg.GetClassMapping(ct);
-            var associations = classMapping.PropertyClosureIterator.Where(p => p.Type.IsAssociationType);
+            var associations = classMapping.PropertyClosureCollection.Cast<Property>().Where(p => p.Type.IsAssociationType);
             var fkp = associations.FirstOrDefault(p => p.GetGetter(ct).ReturnType == fk);
             if (fkp != null) {
-                var hql = string.Format("from {0} x where x.{1} = '{2}'", classMapping.EntityName, fkp.Name, fkValue);
+                var hql = string.Format("from {0} x where x.{1} = '{2}'", classMapping.Name, fkp.Name, fkValue);
                 var url = string.Format("{0}?q={1}&MaxResults=10", RawUrl.Split('?')[0], HttpUtility.UrlEncode(hql));
                 return Views.Views.Link(url, "collection");
             }
@@ -299,7 +276,7 @@ namespace NHWebConsole {
                 // assume generic collection
                 var fkType = collection.GetGetter(ct).ReturnType.GetGenericArguments()[0];
                 var fkTypePK = GetPkGetter(fkType, Cfg).PropertyName;
-                var hql = string.Format("select x from {0} x join x.{1} y where y.{2} = '{3}'", classMapping.EntityName, collection.Name, fkTypePK, fkValue);
+                var hql = string.Format("select x from {0} x join x.{1} y where y.{2} = '{3}'", classMapping.Name, collection.Name, fkTypePK, fkValue);
                 var url = string.Format("{0}?q={1}&MaxResults=10", RawUrl.Split('?')[0], HttpUtility.UrlEncode(hql));
                 return Views.Views.Link(url, "collection");
             }
@@ -328,14 +305,14 @@ namespace NHWebConsole {
             var o1 = p.GetGetter(entityType).Get(o);
             if (o1 == null)
                 return KV(p.Name, null as XNode);
-            var mapping = Cfg.GetClassMapping(assocType.GetAssociatedEntityName());
+            var mapping = Cfg.GetClassMapping(assocType.AssociatedClass);
             var pk = GetPkValue(mapping.MappedClass, o1, Cfg);
             var getter = p.GetGetter(entityType);
             return KV(p.Name, BuildEntityLink(getter.ReturnType, pk, Cfg, rawUrl) as XNode);
         }
 
         public static XElement BuildEntityLink(Type entityType, object pkValue, Configuration Cfg, string RawUrl) {
-            var hql = string.Format("from {0} x where x.{1} = '{2}'", Cfg.GetClassMapping(entityType).EntityName, GetPkGetter(entityType, Cfg).PropertyName, pkValue);
+            var hql = string.Format("from {0} x where x.{1} = '{2}'", Cfg.GetClassMapping(entityType).Name, GetPkGetter(entityType, Cfg).PropertyName, pkValue);
             var url = string.Format("{0}?q={1}", RawUrl.Split('?')[0], HttpUtility.UrlEncode(hql));
             var text = string.Format("{0}#{1}", entityType.Name, pkValue);
             return Views.Views.Link(url, text);
@@ -426,7 +403,7 @@ namespace NHWebConsole {
             var mapping = Cfg.GetClassMapping(entityType);
             if (mapping == null)
                 return new XText(entityType.Name);
-            var hql = string.Format("from {0}", mapping.EntityName);
+            var hql = string.Format("from {0}", mapping.Name);
             var url = string.Format("{0}?q={1}&MaxResults=10", RawUrl.Split('?')[0], HttpUtility.UrlEncode(hql));
             return Views.Views.Link(url, entityType.Name);
         }

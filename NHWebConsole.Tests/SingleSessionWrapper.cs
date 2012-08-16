@@ -3,7 +3,6 @@ using System.Collections;
 using System.Data;
 using NHibernate;
 using NHibernate.Engine;
-using NHibernate.Stat;
 using NHibernate.Type;
 
 namespace NHWebConsole.Tests {
@@ -66,10 +65,6 @@ namespace NHWebConsole.Tests {
             return session.Load(theType, id, lockMode);
         }
 
-        public object Load(string entityName, object id, LockMode lockMode) {
-            return session.Load(entityName, id, lockMode);
-        }
-
         public object Load(Type theType, object id) {
             return session.Load(theType, id);
         }
@@ -82,20 +77,12 @@ namespace NHWebConsole.Tests {
             return session.Load<T>(id);
         }
 
-        public object Load(string entityName, object id) {
-            return session.Load(entityName, id);
-        }
-
         public void Load(object obj, object id) {
             session.Load(obj, id);
         }
 
         public void Replicate(object obj, ReplicationMode replicationMode) {
             session.Replicate(obj, replicationMode);
-        }
-
-        public void Replicate(string entityName, object obj, ReplicationMode replicationMode) {
-            session.Replicate(entityName, obj, replicationMode);
         }
 
         public object Save(object obj) {
@@ -106,16 +93,8 @@ namespace NHWebConsole.Tests {
             session.Save(obj, id);
         }
 
-        public object Save(string entityName, object obj) {
-            return session.Save(entityName, obj);
-        }
-
         public void SaveOrUpdate(object obj) {
             session.SaveOrUpdate(obj);
-        }
-
-        public void SaveOrUpdate(string entityName, object obj) {
-            session.SaveOrUpdate(entityName, obj);
         }
 
         public void Update(object obj) {
@@ -130,22 +109,6 @@ namespace NHWebConsole.Tests {
             session.Update(entityName, obj);
         }
 
-        public object Merge(object obj) {
-            return session.Merge(obj);
-        }
-
-        public object Merge(string entityName, object obj) {
-            return session.Merge(entityName, obj);
-        }
-
-        public void Persist(object obj) {
-            session.Persist(obj);
-        }
-
-        public void Persist(string entityName, object obj) {
-            session.Persist(entityName, obj);
-        }
-
         public object SaveOrUpdateCopy(object obj) {
             return session.SaveOrUpdateCopy(obj);
         }
@@ -156,10 +119,6 @@ namespace NHWebConsole.Tests {
 
         public void Delete(object obj) {
             session.Delete(obj);
-        }
-
-        public void Delete(string entityName, object obj) {
-            session.Delete(entityName, obj);
         }
 
         public IList Find(string query) {
@@ -214,10 +173,6 @@ namespace NHWebConsole.Tests {
             session.Lock(obj, lockMode);
         }
 
-        public void Lock(string entityName, object obj, LockMode lockMode) {
-            session.Lock(entityName, obj, lockMode);
-        }
-
         public void Refresh(object obj) {
             session.Refresh(obj);
         }
@@ -238,28 +193,12 @@ namespace NHWebConsole.Tests {
             return session.BeginTransaction(isolationLevel);
         }
 
-        public ICriteria CreateCriteria<T>() where T : class {
-            return session.CreateCriteria<T>();
-        }
-
-        public ICriteria CreateCriteria<T>(string alias) where T : class {
-            return session.CreateCriteria<T>(alias);
-        }
-
         public ICriteria CreateCriteria(Type persistentClass) {
             return session.CreateCriteria(persistentClass);
         }
 
         public ICriteria CreateCriteria(Type persistentClass, string alias) {
             return session.CreateCriteria(persistentClass, alias);
-        }
-
-        public ICriteria CreateCriteria(string entityName) {
-            return session.CreateCriteria(entityName);
-        }
-
-        public ICriteria CreateCriteria(string entityName, string alias) {
-            return session.CreateCriteria(entityName, alias);
         }
 
         public IQuery CreateQuery(string queryString) {
@@ -298,20 +237,12 @@ namespace NHWebConsole.Tests {
             return session.Get(clazz, id, lockMode);
         }
 
-        public object Get(string entityName, object id) {
-            return session.Get(entityName, id);
-        }
-
         public T Get<T>(object id) {
             return session.Get<T>(id);
         }
 
         public T Get<T>(object id, LockMode lockMode) {
             return session.Get<T>(id, lockMode);
-        }
-
-        public string GetEntityName(object obj) {
-            return session.GetEntityName(obj);
         }
 
         public IFilter EnableFilter(string filterName) {
@@ -330,34 +261,12 @@ namespace NHWebConsole.Tests {
             return session.CreateMultiQuery();
         }
 
-        public ISession SetBatchSize(int batchSize) {
-            return session.SetBatchSize(batchSize);
-        }
-
         public ISessionImplementor GetSessionImplementation() {
             return session.GetSessionImplementation();
         }
-
-        public IMultiCriteria CreateMultiCriteria() {
-            return session.CreateMultiCriteria();
-        }
-
-        public ISession GetSession(EntityMode entityMode) {
-            return session.GetSession(entityMode);
-        }
-
-        public EntityMode ActiveEntityMode {
-            get { return session.ActiveEntityMode; }
-        }
-
         public FlushMode FlushMode {
             get { return session.FlushMode; }
             set { session.FlushMode = value; }
-        }
-
-        public CacheMode CacheMode {
-            get { return session.CacheMode; }
-            set { session.CacheMode = value; }
         }
 
         public ISessionFactory SessionFactory {
@@ -378,10 +287,6 @@ namespace NHWebConsole.Tests {
 
         public ITransaction Transaction {
             get { return session.Transaction; }
-        }
-
-        public ISessionStatistics Statistics {
-            get { return session.Statistics; }
         }
     }
 }

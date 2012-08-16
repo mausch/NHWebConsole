@@ -39,10 +39,6 @@
     <DocumentationFile>bin\Release\NHWebConsole.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HqlIntellisense, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\HqlIntellisense.dll</HintPath>
-    </Reference>
     <Reference Include="MiniMVC, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\MiniMVC.dll</HintPath>
@@ -65,7 +61,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ControllerFactory.cs" />
-    <Compile Include="HQLCompletionRequestor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NHWebConsoleSetup.cs" />
     <Compile Include="SuggestionResponse.cs" />
@@ -84,7 +79,6 @@
       <MergeAsm Include="bin\$(Configuration)\NHWebConsole.dll" />
       <MergeAsm Include="bin\$(Configuration)\MiniMVC.dll" />
       <MergeAsm Include="bin\$(Configuration)\NHWebConsole.Views.dll" />
-      <MergeAsm Include="bin\$(Configuration)\HqlIntellisense.dll" />
     </ItemGroup>
     <RemoveDir Directories="$(MergedOutputPath)" />
     <MakeDir Directories="$(MergedOutputPath)" ContinueOnError="true" />

@@ -15,9 +15,6 @@
 #endregion
 
 using System;
-using FluentNHibernate.Automapping;
-using FluentNHibernate.Cfg;
-using FluentNHibernate.Cfg.Db;
 using Iesi.Collections.Generic;
 using NHibernate.Tool.hbm2ddl;
 using NUnit.Framework;
@@ -26,19 +23,19 @@ using SampleModel;
 namespace NHWebConsole.Tests {
     [TestFixture]
     public class Tests {
-        [SetUp]
-        public void Setup() {
-            var cfg = Fluently.Configure()
-                .Database(SQLiteConfiguration.Standard
-                              .ConnectionString("Data Source=test.db;Version=3;New=True;"))
-                .Mappings(m => m.AutoMappings.Add(AutoMap.AssemblyOf<Customer>()))
-                .BuildConfiguration();
-            var sessionFactory = cfg.BuildSessionFactory();
-            NHWebConsoleSetup.OpenSession = () => sessionFactory.OpenSession();
-            NHWebConsoleSetup.Configuration = () => cfg;
-            new SchemaExport(cfg).Execute(false, true, false, false);
-            CreateSampleData();
-        }
+        //[SetUp]
+        //public void Setup() {
+        //    var cfg = Fluently.Configure()
+        //        .Database(SQLiteConfiguration.Standard
+        //                      .ConnectionString("Data Source=test.db;Version=3;New=True;"))
+        //        .Mappings(m => m.AutoMappings.Add(AutoMap.AssemblyOf<Customer>()))
+        //        .BuildConfiguration();
+        //    var sessionFactory = cfg.BuildSessionFactory();
+        //    NHWebConsoleSetup.OpenSession = () => sessionFactory.OpenSession();
+        //    NHWebConsoleSetup.Configuration = () => cfg;
+        //    new SchemaExport(cfg).Execute(false, true, false, false);
+        //    CreateSampleData();
+        //}
 
         private void CreateSampleData() {
             using (var session = NHWebConsoleSetup.OpenSession()) {
@@ -78,34 +75,34 @@ namespace NHWebConsole.Tests {
         }
 
 
-        [Test]
-        public void ExecQuery() {
-            using (var session = NHWebConsoleSetup.OpenSession()) {
-                var c = new IndexController {
-                    Session = session,
-                    Cfg = NHWebConsoleSetup.Configuration(),
-                    RawUrl = "/pepe.aspx",
-                };
-                var model = new Context {
-                    Query = "from System.Object",
-                };
-                c.ExecQuery(model);
-                Assert.IsNotNull(model.Results);
-                Assert.Greater(model.Results.Count, 0);
-                foreach (var r in model.Results)
-                    foreach (var m in r)
-                        Console.WriteLine("{0}: {1}", m.Key, m.Value);
-            }
-        }
+        //[Test]
+        //public void ExecQuery() {
+        //    using (var session = NHWebConsoleSetup.OpenSession()) {
+        //        var c = new IndexController {
+        //            Session = session,
+        //            Cfg = NHWebConsoleSetup.Configuration(),
+        //            RawUrl = "/pepe.aspx",
+        //        };
+        //        var model = new Context {
+        //            Query = "from System.Object",
+        //        };
+        //        c.ExecQuery(model);
+        //        Assert.IsNotNull(model.Results);
+        //        Assert.Greater(model.Results.Count, 0);
+        //        foreach (var r in model.Results)
+        //            foreach (var m in r)
+        //                Console.WriteLine("{0}: {1}", m.Key, m.Value);
+        //    }
+        //}
 
-        [Test]
-        public void NextPage() {
-            var c = new IndexController {
-                RawUrl = "/pepe.aspx?hql=from+System.Object&",
-            };
-            Console.WriteLine(c.BuildNextPageUrl(new Context {
-                MaxResults = 10,
-            }));
-        }
+        //[Test]
+        //public void NextPage() {
+        //    var c = new IndexController {
+        //        RawUrl = "/pepe.aspx?hql=from+System.Object&",
+        //    };
+        //    Console.WriteLine(c.BuildNextPageUrl(new Context {
+        //        MaxResults = 10,
+        //    }));
+        //}
     }
 }

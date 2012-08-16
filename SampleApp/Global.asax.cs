@@ -20,10 +20,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Web;
-using FluentNHibernate;
-using FluentNHibernate.Automapping;
-using FluentNHibernate.Cfg;
-using FluentNHibernate.Cfg.Db;
 using Iesi.Collections.Generic;
 using NHibernate;
 using NHibernate.Cfg;
@@ -34,30 +30,14 @@ using SampleModel;
 
 namespace SampleApp {
     public class Global : HttpApplication {
-        public static FluentConfiguration FluentNHConfig(string dbFile) {
-            return Fluently.Configure()
-                .Database(SQLiteConfiguration.Standard
-                              .ConnectionString(string.Format("Data Source={0};Version=3;New=True;", dbFile)))
-                .Mappings(m => m.AutoMappings.Add(AutoMap.AssemblyOf<Customer>(new NHFluentConfig())));
-        }
 
         protected void Application_Start(object sender, EventArgs e) {
-            var cfg = FluentNHConfig(Server.MapPath("/test.db")).BuildConfiguration();
-            var sessionFactory = cfg.BuildSessionFactory();
-            NHWebConsoleSetup.OpenSession = () => sessionFactory.OpenSession();
-            NHWebConsoleSetup.Configuration = () => cfg;
-            new SchemaExport(cfg).Execute(false, true, false);
-            CreateSampleData(NHWebConsoleSetup.OpenSession, Server.MapPath("/maxi_yacht_sail9062928.jpg"));
-        }
-
-        public class NHFluentConfig : DefaultAutomappingConfiguration {
-            public override bool IsComponent(Type type) {
-                return type == typeof (Address);
-            }
-
-            public override bool ShouldMap(Member member) {
-                return member.CanWrite;
-            }
+            //var cfg = FluentNHConfig(Server.MapPath("/test.db")).BuildConfiguration();
+            //var sessionFactory = cfg.BuildSessionFactory();
+            //NHWebConsoleSetup.OpenSession = () => sessionFactory.OpenSession();
+            //NHWebConsoleSetup.Configuration = () => cfg;
+            //new SchemaExport(cfg).Execute(false, true, false);
+            //CreateSampleData(NHWebConsoleSetup.OpenSession, Server.MapPath("/maxi_yacht_sail9062928.jpg"));
         }
 
         public static void CreateSampleData(Func<ISession> openSession, string pictureFile) {
