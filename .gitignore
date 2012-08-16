@@ -6,4 +6,5 @@ _ReSharper*
 *.bak
 *.cache
 Build/*
+NHWebConsole/Build/*
 test.db

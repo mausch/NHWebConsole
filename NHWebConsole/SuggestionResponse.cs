@@ -14,26 +14,9 @@
 // limitations under the License.
 #endregion
 
-using System;
-using System.Web;
-using NHibernate;
-
 namespace NHWebConsole {
-    /// <summary>
-    /// Handles NHibernate session
-    /// </summary>
-    public abstract class NHController : Controller {
-        public ISession Session { get; set;}
-
-        public override void ProcessRequest(HttpContext context) {
-            Session = NHWebConsoleSetup.OpenSession();
-            try {
-                Session.FlushMode = FlushMode.Never;
-                base.ProcessRequest(context);                
-            } finally {
-                if (NHWebConsoleSetup.DisposeSession)
-                    Session.Dispose();
-            }
-        }
+    public class SuggestionResponse {
+        public string Error { get; set; }
+        public string Suggestions { get; set; }
     }
 }
