@@ -25,6 +25,7 @@ using FluentNHibernate.Automapping;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using Iesi.Collections.Generic;
+using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
 using NHWebConsole;
@@ -46,7 +47,7 @@ namespace SampleApp {
             NHWebConsoleSetup.OpenSession = () => sessionFactory.OpenSession();
             NHWebConsoleSetup.Configuration = () => cfg;
             new SchemaExport(cfg).Execute(false, true, false);
-            CreateSampleData(Server.MapPath("/maxi_yacht_sail9062928.jpg"));
+            CreateSampleData(NHWebConsoleSetup.OpenSession, Server.MapPath("/maxi_yacht_sail9062928.jpg"));
         }
 
         public class NHFluentConfig : DefaultAutomappingConfiguration {
@@ -59,8 +60,8 @@ namespace SampleApp {
             }
         }
 
-        public static void CreateSampleData(string pictureFile) {
-            using (var session = NHWebConsoleSetup.OpenSession()) {
+        public static void CreateSampleData(Func<ISession> openSession, string pictureFile) {
+            using (var session = openSession()) {
                 var customer = new Customer {
                     Name = "John Doe",
                     Title = "CEO",

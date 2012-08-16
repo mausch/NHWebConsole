@@ -20,7 +20,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Fuchu;
 using Iesi.Collections.Generic;
+using NHibernate.Cfg;
 using NHWebConsole.Views;
 using NHibernate;
 using NHibernate.Mapping;
@@ -29,148 +31,141 @@ using NUnit.Framework;
 using SampleApp;
 using SampleModel;
 using Environment = NHibernate.Cfg.Environment;
+using FSharpx;
 
 namespace NHWebConsole.Tests {
-    [TestFixture]
-    public class Tests {
-        private ISessionFactory sessionFactory;
-        private SingleSessionWrapper session;
+    public static class Tests {
 
-        [SetUp]
-        public void Setup() {
-            var cfg = Global.FluentNHConfig(":memory:")
-                .ExposeConfiguration(c => c.SetProperty(Environment.ReleaseConnections, "on_close"))
-                .BuildConfiguration();
-            sessionFactory = cfg.BuildSessionFactory();
-            session = new SingleSessionWrapper(sessionFactory.OpenSession());
-            NHWebConsoleSetup.OpenSession = () => session;
-            NHWebConsoleSetup.DisposeSession = false;
-            NHWebConsoleSetup.Configuration = () => cfg;
-            new SchemaExport(cfg).Execute(false, true, false, session.Connection, null);
-            Global.CreateSampleData(null);
-        }
+        public static readonly Lazy<Configuration> Cfg =
+            new Lazy<Configuration>(() => Global.FluentNHConfig(":memory:")
+                    .ExposeConfiguration(c => c.SetProperty(Environment.ReleaseConnections, "on_close"))
+                    .BuildConfiguration());
 
-        [TearDown]
-        public void Teardown() {
-            //session.Dispose();
-            session.Kill();
-            sessionFactory.Dispose();
-        }
-
-        [Test]
-        public void ExecQuery() {
-            var c = new IndexController {
-                Session = session,
-                Cfg = NHWebConsoleSetup.Configuration(),
-                RawUrl = "/pepe.aspx",
-            };
-            var model = new Context {
-                Query = "from System.Object",
-                QueryType = QueryType.HQL,
-                ImageFields = new string[0],
-            };
-            c.ExecQuery(model);
-            Assert.IsNotNull(model.Results);
-            Assert.Greater(model.Results.Count, 0);
-            foreach (var r in model.Results)
-                foreach (var m in r)
-                    Console.WriteLine("{0}: {1}", m.Key, m.Value);
-        }
-
-        [Test]
-        public void ManyToMany() {
-            var c = new IndexController {
-                Session = session,
-                Cfg = NHWebConsoleSetup.Configuration(),
-                RawUrl = "/pepe.aspx",
-            };
-            var link = c.BuildCollectionLink(typeof (Territory), typeof (Employee), 1);
-            Console.WriteLine(link);
-            Assert.IsNotNull(link);
-        }
-
-        [Test]
-        public void IsCollectionOf() {
-            var types = new[] {
-                KV(typeof (IEnumerable<string>), typeof (string)),
-                KV(typeof (IEnumerable<int>), typeof (int)),
-                KV(typeof (ICollection<int>), typeof (int)),
-                KV(typeof (List<int>), typeof (int)),
-                KV(typeof (ISet<int>), typeof (int)),
-                KV(typeof (HashedSet<int>), typeof (int)),
+        public static readonly Func<Tuple<SingleSessionWrapper, ISessionFactory, Configuration>> Setup =
+            () => {
+                var sessionFactory = Cfg.Value.BuildSessionFactory();
+                var session = new SingleSessionWrapper(sessionFactory.OpenSession());
+                new SchemaExport(Cfg.Value).Execute(false, true, false, session.Connection, null);
+                Global.CreateSampleData(() => session, null);
+                return Tuple.Create(session, sessionFactory, Cfg.Value);
             };
 
-            foreach (var t in types) {
-                Assert.IsTrue(IndexController.IsCollectionOf(t.Key, t.Value), "Expected {0} is collection of {1}", t.Key, t.Value);
-            }
-        }
-
-        [Test]
-        public void IsNotCollectionOf() {
-            var types = new[] {
-                KV(typeof (IEnumerable<string>), typeof (int)),
-                KV(typeof (IEnumerable), typeof (int)),
-                KV(typeof (ArrayList), typeof (int)),
-                KV(typeof (string), typeof (int)),
-                KV(typeof (string), typeof (char)),
+        public static readonly Action<SingleSessionWrapper, ISessionFactory> Teardown =
+            (session, sessionFactory) => {
+                session.Kill();
+                sessionFactory.Dispose();
             };
 
-            foreach (var t in types) {
-                Assert.IsFalse(IndexController.IsCollectionOf(t.Key, t.Value), "Expected {0} is NOT collection of {1}", t.Key, t.Value);
-            }
-        }
+        public static readonly Func<Action<ISession, Configuration>, Action> sessionSetup =
+            f => Test.Setup(Setup, t => Teardown(t.Item1, t.Item2))
+                    .Compose((Action<SingleSessionWrapper, ISessionFactory, Configuration> x) => x.Tuple()) // unpack tuple
+                    ((session, sessionFactory, cfg) => f(session, cfg));
 
-        public KeyValuePair<K, V> KV<K, V>(K key, V value) {
-            return new KeyValuePair<K, V>(key, value);
-        }
+        public static readonly Action<ISession, Configuration> ExecQuery =
+            (session, cfg) => {
+                var model = new Context {
+                    Query = "from System.Object",
+                    QueryType = QueryType.HQL,
+                    ImageFields = new string[0],
+                };
+                ControllerFactory.ExecQuery(model, cfg, session, "/pepe.aspx");
+                Assert.IsNotNull(model.Results);
+                Assert.Greater(model.Results.Count(), 0);
+                //foreach (var r in model.Results)
+                //    foreach (var m in r)
+                //        Console.WriteLine("{0}: {1}", m.Key, m.Value);
+            };
 
-        [Test]
-        public void NextPage() {
-            var c = new IndexController {
-                RawUrl = "/pepe.aspx?hql=from+System.Object&",
+        public static readonly Action<ISession, Configuration> ManyToMany =
+            (session, cfg) => {
+                var link = ControllerFactory.BuildCollectionLink(typeof (Territory), typeof (Employee), 1, cfg, "/pepe.aspx");
+                //Console.WriteLine(link);
+                Assert.IsNotNull(link);
             };
-            Console.WriteLine(c.BuildNextPageUrl(new Context {
-                MaxResults = 10,
-                Results = Enumerable.Range(1, 11).Select(i => new Row()).ToList(),
-            }));
-        }
 
-        [Test]
-        public void Component() {
-            var c = new IndexController {
-                RawUrl = "/pepe?",
+        public static readonly Action<ISession, Configuration> QueryScalarWithNamespace =
+            (session, cfg) => {
+                var prop = new Property { Name = "FirstName" };
+                var query = ControllerFactory.QueryScalar(prop, typeof(Employee), new Employee(), cfg);
+                Assert.AreEqual("select x.FirstName from SampleModel.Employee x where x.Id = '0'", query);
             };
-            var employee = new Employee {
-                Address = new Address {
-                    City = "",
-                }
-            };
-            var ctx = new Context {
-                ImageFields = new string[0],
-            };
-            c.ConvertResult(employee, ctx);
-        }
 
-        [Test]
-        public void NullComponent() {
-            var c = new IndexController {
-                RawUrl = "/pepe?",
+        public static readonly Action<ISession, Configuration> Component =
+            (session, cfg) => {
+                var employee = new Employee {
+                    Address = new Address {
+                        City = "",
+                    }
+                };
+                var ctx = new Context {
+                    ImageFields = new string[0],
+                };
+                ControllerFactory.ConvertResult(employee, ctx, cfg, "/pepe?");
             };
-            var employee = new Employee {
-                Address = null,
-            };
-            var ctx = new Context {
-                ImageFields = new string[0],
-            };
-            c.ConvertResult(employee, ctx);
-        }
 
-        [Test]
-        public void QueryScalarIncludesNamespace() {
-            var c = new IndexController();
-            var prop = new Property {Name = "FirstName"};
-            var query = c.QueryScalar(prop, typeof (Employee), new Employee());
-            Assert.AreEqual("select x.FirstName from SampleModel.Employee x where x.Id = '0'", query);
-        }
+        public static readonly Action<ISession, Configuration> NullComponent =
+            (session, cfg) => {
+                var employee = new Employee {
+                    Address = null,
+                };
+                var ctx = new Context {
+                    ImageFields = new string[0],
+                };
+                ControllerFactory.ConvertResult(employee, ctx, cfg, "/pepe?");
+            };
+
+        public static readonly Test SessionTests = Test.List("Session tests", new[] {
+            new {name = "exec query", test = ExecQuery},
+            new {name = "many to many", test = ManyToMany},
+            new {name = "query scalar includes namespace", test = QueryScalarWithNamespace},
+            new {name = "null component", test = NullComponent},
+            new {name = "component", test = Component},
+        }.Select(x => Test.Case(x.name, sessionSetup(x.test))).ToArray());
+
+        public static readonly Test AllTests =
+            Test.List(new[] {
+                SessionTests,
+                Test.Case("next page", () => {
+                    var context = new Context {
+                        MaxResults = 10, 
+                        Results = Enumerable.Range(1, 11).Select(i => new Row()).ToList(),
+                    };
+                    var url = ControllerFactory.BuildNextPageUrl(context, "/pepe.aspx?hql=from+System.Object&");
+                    Console.WriteLine(url);
+                }),
+                Test.Case("is not collection of", () => {
+                    var types = new[] {
+                        Tuple.Create(typeof (IEnumerable<string>), typeof (int)),
+                        Tuple.Create(typeof (IEnumerable), typeof (int)),
+                        Tuple.Create(typeof (ArrayList), typeof (int)),
+                        Tuple.Create(typeof (string), typeof (int)),
+                        Tuple.Create(typeof (string), typeof (char)),
+                    };
+
+                    foreach (var t in types) {
+                        Assert.IsFalse(ControllerFactory.IsCollectionOf(t.Item1, t.Item2),
+                                       "Expected {0} is NOT collection of {1}", t.Item1, t.Item2);
+                    }
+                }),
+                Test.Case("is collection of", () => {
+                    var types = new[] {
+                        Tuple.Create(typeof (IEnumerable<string>), typeof (string)),
+                        Tuple.Create(typeof (IEnumerable<int>), typeof (int)),
+                        Tuple.Create(typeof (ICollection<int>), typeof (int)),
+                        Tuple.Create(typeof (List<int>), typeof (int)),
+                        Tuple.Create(typeof (Iesi.Collections.Generic.ISet<int>), typeof (int)),
+                        Tuple.Create(typeof (HashedSet<int>), typeof (int)),
+                    };
+
+                    foreach (var t in types) {
+                        Assert.IsTrue(ControllerFactory.IsCollectionOf(t.Item1, t.Item2),
+                                      "Expected {0} is collection of {1}", t.Item1, t.Item2);
+                    }
+                })
+            }).Wrap(t => {
+                NHWebConsoleSetup.OpenSession = () => null;
+                NHWebConsoleSetup.Configuration = () => null;
+                return t;
+            });
     }
 }

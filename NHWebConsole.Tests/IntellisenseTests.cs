@@ -16,64 +16,75 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using FSharpx;
+using Fuchu;
 using HqlIntellisense;
 using NUnit.Framework;
 using SampleApp;
 
 namespace NHWebConsole.Tests {
-    [TestFixture]
     public class IntellisenseTests {
-        private IConfigurationDataProvider cfg;
+        public static readonly Lazy<IConfigurationDataProvider> ConfigProvider =
+            new Lazy<IConfigurationDataProvider>(() => {
+                var nhcfg = Global.FluentNHConfig("test.db").BuildConfiguration();
+                return new NHConfigDataProvider(nhcfg);
+            });
 
-        [TestFixtureSetUp]
-        public void Setup() {
-            var nhcfg = Global.FluentNHConfig("test.db").BuildConfiguration();
-            cfg = new SimpleConfigurationProvider(nhcfg);
-        }
+        public static readonly Func<Action<IConfigurationDataProvider>, Action> Setup =
+            Test.Setup(() => ConfigProvider.Value, _ => { });
 
-        [Test]
-        public void tt() {
-            var q = "from ";
-            var requestor = new CompletionRequestor();
-            new HQLCodeAssist(cfg).CodeComplete(q, q.Length, requestor);
-            PrintResult(requestor);
-        }
+        public static readonly Action<IConfigurationDataProvider> tt =
+            cfg => {
+                const string q = "from ";
+                var requestor = new CompletionRequestor();
+                new HQLCodeAssist(cfg).CodeComplete(q, q.Length, requestor);
+                PrintResult(requestor);
+            };
 
-        [Test]
-        public void ttt() {
-            var q = "from Customer x where ";
-            var requestor = new CompletionRequestor();
-            new HQLCodeAssist(cfg).CodeComplete(q, q.Length, requestor);
-            PrintResult(requestor);            
-        }
+        public static readonly Action<IConfigurationDataProvider> ttt =
+            cfg => {
+                const string q = "from Customer x where ";
+                var requestor = new CompletionRequestor();
+                new HQLCodeAssist(cfg).CodeComplete(q, q.Length, requestor);
+                PrintResult(requestor);
+            };
 
-        [Test]
-        public void Error() {
-            var q = "from Nada ";
-            var requestor = new CompletionRequestor();
-            new HQLCodeAssist(cfg).CodeComplete(q, q.Length, requestor);
-            PrintResult(requestor);
-        }
+        public static readonly Action<IConfigurationDataProvider> Error =
+            cfg => {
+                const string q = "from Nada ";
+                var requestor = new CompletionRequestor();
+                new HQLCodeAssist(cfg).CodeComplete(q, q.Length, requestor);
+                PrintResult(requestor);
+            };
 
-        [Test]
-        public void SelectFromWhere() {
-            var q = "select x from SampleModel.Customer x where x.";
-            var requestor = new CompletionRequestor();
-            new HQLCodeAssist(cfg).CodeComplete(q, q.Length, requestor);
-            PrintResult(requestor);
-        }
+        public static readonly Action<IConfigurationDataProvider> SelectFromWhere =
+            cfg => {
+                const string q = "select x from SampleModel.Customer x where x.";
+                var requestor = new CompletionRequestor();
+                new HQLCodeAssist(cfg).CodeComplete(q, q.Length, requestor);
+                PrintResult(requestor);
+            };
 
-        public void PrintResult(CompletionRequestor r) {
+        public static readonly Test AllTests =
+            Test.List("Intellisense tests", new[] {
+                new {name = "tt", test = tt},
+                new {name = "ttt", test = ttt},
+                new {name = "Error", test = Error},
+                new {name = "SelectFromWhere", test = SelectFromWhere},
+            }.Select(x => Test.Case(x.name, Setup(x.test))).ToArray());
+
+        public static void PrintResult(CompletionRequestor r) {
             if (r.Error != null)
                 Console.WriteLine("Error: {0}", r.Error);
             if (r.Proposals.Count == 0)
                 Console.WriteLine("No proposals");
             foreach (var p in r.Proposals) {
-                Console.WriteLine("completion: {0}", p.Completion);
-                Console.WriteLine("kind: {0}", p.CompletionKind);
-                Console.WriteLine("location: {0}", p.CompletionLocation);
-                Console.WriteLine("relevance: {0}", p.Relevance);
-                Console.WriteLine("simple name: {0}", p.SimpleName);
+                Console.WriteLine("completion: {0}", p.GetCompletion());
+                Console.WriteLine("kind: {0}", p.GetCompletionKind());
+                Console.WriteLine("location: {0}", p.GetCompletionLocation());
+                Console.WriteLine("relevance: {0}", p.GetRelevance());
+                Console.WriteLine("simple name: {0}", p.GetSimpleName());
                 Console.WriteLine();
             }
         }
@@ -86,13 +97,12 @@ namespace NHWebConsole.Tests {
                 Proposals = new List<HQLCompletionProposal>();
             }
 
-            public bool Accept(HQLCompletionProposal proposal) {
+            public bool accept(HQLCompletionProposal proposal) {
                 Proposals.Add(proposal);
                 return true;
             }
 
-            public void CompletionFailure(string errorMessage)
-            {
+            public void completionFailure(string errorMessage) {
                 Error = errorMessage;
             }
         }
