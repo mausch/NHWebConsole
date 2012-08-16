@@ -100,7 +100,7 @@ namespace NHWebConsole {
             var q = context.Request.QueryString["q"];
             var p = int.Parse(context.Request.QueryString["p"]);
             var hqlAssist = new HQLCompletionRequestor();
-            new HQLCodeAssist(new NHConfigDataProvider(cfg)).CodeComplete(q, p, hqlAssist);
+            new HQLCodeAssist(new SimpleConfigurationProvider(cfg)).CodeComplete(q, p, hqlAssist);
             if (hqlAssist.Error != null) {
                 context.Raw(hqlAssist.Error);
                 return;

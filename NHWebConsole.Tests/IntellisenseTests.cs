@@ -28,7 +28,7 @@ namespace NHWebConsole.Tests {
         public static readonly Lazy<IConfigurationDataProvider> ConfigProvider =
             new Lazy<IConfigurationDataProvider>(() => {
                 var nhcfg = Global.FluentNHConfig("test.db").BuildConfiguration();
-                return new NHConfigDataProvider(nhcfg);
+                return new SimpleConfigurationProvider(nhcfg);
             });
 
         public static readonly Func<Action<IConfigurationDataProvider>, Action> Setup =
@@ -80,11 +80,11 @@ namespace NHWebConsole.Tests {
             if (r.Proposals.Count == 0)
                 Console.WriteLine("No proposals");
             foreach (var p in r.Proposals) {
-                Console.WriteLine("completion: {0}", p.GetCompletion());
-                Console.WriteLine("kind: {0}", p.GetCompletionKind());
-                Console.WriteLine("location: {0}", p.GetCompletionLocation());
-                Console.WriteLine("relevance: {0}", p.GetRelevance());
-                Console.WriteLine("simple name: {0}", p.GetSimpleName());
+                Console.WriteLine("completion: {0}", p.Completion);
+                Console.WriteLine("kind: {0}", p.CompletionKind);
+                Console.WriteLine("location: {0}", p.CompletionLocation);
+                Console.WriteLine("relevance: {0}", p.Relevance);
+                Console.WriteLine("simple name: {0}", p.SimpleName);
                 Console.WriteLine();
             }
         }
@@ -97,12 +97,12 @@ namespace NHWebConsole.Tests {
                 Proposals = new List<HQLCompletionProposal>();
             }
 
-            public bool accept(HQLCompletionProposal proposal) {
+            public bool Accept(HQLCompletionProposal proposal) {
                 Proposals.Add(proposal);
                 return true;
             }
 
-            public void completionFailure(string errorMessage) {
+            public void CompletionFailure(string errorMessage) {
                 Error = errorMessage;
             }
         }

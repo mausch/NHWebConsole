@@ -15,12 +15,12 @@ namespace NHWebConsole {
             get { return suggestions; }
         }
 
-        public bool accept(HQLCompletionProposal proposal) {
-            suggestions.Add(proposal.GetCompletion());
+        public bool Accept(HQLCompletionProposal proposal) {
+            suggestions.Add(proposal.Completion);
             return true;
         }
 
-        public void completionFailure(string errorMessage) {
+        public void CompletionFailure(string errorMessage) {
             error = errorMessage;
         }
     }

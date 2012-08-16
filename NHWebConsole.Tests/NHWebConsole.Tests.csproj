@@ -48,6 +48,9 @@
       <HintPath>..\lib\FluentNHibernate.dll</HintPath>
     </Reference>
     <Reference Include="HqlIntellisense, Version=1.0.2.0, Culture=neutral, PublicKeyToken=f1099ef18651d31d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\HqlIntellisense.dll</HintPath>
+    </Reference>
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\FSharp.Core.dll</HintPath>
