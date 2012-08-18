@@ -136,33 +136,26 @@ namespace NHWebConsole.Tests {
                     var url = ControllerFactory.BuildNextPageUrl(context, "/pepe.aspx?hql=from+System.Object&");
                     Console.WriteLine(url);
                 }),
-                Test.Case("is not collection of", () => {
-                    var types = new[] {
+
+                Test.List("is not collection of", new[] {
                         Tuple.Create(typeof (IEnumerable<string>), typeof (int)),
                         Tuple.Create(typeof (IEnumerable), typeof (int)),
                         Tuple.Create(typeof (ArrayList), typeof (int)),
                         Tuple.Create(typeof (string), typeof (int)),
                         Tuple.Create(typeof (string), typeof (char)),
-                    };
+                    }.Select(t => Test.Case(t.Item1.ToString(), 
+                        () => Assert.Equal(t.Item1.ToString(), false, ControllerFactory.IsCollectionOf(t.Item1, t.Item2)))).ToArray()),
 
-                    foreach (var t in types) {
-                        Assert.Equal(t.Item1.ToString(), false, ControllerFactory.IsCollectionOf(t.Item1, t.Item2));
-                    }
-                }),
-                Test.Case("is collection of", () => {
-                    var types = new[] {
+                Test.List("is collection of", new[] {
                         Tuple.Create(typeof (IEnumerable<string>), typeof (string)),
                         Tuple.Create(typeof (IEnumerable<int>), typeof (int)),
                         Tuple.Create(typeof (ICollection<int>), typeof (int)),
                         Tuple.Create(typeof (List<int>), typeof (int)),
                         Tuple.Create(typeof (Iesi.Collections.Generic.ISet<int>), typeof (int)),
                         Tuple.Create(typeof (HashedSet<int>), typeof (int)),
-                    };
+                    }.Select(t => Test.Case(t.Item1.ToString(),
+                        () => Assert.Equal(t.Item1.ToString(), true, ControllerFactory.IsCollectionOf(t.Item1, t.Item2)))).ToArray()),
 
-                    foreach (var t in types) {
-                        Assert.Equal(t.Item1.ToString(), true, ControllerFactory.IsCollectionOf(t.Item1, t.Item2));
-                    }
-                })
             }).Wrap(t => {
                 NHWebConsoleSetup.OpenSession = () => null;
                 NHWebConsoleSetup.Configuration = () => null;
