@@ -27,11 +27,9 @@ using NHWebConsole.Views;
 using NHibernate;
 using NHibernate.Mapping;
 using NHibernate.Tool.hbm2ddl;
-using NUnit.Framework;
 using SampleApp;
 using SampleModel;
 using Environment = NHibernate.Cfg.Environment;
-using FSharpx;
 
 namespace NHWebConsole.Tests {
     public static class Tests {
@@ -57,9 +55,14 @@ namespace NHWebConsole.Tests {
             };
 
         public static readonly Func<Action<ISession, Configuration>, Action> sessionSetup =
-            f => Test.Setup(Setup, t => Teardown(t.Item1, t.Item2))
-                    .Compose((Action<SingleSessionWrapper, ISessionFactory, Configuration> x) => x.Tuple()) // unpack tuple
-                    ((session, sessionFactory, cfg) => f(session, cfg));
+            f => () => {
+                var s = Setup();
+                try {
+                    f(s.Item1, s.Item3);                    
+                } finally {
+                    Teardown(s.Item1, s.Item2);
+                }
+            };
 
         public static readonly Action<ISession, Configuration> ExecQuery =
             (session, cfg) => {
@@ -69,8 +72,8 @@ namespace NHWebConsole.Tests {
                     ImageFields = new string[0],
                 };
                 ControllerFactory.ExecQuery(model, cfg, session, "/pepe.aspx");
-                Assert.IsNotNull(model.Results);
-                Assert.Greater(model.Results.Count(), 0);
+                Assert.NotNull("results", model.Results);
+                Assert.Equal("results count > 0", true, model.Results.Any());
                 //foreach (var r in model.Results)
                 //    foreach (var m in r)
                 //        Console.WriteLine("{0}: {1}", m.Key, m.Value);
@@ -80,14 +83,14 @@ namespace NHWebConsole.Tests {
             (session, cfg) => {
                 var link = ControllerFactory.BuildCollectionLink(typeof (Territory), typeof (Employee), 1, cfg, "/pepe.aspx");
                 //Console.WriteLine(link);
-                Assert.IsNotNull(link);
+                Assert.NotNull("link", link);
             };
 
         public static readonly Action<ISession, Configuration> QueryScalarWithNamespace =
             (session, cfg) => {
                 var prop = new Property { Name = "FirstName" };
                 var query = ControllerFactory.QueryScalar(prop, typeof(Employee), new Employee(), cfg);
-                Assert.AreEqual("select x.FirstName from SampleModel.Employee x where x.Id = '0'", query);
+                Assert.Equal("query", "select x.FirstName from SampleModel.Employee x where x.Id = '0'", query);
             };
 
         public static readonly Action<ISession, Configuration> Component =
@@ -143,8 +146,7 @@ namespace NHWebConsole.Tests {
                     };
 
                     foreach (var t in types) {
-                        Assert.IsFalse(ControllerFactory.IsCollectionOf(t.Item1, t.Item2),
-                                       "Expected {0} is NOT collection of {1}", t.Item1, t.Item2);
+                        Assert.Equal(t.Item1.ToString(), false, ControllerFactory.IsCollectionOf(t.Item1, t.Item2));
                     }
                 }),
                 Test.Case("is collection of", () => {
@@ -158,8 +160,7 @@ namespace NHWebConsole.Tests {
                     };
 
                     foreach (var t in types) {
-                        Assert.IsTrue(ControllerFactory.IsCollectionOf(t.Item1, t.Item2),
-                                      "Expected {0} is collection of {1}", t.Item1, t.Item2);
+                        Assert.Equal(t.Item1.ToString(), true, ControllerFactory.IsCollectionOf(t.Item1, t.Item2));
                     }
                 })
             }).Wrap(t => {
