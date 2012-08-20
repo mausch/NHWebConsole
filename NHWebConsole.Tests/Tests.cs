@@ -17,11 +17,9 @@
 using System;
 using Iesi.Collections.Generic;
 using NHibernate.Tool.hbm2ddl;
-using NUnit.Framework;
 using SampleModel;
 
 namespace NHWebConsole.Tests {
-    [TestFixture]
     public class Tests {
         //[SetUp]
         //public void Setup() {
