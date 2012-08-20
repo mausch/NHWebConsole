@@ -1,18 +1,18 @@
 <?xml version="1.0"?>
 <package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-    <id>NHWebConsole2</id>
+    <id>NHWebConsole3</id>
     <version>0.3</version>
     <authors>Mauricio Scheffer</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Embedded web NHibernate console for NHibernate 2</description>
+    <description>Embedded web NHibernate console for NHibernate 3</description>
     <licenseUrl>https://github.com/mausch/NHWebConsole/raw/master/license.txt</licenseUrl>
     <projectUrl>https://www.ohloh.net/p/nhwebconsole</projectUrl>
     <summary>NHWebConsole is an embeddable HQL/SQL console for web applications using NHibernate. Navigate your database and run any HQL/SQL query. It also has basic HQL intellisense thanks to Felice Pollano's NHibernate Workbench (http://sourceforge.net/projects/faticalabshqled/)</summary>
     <language>en-US</language>
     <tags>nhibernate orm web console</tags>
     <dependencies>
-      <dependency id="NHibernate.Core" version="[2.1.2.4000]" />
+      <dependency id="NHibernate.Core" version="[3.3.1.4000]" />
     </dependencies>
   </metadata>
   <files>
