@@ -22,9 +22,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Fuchu;
 using Iesi.Collections.Generic;
-using NHibernate.Cfg;
 using NHWebConsole.Views;
 using NHibernate;
+using NHibernate.Cfg;
 using NHibernate.Mapping;
 using NHibernate.Tool.hbm2ddl;
 using SampleApp;
@@ -33,11 +33,10 @@ using Environment = NHibernate.Cfg.Environment;
 
 namespace NHWebConsole.Tests {
     public static class Tests {
-
         public static readonly Lazy<Configuration> Cfg =
             new Lazy<Configuration>(() => Global.FluentNHConfig(":memory:")
-                    .ExposeConfiguration(c => c.SetProperty(Environment.ReleaseConnections, "on_close"))
-                    .BuildConfiguration());
+                                              .ExposeConfiguration(c => c.SetProperty(Environment.ReleaseConnections, "on_close"))
+                                              .BuildConfiguration());
 
         public static readonly Func<Tuple<SingleSessionWrapper, ISessionFactory, Configuration>> Setup =
             () => {
@@ -58,7 +57,7 @@ namespace NHWebConsole.Tests {
             f => () => {
                 var s = Setup();
                 try {
-                    f(s.Item1, s.Item3);                    
+                    f(s.Item1, s.Item3);
                 } finally {
                     Teardown(s.Item1, s.Item2);
                 }
@@ -88,8 +87,8 @@ namespace NHWebConsole.Tests {
 
         public static readonly Action<ISession, Configuration> QueryScalarWithNamespace =
             (session, cfg) => {
-                var prop = new Property { Name = "FirstName" };
-                var query = ControllerFactory.QueryScalar(prop, typeof(Employee), new Employee(), cfg);
+                var prop = new Property {Name = "FirstName"};
+                var query = ControllerFactory.QueryScalar(prop, typeof (Employee), new Employee(), cfg);
                 Assert.Equal("query", "select x.FirstName from SampleModel.Employee x where x.Id = '0'", query);
             };
 
@@ -123,6 +122,13 @@ namespace NHWebConsole.Tests {
             new {name = "query scalar includes namespace", test = QueryScalarWithNamespace},
             new {name = "null component", test = NullComponent},
             new {name = "component", test = Component},
+            new {
+                name = "Convert result null",
+                test = L.A((ISession session, Configuration cfg) => {
+                    var row = ControllerFactory.ConvertResult(null, new Context(), cfg, "");
+                    Assert.Equal("row element count", 0, row.Count);
+                })
+            },
         }.Select(x => Test.Case(x.name, sessionSetup(x.test))).ToArray());
 
         public static readonly Test AllTests =
@@ -130,32 +136,29 @@ namespace NHWebConsole.Tests {
                 SessionTests,
                 Test.Case("next page", () => {
                     var context = new Context {
-                        MaxResults = 10, 
+                        MaxResults = 10,
                         Results = Enumerable.Range(1, 11).Select(i => new Row()).ToList(),
                     };
                     var url = ControllerFactory.BuildNextPageUrl(context, "/pepe.aspx?hql=from+System.Object&");
                     Console.WriteLine(url);
                 }),
-
                 Test.List("is not collection of", new[] {
-                        Tuple.Create(typeof (IEnumerable<string>), typeof (int)),
-                        Tuple.Create(typeof (IEnumerable), typeof (int)),
-                        Tuple.Create(typeof (ArrayList), typeof (int)),
-                        Tuple.Create(typeof (string), typeof (int)),
-                        Tuple.Create(typeof (string), typeof (char)),
-                    }.Select(t => Test.Case(t.Item1.ToString(), 
-                        () => Assert.Equal(t.Item1.ToString(), false, ControllerFactory.IsCollectionOf(t.Item1, t.Item2)))).ToArray()),
-
+                    Tuple.Create(typeof (IEnumerable<string>), typeof (int)),
+                    Tuple.Create(typeof (IEnumerable), typeof (int)),
+                    Tuple.Create(typeof (ArrayList), typeof (int)),
+                    Tuple.Create(typeof (string), typeof (int)),
+                    Tuple.Create(typeof (string), typeof (char)),
+                }.Select(t => Test.Case(t.Item1.ToString(),
+                                        () => Assert.Equal(t.Item1.ToString(), false, ControllerFactory.IsCollectionOf(t.Item1, t.Item2)))).ToArray()),
                 Test.List("is collection of", new[] {
-                        Tuple.Create(typeof (IEnumerable<string>), typeof (string)),
-                        Tuple.Create(typeof (IEnumerable<int>), typeof (int)),
-                        Tuple.Create(typeof (ICollection<int>), typeof (int)),
-                        Tuple.Create(typeof (List<int>), typeof (int)),
-                        Tuple.Create(typeof (Iesi.Collections.Generic.ISet<int>), typeof (int)),
-                        Tuple.Create(typeof (HashedSet<int>), typeof (int)),
-                    }.Select(t => Test.Case(t.Item1.ToString(),
-                        () => Assert.Equal(t.Item1.ToString(), true, ControllerFactory.IsCollectionOf(t.Item1, t.Item2)))).ToArray()),
-
+                    Tuple.Create(typeof (IEnumerable<string>), typeof (string)),
+                    Tuple.Create(typeof (IEnumerable<int>), typeof (int)),
+                    Tuple.Create(typeof (ICollection<int>), typeof (int)),
+                    Tuple.Create(typeof (List<int>), typeof (int)),
+                    Tuple.Create(typeof (Iesi.Collections.Generic.ISet<int>), typeof (int)),
+                    Tuple.Create(typeof (HashedSet<int>), typeof (int)),
+                }.Select(t => Test.Case(t.Item1.ToString(),
+                                        () => Assert.Equal(t.Item1.ToString(), true, ControllerFactory.IsCollectionOf(t.Item1, t.Item2)))).ToArray()),
             }).Wrap(t => {
                 NHWebConsoleSetup.OpenSession = () => null;
                 NHWebConsoleSetup.Configuration = () => null;

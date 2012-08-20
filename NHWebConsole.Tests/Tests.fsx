@@ -4,10 +4,8 @@
 open Fuchu
 open NHWebConsole.Tests
 
-(*
 Tests.AllTests
-|> Test.filter (fun n -> n.Contains "null component")
+|> Test.filter (fun n -> n.Contains "result null")
 |> run
-*)
 
-run Tests.AllTests
+//run Tests.AllTests
