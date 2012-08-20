@@ -20,7 +20,6 @@ using System.Linq;
 using FSharpx;
 using Fuchu;
 using HqlIntellisense;
-using NUnit.Framework;
 using SampleApp;
 
 namespace NHWebConsole.Tests {
@@ -32,7 +31,7 @@ namespace NHWebConsole.Tests {
             });
 
         public static readonly Func<Action<IConfigurationDataProvider>, Action> Setup =
-            Test.Setup(() => ConfigProvider.Value, _ => { });
+            f => () => f(ConfigProvider.Value);
 
         public static readonly Action<IConfigurationDataProvider> tt =
             cfg => {

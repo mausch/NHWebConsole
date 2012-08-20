@@ -249,6 +249,8 @@ namespace NHWebConsole {
 
         public static Row ConvertResult(object o, Context model, Configuration Cfg, string rawUrl) {
             var row = new Row();
+            if (o == null)
+                return row;
             var trueType = NHibernateProxyHelper.GetClassWithoutInitializingProxy(o);
             var mapping = Cfg.GetClassMapping(trueType);
             row.Add(KV("Type", new[] { BuildTypeLink(trueType, Cfg, rawUrl) }));
