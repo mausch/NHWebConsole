@@ -67,7 +67,7 @@ namespace NHWebConsole {
             var url = context.Request.Url.ToString();
             url = url.Split('/').Reverse().Skip(1).Reverse().Join("/");
             var v = Views.Views.OpenSearch(url);
-            context.XDocument(v.MakeHTML5Doc(), "application/opensearchdescription+xml");
+            context.Response.XDocument(new XDocument(v), "application/opensearchdescription+xml");
         }
 
         public static readonly IHttpHandler StaticHandler = new HttpHandler(Static);
@@ -147,8 +147,12 @@ namespace NHWebConsole {
             if (model.Raw) {
                 context.Raw(model.Error ?? model.RawResult, model.ContentType);
             } else {
-                var v = GetView(model);
-                context.XDocument(v, model.ContentType);
+                if (model.Output != null && model.Output.ToLowerInvariant() == "rss") {
+                    var rss = new XDocument(Views.Views.RSS(model));
+                    context.Response.XDocument(rss, model.ContentType);
+                } else {
+                    context.Html(Views.Views.Index(model));
+                }
             }            
         }
 
