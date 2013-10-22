@@ -260,10 +260,12 @@ var trueType = NHibernateProxyHelper.GetClass(o);
             var getter = p.GetGetter(entityType);
             var fkType = getter.ReturnType.GetGenericArguments()[0];
             var fk = GetPkValue(entityType, o, cfg);
-            return KV(p.Name, BuildCollectionLink(fkType, entityType, fk, cfg, rawUrl));
+            return KV(p.Name, BuildCollectionLink(entityType, fkType, fk, cfg, rawUrl));
         }
 
         public static XElement BuildCollectionLink(Type ct, Type fk, object fkValue, Configuration Cfg, string RawUrl) {
+            if (Cfg == null)
+                throw new ArgumentNullException("Cfg");
             var classMapping = Cfg.GetClassMapping(ct);
             var associations = classMapping.PropertyClosureCollection.Cast<Property>().Where(p => p.Type.IsAssociationType);
             var fkp = associations.FirstOrDefault(p => p.GetGetter(ct).ReturnType == fk);
