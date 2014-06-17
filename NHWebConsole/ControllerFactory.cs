@@ -102,12 +102,12 @@ namespace NHWebConsole {
             var hqlAssist = new HQLCompletionRequestor();
             new HQLCodeAssist(new SimpleConfigurationProvider(cfg)).CodeComplete(q, p, hqlAssist);
             if (hqlAssist.Error != null) {
-                context.Raw(hqlAssist.Error);
+                context.Response.Raw(hqlAssist.Error, "text/plain");
                 return;
             }
             var sugg = string.Join(",", hqlAssist.Suggestions.Select(s => string.Format("\"{0}\"", s)).ToArray());
             var json = "{\"suggestions\": [$]}".Replace("$", sugg);
-            context.Raw(json);            
+            context.Response.Raw(json, "application/json");
         }
 
         public static readonly IHttpHandler IndexHandler = new HttpHandlerWithReadOnlySession(WithNHSession(Index));
@@ -145,13 +145,13 @@ namespace NHWebConsole {
                 model.Error = e.ToString();
             }
             if (model.Raw) {
-                context.Raw(model.Error ?? model.RawResult, model.ContentType);
+                context.Response.Raw(model.Error ?? model.RawResult, model.ContentType);
             } else {
                 if (model.Output != null && model.Output.ToLowerInvariant() == "rss") {
                     var rss = new XDocument(Views.Views.RSS(model));
                     context.Response.XDocument(rss, model.ContentType);
                 } else {
-                    context.Html(Views.Views.Index(model));
+                    context.Response.Html(Views.Views.Index(model));
                 }
             }            
         }

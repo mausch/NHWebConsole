@@ -8,3 +8,4 @@ _ReSharper*
 Build/*
 NHWebConsole/Build/*
 test.db
+packages/*
